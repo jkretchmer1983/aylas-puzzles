@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { PuzzleProps } from "./kit";
 import * as A from "./set-a";
 import * as B from "./set-b";
+import * as C from "./set-c";
 
 export type Puzzle = { title: string; age: number; prompt: string; task: string; hint: string; C: ComponentType<PuzzleProps> };
 
@@ -46,4 +47,34 @@ export const puzzles: Puzzle[] = [
   { age: 11, title: "The last stone wins", prompt: "21 stones. Take turns removing 1, 2, or 3. Whoever takes the LAST stone wins. You go first against the robot.", task: "Find a strategy that guarantees you win.", hint: "What is special about leaving exactly 4 stones?", C: B.P38 },
   { age: 11, title: "The robot handshake party", prompt: "Five robots each claim they shook hands with exactly THREE others.", task: "Could all five claims be true?", hint: "Every handshake is counted by how many robots?", C: B.P39 },
   { age: 11, title: "The alphabet addition", prompt: "SEND + MORE = MONEY. Each letter is one digit; different letters are different digits. S and M aren't zero.", task: "Tap a letter, then tap its digit.", hint: "How large can the carry from two four-digit numbers be?", C: B.P40 },
+  { age: 8, title: "The magic square", prompt: "Use 1 to 9 once each. Every row, column, and diagonal must add up to 15.", task: "Tap a square, then tap a number.", hint: "The middle row and middle column both go through 5. What pairs with 5 to make 15?", C: C.C1 },
+  { age: 8, title: "The growing staircase", prompt: "Look at the jumps between the numbers: 1, 2, 4, 7, 11…", task: "What number comes next?", hint: "The jumps are +1, +2, +3, +4…", C: C.C2 },
+  { age: 8, title: "The pet owners", prompt: "Ana, Ben, and Cal each have a different pet. Ana's pet has no fur. Ben is scared of dogs.", task: "Drag each pet to its owner.", hint: "Which pet has no fur?", C: C.C3 },
+  { age: 8, title: "The ten stone game", prompt: "10 stones. You and the robot take turns removing 1 or 2. Whoever takes the LAST stone wins. You go first.", task: "Beat the robot!", hint: "Try to always leave the robot 3, 6, or 9 stones.", C: C.C4 },
+  { age: 8, title: "The hidden triangles", prompt: "Triangles can hide inside other triangles. Big ones count too!", task: "How many triangles can you find?", hint: "Count the small ones, then the ones made of two pieces, then the whole thing.", C: C.C5 },
+  { age: 8, title: "The shape sums", prompt: "Each shape stands for a number. Same shape, same number.", task: "What number is the triangle?", hint: "Swap the square for two triangles.", C: C.C6 },
+  { age: 8, title: "The odd one out", prompt: "Four of these numbers belong together. One does not.", task: "Tap the number that doesn't belong.", hint: "Try splitting each number into two equal groups.", C: C.C7 },
+  { age: 8, title: "The puzzling clock", prompt: "In 3 hours it will be 2 o'clock.", task: "What time was it 2 hours ago?", hint: "First find the time right now.", C: C.C8 },
+  { age: 8, title: "The four coin purse", prompt: "You have 5¢, 10¢, and 25¢ coins. Make exactly 30¢ using exactly FOUR coins.", task: "Choose how many of each coin.", hint: "Can a 25¢ coin work with three more coins?", C: C.C9 },
+  { age: 8, title: "The day detective", prompt: "Yesterday was Wednesday.", task: "What day will it be the day after tomorrow?", hint: "What day is it today?", C: C.C10 },
+  { age: 9, title: "The four by four", prompt: "Each row, column, and thick box must contain 1, 2, 3, and 4 once.", task: "Fill every empty square.", hint: "Look at the top row: which two numbers are missing?", C: C.C11 },
+  { age: 9, title: "The tricky robot", prompt: "Each robot ALWAYS tells the truth or ALWAYS lies. Robot A talks about itself and robot B.", task: "Which is which?", hint: "Could a truth teller ever say “I am a liar”?", C: C.C12 },
+  { age: 9, title: "The poison stone", prompt: "15 stones. Take turns removing 1, 2, or 3. Whoever takes the LAST stone LOSES. You go first.", task: "Make the robot take the last stone.", hint: "Leave the robot 13, 9, 5, and then 1.", C: C.C13 },
+  { age: 9, title: "The sibling ages", prompt: "Mia is 3 years older than Leo. Their ages add up to 17.", task: "How old is Mia?", hint: "Take away the 3 extra years, then split the rest.", C: C.C14 },
+  { age: 9, title: "The rectangle numbers", prompt: "2, 6, 12, 20, 30… Look at how much each number grows.", task: "What number comes next?", hint: "The jumps are +4, +6, +8, +10…", C: C.C15 },
+  { age: 9, title: "The square hunt", prompt: "This grid hides squares of different sizes.", task: "How many squares are there altogether?", hint: "Count small 1×1, then 2×2, then the big 3×3.", C: C.C16 },
+  { age: 9, title: "The movie seats", prompt: "Four friends sit in seats 1 to 4. Cal sits in seat 4. Ann sits right next to Cal. Bo is not in seat 1.", task: "Drag each friend to their seat.", hint: "Put Cal in first, then Ann.", C: C.C17 },
+  { age: 9, title: "The three boxes", prompt: "The red, blue, and green boxes are weighed two at a time.", task: "How heavy is the blue box?", hint: "Add all three lines. Each box is counted twice!", C: C.C18 },
+  { age: 9, title: "The light switches", prompt: "Tapping a light flips it AND its neighbors on or off.", task: "Turn ALL five lights on.", hint: "You only need two taps. Try an end light.", C: C.C19 },
+  { age: 9, title: "The handshake club", prompt: "Six friends meet. Every friend shakes hands with every other friend exactly once.", task: "How many handshakes happen?", hint: "The first friend shakes 5 hands, the next shakes 4 new ones…", C: C.C20 },
+  { age: 10, title: "The gold box", prompt: "One box holds gold. Exactly ONE of the three signs is true.", task: "Which box has the gold?", hint: "Try putting the gold in each box and count the true signs.", C: C.C21 },
+  { age: 10, title: "The flipped number", prompt: "A two-digit number's digits add up to 11. Swapping its digits makes a number 27 bigger.", task: "What is the number?", hint: "List the numbers whose digits add to 11.", C: C.C22 },
+  { age: 10, title: "The race to 31", prompt: "Start at 0. You and the robot take turns adding 1, 2, 3, or 4. Whoever reaches exactly 31 wins. You go first.", task: "Beat the robot!", hint: "Try to always land on 26, 21, 16, 11, 6, and 1.", C: C.C23 },
+  { age: 10, title: "The magic triangle", prompt: "Place 1 to 6 once each so every side of the triangle adds up to 9.", task: "Tap a circle, then tap a number.", hint: "Try putting the small numbers on the corners.", C: C.C24 },
+  { age: 10, title: "The rabbit numbers", prompt: "1, 1, 2, 3, 5, 8, 13… Each number is made from the two before it.", task: "What number comes next?", hint: "8 + 13 = ?", C: C.C25 },
+  { age: 10, title: "The five runners", prompt: "Ned finished 3rd. Max finished right behind Ned. Oli beat Kim. Kim beat Lou.", task: "Drag the runners into finishing order.", hint: "Place Ned and Max first. Three places are left.", C: C.C26 },
+  { age: 10, title: "The water jugs", prompt: "You have a 3 L jug, a 5 L jug, and a tap. No markings!", task: "Get exactly 4 L in one jug.", hint: "Fill the 5 L jug and pour it into the 3 L jug.", C: C.C27 },
+  { age: 10, title: "The city blocks", prompt: "Walk along the lines from START to HOME. Only move UP or RIGHT.", task: "How many different routes are there?", hint: "Write the number of ways to reach each corner. Add the corner below and the corner to the left.", C: C.C28 },
+  { age: 10, title: "The tower of discs", prompt: "Move all three discs to the RIGHT peg. Move one disc at a time. Never put a bigger disc on a smaller one.", task: "Tap a peg to lift its top disc, then tap where it goes. Do it in 7 moves!", hint: "Move the smallest disc first, straight to the right peg.", C: C.C29 },
+  { age: 10, title: "The painted cube", prompt: "A big cube is painted on the outside, then cut into 27 little cubes.", task: "How many little cubes have paint on exactly TWO faces?", hint: "Those cubes sit on the edges, but not the corners.", C: C.C30 },
 ];
