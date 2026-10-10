@@ -5,13 +5,13 @@ import { puzzles } from "@/puzzles";
 import { Btn } from "@/puzzles/kit";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>) => ({ p: Math.min(40, Math.max(1, Number(s.p) || 1)) }),
+  validateSearch: (s: Record<string, unknown>) => ({ p: Math.min(puzzles.length, Math.max(1, Number(s.p) || 1)) }),
   head: () => ({
     meta: [
-      { title: "Logic Puzzles — Solve all 40!" },
-      { name: "description", content: "Forty hands-on logic puzzles for kids, made for iPad." },
-      { property: "og:title", content: "Logic Puzzles — Solve all 40!" },
-      { property: "og:description", content: "Forty hands-on logic puzzles for kids, made for iPad." },
+      { title: "Logic Puzzles — Solve them all!" },
+      { name: "description", content: "Seventy hands-on logic puzzles for kids, made for iPad." },
+      { property: "og:title", content: "Logic Puzzles — Solve them all!" },
+      { property: "og:description", content: "Seventy hands-on logic puzzles for kids, made for iPad." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -30,7 +30,7 @@ function Index() {
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col px-5 py-6">
       <header className="mb-4 flex items-center justify-between">
-        <span className="font-display text-xl font-bold text-primary">LOGIC PUZZLE {p} <span className="text-muted-foreground">/ 40</span></span>
+        <span className="font-display text-xl font-bold text-primary">LOGIC PUZZLE {p} <span className="text-muted-foreground">/ {puzzles.length}</span></span>
         <span className="rounded-full bg-accent px-4 py-1 font-display font-semibold text-accent-foreground">Age {pz.age}</span>
       </header>
 
@@ -60,7 +60,7 @@ function Index() {
 
       <nav className="mt-auto flex items-center justify-between gap-4 pt-8">
         <Btn variant="soft" disabled={p === 1} onClick={() => go(p - 1)}>← Previous puzzle</Btn>
-        <Btn disabled={p === 40} onClick={() => go(p + 1)}>Next puzzle →</Btn>
+        <Btn disabled={p === puzzles.length} onClick={() => go(p + 1)}>Next puzzle →</Btn>
       </nav>
     </main>
   );
