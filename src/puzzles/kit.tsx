@@ -62,6 +62,15 @@ export function Shape({ kind, size = 64, className }: { kind: ShapeKind; size?: 
 }
 
 /* ---------- Select one (tap = answer) ---------- */
+const colClass = (cols: number) =>
+  ({
+    2: "grid-cols-2",
+    3: "grid-cols-2 sm:grid-cols-3",
+    4: "grid-cols-2 sm:grid-cols-4",
+    5: "grid-cols-2 sm:grid-cols-5",
+    6: "grid-cols-2 sm:grid-cols-6",
+  }[cols] ?? null);
+
 export function SelectOne({
   options,
   correct,
@@ -74,8 +83,12 @@ export function SelectOne({
   cols?: number;
 }) {
   const [sel, setSel] = useState<string | null>(null);
+  const c = colClass(cols);
   return (
-    <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+    <div
+      className={cn("grid gap-3 sm:gap-4", c)}
+      style={c ? undefined : { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+    >
       {options.map((o) => (
         <button
           key={o.id}
@@ -84,7 +97,7 @@ export function SelectOne({
             report(o.id === correct);
           }}
           className={cn(
-            "tile flex min-h-32 flex-col items-center justify-center gap-2 p-4",
+            "tile flex min-h-32 flex-col items-center justify-center gap-2 p-3 sm:p-4",
             sel === o.id && "tile-on rounded-[3rem]",
           )}
         >
@@ -110,14 +123,18 @@ export function SelectMany({
 }) {
   const [sel, setSel] = useState<string[]>([]);
   const toggle = (id: string) => setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  const c = colClass(cols);
   return (
     <>
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+      <div
+        className={cn("grid gap-3 sm:gap-4", c)}
+        style={c ? undefined : { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      >
         {options.map((o) => (
           <button
             key={o.id}
             onClick={() => toggle(o.id)}
-            className={cn("tile flex min-h-28 flex-col items-center justify-center gap-2 p-3", sel.includes(o.id) && "tile-on rounded-[3rem]")}
+            className={cn("tile flex min-h-28 flex-col items-center justify-center gap-2 p-3 sm:p-4", sel.includes(o.id) && "tile-on rounded-[3rem]")}
           >
             {o.node}
             {o.label && <span className="font-display text-lg font-semibold">{o.label}</span>}

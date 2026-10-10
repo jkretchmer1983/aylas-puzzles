@@ -17,7 +17,7 @@ export function P1({ report }: PuzzleProps) {
         id: k,
         label: `Door ${i + 1}`,
         node: (
-          <div className="flex h-40 w-24 items-start justify-center rounded-t-[3rem] border-4 border-ink bg-accent/60 pt-4">
+          <div className="flex h-40 w-full max-w-24 items-start justify-center rounded-t-[3rem] border-4 border-ink bg-accent/60 pt-4">
             <Shape kind={k} size={52} />
           </div>
         ),
@@ -351,7 +351,7 @@ export function P13({ report }: PuzzleProps) {
   };
   return (
     <>
-      <svg viewBox="-40 -10 290 220" className="mx-auto w-full max-w-lg touch-none">
+      <svg viewBox="-40 -25 310 245" className="mx-auto w-full max-w-lg touch-none">
         {[0, 1, 2].map((i) => (
           <g key={i}>
             <line x1="20" x2="180" y1={20 + i * 80} y2={20 + i * 80} className="stroke-ink/40" strokeWidth="3" />
@@ -366,8 +366,8 @@ export function P13({ report }: PuzzleProps) {
           const on = path.some(([a, b]) => a === x && b === y);
           return <circle key={`${x}${y}`} cx={cx} cy={cy} r="16" onClick={() => tap(x, y)} className={on ? "fill-primary" : "fill-ink"} />;
         }))}
-        <text x="20" y="208" fontSize="15" textAnchor="middle" className="fill-ink font-display font-bold">START</text>
-        <text x="215" y="25" fontSize="15" textAnchor="middle" className="fill-ink font-display font-bold">🏠 HOME</text>
+        <text x="20" y="218" fontSize="15" textAnchor="middle" className="fill-ink font-display font-bold">START</text>
+        <text x="232" y="25" fontSize="15" textAnchor="middle" className="fill-ink font-display font-bold">🏠 HOME</text>
       </svg>
       <p className="text-center text-muted-foreground">Tap the next dot to draw your route. Tap the last dot to undo.</p>
       <div className="mt-2 flex justify-center"><Btn variant="ghost" onClick={() => setPath([[0, 0]])}>Start over</Btn></div>
