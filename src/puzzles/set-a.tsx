@@ -17,7 +17,7 @@ export function P1({ report }: PuzzleProps) {
         id: k,
         label: `Door ${i + 1}`,
         node: (
-          <div className="flex h-40 w-full max-w-24 items-start justify-center rounded-t-[3rem] border-4 border-ink bg-accent/60 pt-4">
+          <div className="flex h-40 w-full max-w-24 shrink-0 items-start justify-center rounded-[3rem] border-4 border-ink bg-accent/60 pt-4">
             <Shape kind={k} size={52} />
           </div>
         ),

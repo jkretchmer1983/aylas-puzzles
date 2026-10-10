@@ -45,7 +45,7 @@ export function CheckBtn({ onCheck }: { onCheck: () => void }) {
 export type ShapeKind = "circle" | "square" | "triangle" | "star";
 export function Shape({ kind, size = 64, className }: { kind: ShapeKind; size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" className={className}>
+    <svg width={size} height={size} viewBox="0 0 100 100" className={cn("block shrink-0 overflow-visible", className)}>
       {kind === "circle" && <circle cx="50" cy="50" r="40" className="fill-sky stroke-ink" strokeWidth="5" />}
       {kind === "square" && <rect x="12" y="12" width="76" height="76" className="fill-berry stroke-ink" strokeWidth="5" />}
       {kind === "triangle" && <polygon points="50,10 92,88 8,88" className="fill-leaf stroke-ink" strokeWidth="5" strokeLinejoin="round" />}
