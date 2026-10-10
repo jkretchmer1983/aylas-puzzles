@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Btn, CheckBtn, NumberAnswer, SelectMany, SelectOne, Shape, SlotAssign, Stepper,
