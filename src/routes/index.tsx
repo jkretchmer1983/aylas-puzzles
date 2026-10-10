@@ -12,6 +12,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Forty hands-on logic puzzles for kids, made for iPad." },
       { property: "og:title", content: "Logic Puzzles — Solve all 40!" },
       { property: "og:description", content: "Forty hands-on logic puzzles for kids, made for iPad." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
