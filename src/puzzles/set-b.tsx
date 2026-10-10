@@ -91,10 +91,10 @@ export function P23({ report }: PuzzleProps) {
   );
   return (
     <>
-      <div className="flex justify-center gap-10">
+      <div className="flex justify-center gap-3 sm:gap-10">
         {(["L", "R"] as const).map((s) => (
-          <div key={s} className="flex flex-col items-center">
-            <div className="flex min-h-20 w-56 flex-wrap items-end justify-center gap-1 border-b-8 border-ink pb-1">
+          <div key={s} className="flex min-w-0 flex-col items-center">
+            <div className="flex min-h-20 w-[44vw] max-w-56 flex-wrap items-end justify-center gap-1 border-b-8 border-ink pb-1">
               {side.map((x, i) => (x === s ? coin(i) : null))}
             </div>
             <span className="mt-1 font-display text-lg">{s === "L" ? "Left pan" : "Right pan"} ({s === "L" ? L : R})</span>
