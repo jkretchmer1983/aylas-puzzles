@@ -500,7 +500,7 @@ export function P40({ report }: PuzzleProps) {
   const [v, setV] = useState<Record<string, number | undefined>>({});
   const [act, setAct] = useState("S");
   const cell = (L: string) => (
-    <button key={Math.random()} onClick={() => setAct(L)} className={cn("flex h-16 w-14 flex-col items-center justify-center rounded-lg border-4 bg-card", act === L ? "border-primary" : "border-ink/20")}>
+    <button onClick={() => setAct(L)} className={cn("flex h-16 w-14 flex-col items-center justify-center rounded-lg border-4 bg-card", act === L ? "border-primary" : "border-ink/20")}>
       <span className="text-xs font-bold text-muted-foreground">{L}</span>
       <span className="font-display text-3xl font-bold">{v[L] ?? ""}</span>
     </button>
@@ -509,9 +509,9 @@ export function P40({ report }: PuzzleProps) {
   return (
     <>
       <div className="mx-auto w-fit space-y-2 font-display">
-        <div className="flex justify-end gap-2">{"SEND".split("").map(cell)}</div>
-        <div className="flex items-center justify-end gap-2"><span className="text-4xl">+</span>{"MORE".split("").map(cell)}</div>
-        <div className="flex justify-end gap-2 border-t-4 border-ink pt-2">{"MONEY".split("").map(cell)}</div>
+        <div className="flex justify-end gap-2">{"SEND".split("").map((L, i) => <span key={i}>{cell(L)}</span>)}</div>
+        <div className="flex items-center justify-end gap-2"><span className="text-4xl">+</span>{"MORE".split("").map((L, i) => <span key={i}>{cell(L)}</span>)}</div>
+        <div className="flex justify-end gap-2 border-t-4 border-ink pt-2">{"MONEY".split("").map((L, i) => <span key={i}>{cell(L)}</span>)}</div>
       </div>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
         <span className="self-center font-display text-xl">{act} =</span>
