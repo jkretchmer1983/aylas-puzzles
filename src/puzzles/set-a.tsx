@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Btn, CheckBtn, NumberAnswer, SelectMany, SelectOne, Shape, SlotAssign, Stepper,
@@ -69,15 +69,39 @@ export function P2({ report }: PuzzleProps) {
     const b = box.current!.getBoundingClientRect();
     return { x: e.clientX - b.left, y: e.clientY - b.top };
   };
-  const end = (e: React.PointerEvent) => {
+  const [tapFrom, setTapFrom] = useState<string | null>(null);
+  const connect = (a: string, b: string) =>
+    setPairs((p) => [...p.filter((x) => !x.includes(a) && !x.includes(b)), [a, b]]);
+  const end = (e: { clientX: number; clientY: number }) => {
     if (!live) return;
     const el = document.elementFromPoint(e.clientX, e.clientY)?.closest("[data-sock]") as HTMLElement | null;
     const to = el?.dataset.sock;
     if (to && to !== live.from) {
-      setPairs((p) => [...p.filter((x) => !x.includes(live.from) && !x.includes(to)), [live.from, to]]);
+      connect(live.from, to);
+      setTapFrom(null);
+    } else if (to === live.from) {
+      // simple tap: tap one sock, then tap its partner
+      if (tapFrom && tapFrom !== to) { connect(tapFrom, to); setTapFrom(null); }
+      else setTapFrom((t) => (t === to ? null : to));
     }
     setLive(null);
   };
+  useEffect(() => {
+    if (!live) return;
+    const mv = (e: PointerEvent) => {
+      const b = box.current!.getBoundingClientRect();
+      setLive((l) => (l ? { ...l, x: e.clientX - b.left, y: e.clientY - b.top } : l));
+    };
+    const cancel = () => setLive(null);
+    window.addEventListener("pointermove", mv);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", cancel);
+    return () => {
+      window.removeEventListener("pointermove", mv);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", cancel);
+    };
+  });
 
   const pat = (id: string) => socks.find((s) => s.id === id)!;
   return (
@@ -85,8 +109,6 @@ export function P2({ report }: PuzzleProps) {
       <div
         ref={box}
         className="relative touch-none select-none"
-        onPointerMove={(e) => live && setLive({ ...live, ...local(e) })}
-        onPointerUp={end}
       >
         {[0, 1].map((row) => (
           <div key={row} className={cn("flex justify-around", row === 1 && "mt-40")}>
@@ -97,10 +119,11 @@ export function P2({ report }: PuzzleProps) {
                 ref={(el) => { refs.current[s.id] = el; }}
                 onPointerDown={(e) => {
                   e.preventDefault();
-                  (e.target as Element).releasePointerCapture?.(e.pointerId);
+                  const t = e.target as Element;
+                  if (t.hasPointerCapture?.(e.pointerId)) t.releasePointerCapture(e.pointerId);
                   setLive({ from: s.id, ...local(e) });
                 }}
-                className={cn("tile p-3", live?.from === s.id && "tile-on")}
+                className={cn("tile p-3", (live?.from === s.id || tapFrom === s.id) && "tile-on")}
               >
                 <Sock pat={s.pat} />
               </div>
