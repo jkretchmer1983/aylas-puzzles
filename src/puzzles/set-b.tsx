@@ -309,7 +309,7 @@ export function P31({ report }: PuzzleProps) {
   const says: Record<string, string> = { A: "B always lies.", B: "C always lies.", C: "A and B are different kinds." };
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="robot-truth-controls grid gap-4 md:grid-cols-3">
         {["A", "B", "C"].map((r) => (
           <div key={r} className="tile flex flex-col items-center gap-3 p-4">
             <span className="text-6xl">🤖</span>
@@ -389,7 +389,7 @@ export function P33({ report }: PuzzleProps) {
   return (
     <>
       <p className="mb-4 text-center font-display text-xl">How many coins will you take from each bag to weigh together?</p>
-      <div className="flex flex-wrap justify-center gap-6">
+      <div className="coin-bag-controls flex flex-wrap justify-center gap-6">
         {n.map((v, i) => (
           <Stepper key={i} value={v} max={10} onChange={(x) => setN((s) => s.map((y, j) => (j === i ? x : y)))} label={<span className="text-5xl">💰<span className="block text-center font-display text-lg">Bag {i + 1}</span></span>} />
         ))}
