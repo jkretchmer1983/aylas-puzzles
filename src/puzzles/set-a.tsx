@@ -50,24 +50,32 @@ export function P2({ report }: PuzzleProps) {
   const [live, setLive] = useState<{ from: string; x: number; y: number } | null>(null);
 
   const measure = () => {
-    const b = box.current?.getBoundingClientRect();
-    if (!b) return;
+    const el = box.current;
+    if (!el) return;
+    const b = el.getBoundingClientRect();
+    const scale = b.width / el.offsetWidth || 1;
     const c: Record<string, { x: number; y: number }> = {};
     for (const s of socks) {
       const r = refs.current[s.id]?.getBoundingClientRect();
-      if (r) c[s.id] = { x: r.left + r.width / 2 - b.left, y: (s.row === 0 ? r.bottom : r.top) - b.top };
+      if (r) c[s.id] = { x: (r.left + r.width / 2 - b.left) / scale, y: ((s.row === 0 ? r.bottom : r.top) - b.top) / scale };
     }
     setCenters(c);
   };
   useLayoutEffect(() => {
     measure();
+    const observer = new MutationObserver(measure);
+    const stage = box.current?.closest(".puzzle-stage-content");
+    if (stage) observer.observe(stage, { attributes: true, attributeFilter: ["style"] });
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
   }, []);
 
   const local = (e: React.PointerEvent) => {
-    const b = box.current!.getBoundingClientRect();
-    return { x: e.clientX - b.left, y: e.clientY - b.top };
+    const el = box.current;
+    if (!el) return { x: 0, y: 0 };
+    const b = el.getBoundingClientRect();
+    const scale = b.width / el.offsetWidth || 1;
+    return { x: (e.clientX - b.left) / scale, y: (e.clientY - b.top) / scale };
   };
   const [tapFrom, setTapFrom] = useState<string | null>(null);
   const connect = (a: string, b: string) =>
@@ -89,8 +97,11 @@ export function P2({ report }: PuzzleProps) {
   useEffect(() => {
     if (!live) return;
     const mv = (e: PointerEvent) => {
-      const b = box.current!.getBoundingClientRect();
-      setLive((l) => (l ? { ...l, x: e.clientX - b.left, y: e.clientY - b.top } : l));
+      const el = box.current;
+      if (!el) return;
+      const b = el.getBoundingClientRect();
+      const scale = b.width / el.offsetWidth || 1;
+      setLive((l) => (l ? { ...l, x: (e.clientX - b.left) / scale, y: (e.clientY - b.top) / scale } : l));
     };
     const cancel = () => setLive(null);
     window.addEventListener("pointermove", mv);
@@ -468,7 +479,7 @@ export function P19({ report }: PuzzleProps) {
   const total = v.reduce((a, b) => a + b, 0);
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-8">
+      <div className="bracelet-controls flex flex-wrap justify-center gap-8">
         {v.map((n, i) => (
           <Stepper
             key={i}

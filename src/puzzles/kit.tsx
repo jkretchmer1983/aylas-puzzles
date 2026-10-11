@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 export type Report = (ok: boolean) => void;
@@ -262,13 +263,13 @@ export function SlotAssign({
           );
         })}
       </div>
-      {drag?.moved && (
+      {drag?.moved && createPortal(
         <div className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-1/2" style={{ left: drag.x, top: drag.y }}>
           <div className="tile tile-on flex items-center gap-2 px-4 py-3 font-display text-xl font-semibold shadow-xl">
             {byId(drag.id).emoji && <span className="text-4xl">{byId(drag.id).emoji}</span>}
             {byId(drag.id).label}
           </div>
-        </div>
+        </div>, document.body
       )}
       <CheckBtn
         onCheck={() =>
