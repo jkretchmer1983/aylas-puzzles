@@ -9,7 +9,7 @@ import { tierFor, useProgress } from "@/lib/progress";
 import { writeStory } from "@/lib/story.functions";
 import { streamImage } from "@/lib/stream-image";
 
-type Search = { band: number; t?: string; s?: number };
+type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
 export const Route = createFileRoute("/play")({
   validateSearch: (s: Record<string, unknown>): Search => ({
