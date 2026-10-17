@@ -1,97 +1,62 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { puzzles } from "@/puzzles";
-import { Btn } from "@/puzzles/kit";
+import { BANDS, TEMPLATES } from "@/gen/templates";
+import { readProgress, tierFor, useProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>) => ({ p: Math.min(puzzles.length, Math.max(1, Number(s.p) || 1)) }),
+  validateSearch: (s: Record<string, unknown>) => ({ pick: s.pick ? 1 : undefined }),
   head: () => ({
     meta: [
-      { title: "Logic Puzzles — Solve them all!" },
-      { name: "description", content: "Seventy hands-on logic puzzles for kids, made for iPad." },
-      { property: "og:title", content: "Logic Puzzles — Solve them all!" },
-      { property: "og:description", content: "Seventy hands-on logic puzzles for kids, made for iPad." },
+      { title: "Puzzle Quest — Endless logic puzzles for kids" },
+      { name: "description", content: "Fresh logic puzzles every time: codes, robots, mysteries and number magic for ages 3 to 10." },
+      { property: "og:title", content: "Puzzle Quest — Endless logic puzzles for kids" },
+      { property: "og:description", content: "Fresh logic puzzles every time: codes, robots, mysteries and number magic for ages 3 to 10." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: Start,
 });
 
-function PuzzleStage({ children }: { children: ReactNode }) {
-  const frame = useRef<HTMLDivElement>(null);
-  const content = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
+const BAND_ICONS = ["🧸", "🐣", "🦄", "🚀", "🦖", "🛸", "🐉"];
+
+function Start() {
+  const { pick } = Route.useSearch();
+  const nav = useNavigate();
+  const [progress, update] = useProgress();
 
   useEffect(() => {
-    const outer = frame.current;
-    const inner = content.current;
-    if (!outer || !inner) return;
-    const fit = () => {
-      if (!window.matchMedia("(max-width: 639px)").matches) {
-        setScale(1);
-        return;
-      }
-      setScale(Math.min(1, outer.clientHeight / Math.max(1, inner.offsetHeight), outer.clientWidth / Math.max(1, inner.scrollWidth)));
-    };
-    const observer = new ResizeObserver(fit);
-    observer.observe(outer);
-    observer.observe(inner);
-    window.addEventListener("resize", fit);
-    document.fonts.ready.then(fit);
-    fit();
-    return () => { observer.disconnect(); window.removeEventListener("resize", fit); };
-  }, []);
+    const saved = readProgress().band;
+    if (saved !== null && !pick) nav({ to: "/play", search: { band: saved }, replace: true });
+  }, [pick, nav]);
 
-  return <div ref={frame} className="puzzle-stage"><div ref={content} className="puzzle-stage-content" style={{ transform: `scale(${scale})` }}>{children}</div></div>;
-}
-
-function Index() {
-  const { p } = Route.useSearch();
-  const nav = useNavigate({ from: "/" });
-  const [result, setResult] = useState<{ ok: boolean; n: number } | null>(null);
-  const [hint, setHint] = useState(false);
-  const pz = puzzles[p - 1];
-  const go = (n: number) => { setResult(null); setHint(false); nav({ search: { p: n } }); };
+  const choose = (band: number) => {
+    update((p) => ({ ...p, band }));
+    nav({ to: "/play", search: { band } });
+  };
 
   return (
-    <main className="puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-5 py-6">
-      <header className="puzzle-header mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-        <span className="min-w-0 truncate font-display text-xl font-bold text-primary">LOGIC PUZZLE {p} <span className="text-muted-foreground">/ {puzzles.length}</span></span>
-        <span className="shrink-0 rounded-full bg-accent px-4 py-1 font-display font-semibold text-accent-foreground">Age {pz.age}</span>
-      </header>
-
-      <section className="puzzle-sheet rounded-3xl border-4 border-border bg-card p-6 shadow-sm">
-        <h1 className="font-display text-4xl font-bold">{pz.title}</h1>
-        <p className="puzzle-prompt mt-3 text-xl">{pz.prompt}</p>
-        <p className="puzzle-task mt-2 font-display text-2xl font-semibold text-primary">{pz.task}</p>
-        <PuzzleStage>
-          <pz.C key={p} report={(ok) => setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }))} />
-        </PuzzleStage>
-        <div className="puzzle-hint mt-6 text-center">
-          {hint ? <p className="rounded-2xl bg-secondary p-3 text-lg">💡 {pz.hint}</p> : <Btn variant="ghost" className="border-0 bg-transparent px-2 py-2 text-base text-primary underline" onClick={() => setHint(true)}>Need a hint?</Btn>}
+    <main className="start-screen">
+      <div className="start-floaters" aria-hidden>
+        {TEMPLATES.map((t, i) => <span key={t.id} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 7) * -1.3}s`, animationDuration: `${9 + (i % 5) * 2}s` }}>{t.icon}</span>)}
+      </div>
+      <section className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-5 pt-10 pb-8 text-center">
+        <span className="start-badge">✨ A brand-new puzzle every time</span>
+        <h1 className="start-title">Puzzle <span>Quest</span></h1>
+        <p className="mt-3 max-w-lg text-lg text-muted-foreground sm:text-xl">Crack secret codes, outsmart the robot, solve mysteries and beat the clock. How many can you solve?</p>
+        {progress.solved > 0 && <p className="mt-3 font-display text-lg font-semibold">⭐ {progress.solved} solved · 🔥 best streak {progress.best}</p>}
+        <h2 className="mt-8 font-display text-2xl font-bold">Pick your level</h2>
+        <div className="mt-4 grid w-full grid-cols-2 gap-3 sm:grid-cols-4">
+          {BANDS.map((b) => (
+            <button key={b.id} onClick={() => choose(b.id)} className={cn("band-card", `band-${tierFor(b.id)}`, progress.band === b.id && "band-card-current")} style={{ animationDelay: `${b.id * 70}ms` }}>
+              <span className="text-4xl">{BAND_ICONS[b.id]}</span>
+              <span className="font-display text-xl font-bold">{b.label}</span>
+              <span className="text-xs font-bold uppercase tracking-wider opacity-70">{["Tiny thinkers", "Little explorers", "Puzzle pals", "Code crackers", "Brain builders", "Master minds", "Legends"][b.id]}</span>
+            </button>
+          ))}
         </div>
       </section>
-
-      <div className="puzzle-feedback" role="status" aria-live="polite">
-      {result && (
-        <div
-          key={result.n}
-          className={cn(
-            "mx-auto mt-6 rounded-3xl px-10 py-4 font-display text-5xl font-bold",
-            result.ok ? "animate-pop bg-success text-success-foreground" : "animate-shake bg-destructive text-destructive-foreground",
-          )}
-        >
-          {result.ok ? "Correct! 🎉" : "Incorrect! Try again"}
-        </div>
-      )}
-      </div>
-
-      <nav aria-label="Puzzle navigation" className="puzzle-navigation mt-auto flex items-center justify-between gap-4 pt-8">
-        <Btn variant="soft" disabled={p === 1} onClick={() => go(p - 1)}>← Previous puzzle</Btn>
-        <Btn disabled={p === puzzles.length} onClick={() => go(p + 1)}>Next puzzle →</Btn>
-      </nav>
     </main>
   );
 }
