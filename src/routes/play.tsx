@@ -1,13 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { cn } from "@/lib/utils";
 import { BANDS, TEMPLATES, generate, templatesFor } from "@/gen/templates";
 import { newSeed } from "@/gen/rng";
 import { PuzzleBody } from "@/gen/Renderer";
 import { tierFor, useProgress } from "@/lib/progress";
-import { writeStory } from "@/lib/story.functions";
-import { streamImage } from "@/lib/stream-image";
+import { PuzzleDrawing } from "@/gen/PuzzleDrawing";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -50,14 +48,12 @@ function PuzzleStage({ children }: { children: ReactNode }) {
   return <div ref={frame} className="puzzle-stage"><div ref={content} className="puzzle-stage-content" style={{ transform: `scale(${scale})` }}>{children}</div></div>;
 }
 
-type Story = { title: string; story: string; image?: string; final?: boolean };
-
 function Confetti({ burst }: { burst: number }) {
   const [bits, setBits] = useState<{ x: number; d: number; c: string; r: number }[]>([]);
   useEffect(() => {
     if (!burst) return;
     const cs = ["var(--sun)", "var(--berry)", "var(--sky)", "var(--leaf)", "var(--primary)"];
-    setBits(Array.from({ length: 60 }, () => ({ x: Math.random() * 100, d: Math.random() * 0.6, c: cs[Math.floor(Math.random() * cs.length)]!, r: Math.random() * 720 - 360 })));
+    setBits(Array.from({ length: 60 }, () => ({ x: Math.random() * 100, d: Math.random() * 0.6, c: cs[Math.floor(Math.random() * cs.length)] ?? "var(--sun)", r: Math.random() * 720 - 360 })));
     const t = setTimeout(() => setBits([]), 2600);
     return () => clearTimeout(t);
   }, [burst]);
@@ -71,15 +67,11 @@ function Play() {
   const [result, setResult] = useState<{ ok: boolean; n: number } | null>(null);
   const [hint, setHint] = useState(false);
   const [party, setParty] = useState(0);
-  const [online, setOnline] = useState(false);
-  const [stories, setStories] = useState<Record<string, Story>>({});
   const trail = useRef<Search[]>([]);
-  const started = useRef(new Set<string>());
-  const writeStoryFn = useServerFn(writeStory);
 
   const pickNext = useCallback((exclude?: string) => {
     const pool = templatesFor(band).filter((x) => x.id !== exclude);
-    return { band, t: pool[Math.floor(Math.random() * pool.length)]!.id, s: newSeed() };
+    return { band, t: pool[Math.floor(Math.random() * pool.length)]?.id, s: newSeed() };
   }, [band]);
 
   // Fill in a puzzle when the address has none.
@@ -87,28 +79,8 @@ function Play() {
     if (!t || !s || !templatesFor(band).some((x) => x.id === t)) nav({ search: pickNext(), replace: true });
   }, [t, s, band, nav, pickNext]);
 
-  useEffect(() => {
-    const on = () => setOnline(navigator.onLine);
-    on();
-    window.addEventListener("online", on); window.addEventListener("offline", on);
-    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", on); };
-  }, []);
-
-  const ready = !!t && !!s;
-  const spec = ready ? generate(t!, band, s!) : null;
+  const spec = t && s ? generate(t, band, s) : null;
   const key = `${band}-${t}-${s}`;
-
-  // Online: AI story + custom picture. Offline: built-in scene.
-  useEffect(() => {
-    if (!spec || !online || started.current.has(key)) return;
-    started.current.add(key);
-    (async () => {
-      const r = await writeStoryFn({ data: { age: BANDS[band]!.min, theme: spec.theme, title: spec.title, story: spec.story, task: spec.task } }).catch(() => null);
-      if (!r || !r.ok) return;
-      setStories((m) => ({ ...m, [key]: { title: r.title, story: r.story } }));
-      await streamImage("/api/generate-image", { prompt: r.imagePrompt }, (image, final) => setStories((m) => ({ ...m, [key]: { ...m[key]!, image, final } }))).catch((e) => console.warn("image failed", e));
-    })();
-  }, [key, online, spec, band, writeStoryFn]);
 
   const report = useCallback((ok: boolean) => {
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
@@ -124,8 +96,8 @@ function Play() {
   const replay = () => { reset(); nav({ search: { band, t, s: newSeed() }, replace: true }); };
 
   if (!spec) return <main className={cn("puzzle-screen", `tier-${tierFor(band)}`)} />;
-  const story = stories[key];
-  const tpl = TEMPLATES.find((x) => x.id === spec.template)!;
+  const tpl = TEMPLATES.find((x) => x.id === spec.template);
+  if (!tpl) return null;
   const hue = (TEMPLATES.indexOf(tpl) * 47) % 360;
   const celebrating = result?.ok;
 
@@ -134,21 +106,19 @@ function Play() {
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
-        <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]!.label}</Link>
+        <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
         <div className="flex items-center gap-2">
-          <span className="pill" title={online ? "AI stories on" : "Offline puzzles"}>{online ? "✨ AI" : "📴 Offline"}</span>
           <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>
         </div>
       </header>
 
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
-          {story?.image && <img src={story.image} alt="" className={cn("scene-img", !story.final && "blur-xl")} />}
-          <div className="scene-floaters" aria-hidden>{spec.scene.map((e, i) => <span key={i} style={{ left: `${10 + ((i * 29) % 80)}%`, animationDelay: `${i * -0.7}s` }}>{e}</span>)}</div>
+          <PuzzleDrawing template={spec.template} seed={s ?? 1} />
           <div className="scene-text">
             <span className="scene-tag">{tpl.icon} {tpl.name}</span>
-            <h1 className="scene-title">{story?.title ?? spec.title}</h1>
-            <p className="puzzle-prompt">{story?.story ?? spec.story}</p>
+            <h1 className="scene-title">{spec.title}</h1>
+            <p className="puzzle-prompt">{spec.story}</p>
           </div>
         </div>
         <p className="puzzle-task">{spec.task}</p>

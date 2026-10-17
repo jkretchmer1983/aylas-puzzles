@@ -126,7 +126,9 @@
   animation: shake 0.35s ease-in-out 2;
 }
 
-:root { --scene-hue: 190; --font-play: var(--font-display); --pz-radius: 1.5rem; }
+:root { --scene-hue: 190; --font-play: var(--font-display); --pz-radius: 1.5rem;
+  --drawing-backdrop: var(--secondary); --drawing-line: var(--ink); --drawing-land: var(--leaf);
+}
 
 /* ---------- age tiers ---------- */
 .tier-little {
@@ -182,16 +184,37 @@
 .pill { border-radius: 999px; background: color-mix(in oklab, var(--card) 85%, transparent); padding: .35rem .9rem; font-weight: 800; font-size: .95rem; backdrop-filter: blur(8px); border: 2px solid var(--border); }
 .puzzle-sheet { border-radius: var(--pz-radius); background: color-mix(in oklab, var(--card) 92%, transparent); border: 3px solid var(--border); padding: 1rem; box-shadow: 0 20px 50px -25px oklch(0.25 0.08 260 / .5); backdrop-filter: blur(10px); }
 .scene { position: relative; overflow: hidden; min-height: clamp(11rem, 26vh, 20rem); border-radius: calc(var(--pz-radius) - .4rem); display: flex; align-items: flex-end;
-  background: linear-gradient(135deg, oklch(0.75 0.14 var(--scene-hue)), oklch(0.62 0.16 calc(var(--scene-hue) + 50))); }
-.tier-big .scene { background: linear-gradient(135deg, oklch(0.42 0.16 var(--scene-hue)), oklch(0.25 0.1 calc(var(--scene-hue) + 60))); }
+  background: var(--drawing-backdrop); }
+.puzzle-drawing { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--drawing-line); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; fill: none; pointer-events: none; }
+.drawing-sky { fill: var(--sky); }
+.drawing-sun { fill: var(--sun); }
+.drawing-berry { fill: var(--berry); }
+.drawing-leaf { fill: var(--leaf); }
+.drawing-paper { fill: var(--paper); }
+.drawing-eye { fill: var(--ink); stroke: none; }
+.drawing-land { fill: var(--drawing-land); stroke: none; opacity: .18; }
+.drawing-outline { fill: none; }
+.drawing-spark { stroke: var(--primary); opacity: .5; }
+.drawing-variant-1 .drawing-sky { fill: var(--leaf); }
+.drawing-variant-2 .drawing-berry { fill: var(--accent); }
+.drawing-bob, .drawing-character { transform-box: fill-box; transform-origin: center; animation: drawing-bob 3s ease-in-out infinite; }
+.drawing-sway, .drawing-flap { transform-box: fill-box; transform-origin: bottom center; animation: drawing-sway 3.5s ease-in-out infinite; }
+.drawing-pulse { animation: drawing-pulse 2.8s ease-in-out infinite; }
+.tier-little .puzzle-drawing { stroke-width: 6; }
+.tier-big .puzzle-drawing { stroke-width: 3; }
+.scene-party .drawing-character { animation: drawing-cheer .65s ease-in-out 4; }
+@keyframes drawing-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes drawing-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes drawing-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+@keyframes drawing-cheer { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-18px) rotate(-8deg); } 65% { transform: translateY(-10px) rotate(8deg); } }
 .scene-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: kenburns 20s ease-in-out infinite alternate; transition: filter .6s; }
 @keyframes kenburns { from { transform: scale(1.05) translate(0, 0); } to { transform: scale(1.18) translate(-3%, -2%); } }
 .scene-floaters span { position: absolute; top: 12%; font-size: 2.6rem; filter: drop-shadow(0 4px 6px oklch(0 0 0 / .25)); animation: bob 3.2s ease-in-out infinite; }
 @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-14px) rotate(6deg); } }
-.scene-text { position: relative; width: 100%; padding: 1rem 1.1rem; color: oklch(0.99 0 0); background: linear-gradient(to top, oklch(0.15 0.03 260 / .75), transparent); }
-.scene-tag { display: inline-block; border-radius: 999px; background: oklch(1 0 0 / .25); padding: .15rem .7rem; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; backdrop-filter: blur(6px); }
-.scene-title { margin-top: .3rem; font-family: var(--font-play); font-size: 2rem; font-weight: 700; line-height: 1.1; text-shadow: 0 2px 8px oklch(0 0 0 / .35); }
-.puzzle-prompt { margin-top: .25rem; font-size: 1.1rem; font-weight: 700; text-shadow: 0 1px 6px oklch(0 0 0 / .4); }
+.scene-text { position: relative; width: 100%; padding: 1rem 1.1rem; color: var(--foreground); background: linear-gradient(to top, var(--drawing-backdrop) 8%, color-mix(in oklab, var(--drawing-backdrop) 90%, transparent) 65%, transparent); }
+.scene-tag { display: inline-block; border-radius: 999px; background: var(--card); padding: .15rem .7rem; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0; }
+.scene-title { margin-top: .3rem; font-family: var(--font-play); font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.puzzle-prompt { margin-top: .25rem; font-size: 1.1rem; font-weight: 700; }
 .puzzle-task { margin-top: .9rem; font-family: var(--font-play); font-size: 1.4rem; font-weight: 700; color: var(--primary); text-align: center; }
 .scene-party { animation: scene-jump .5s ease-in-out 3; }
 .scene-party .scene-img { animation: party-zoom .5s ease-in-out 4 alternate; }
@@ -265,6 +288,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .puzzle-drawing *, .scene-party, .is-celebrating .play-bg, .nav-glow { animation: none !important; }
   .animate-pop, .animate-shake, .scene-img, .scene-floaters span, .start-floaters span, .play-bg, .confetti { animation: none !important; }
   .confetti { display: none; }
 }
