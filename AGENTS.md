@@ -10,3 +10,6 @@
 <!-- LOVABLE:END -->
 
 - Keep the phone puzzle view in a dynamic-viewport flex layout with a reserved feedback row and navigation; measure and fit the puzzle stage so changing puzzle content cannot push these controls off-screen.
+- Puzzles are generated, not hand-written: `src/gen/templates.ts` holds seeded templates (seed in the URL makes a puzzle reproducible); answers come only from the generator, and the AI may rewrite title/story but never the task, so correctness never depends on AI output.
+- Online play enriches each puzzle with an AI story (server function) and a streamed AI picture (`/api/generate-image`); any AI failure silently keeps the offline version.
+- Age bands map to three visual tiers (`tier-little`, `tier-mid`, `tier-big` in styles.css) that override theme tokens.
