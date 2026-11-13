@@ -8,6 +8,8 @@ import { tierFor, useProgress } from "@/lib/progress";
 import { PuzzleDrawing } from "@/gen/PuzzleDrawing";
 import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
+import { ensureStory, subscribeStory } from "@/lib/story-cache";
+import { DRAWING_THEMES } from "@/gen/drawing";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -94,6 +96,27 @@ function Play() {
     return () => clearTimeout(id);
   }, [t, s]);
 
+  // Rich AI storyline: the loader waits for it, then the text is frozen for the whole puzzle.
+  const storyInput = (sp: NonNullable<typeof spec>) => ({ age: band + 4, theme: DRAWING_THEMES[sp.template as keyof typeof DRAWING_THEMES] ?? sp.template, title: sp.title, story: sp.story, task: sp.task });
+  const [storySettled, setStorySettled] = useState(false);
+  const [shown, setShown] = useState<{ key: string; title: string; story: string } | null>(null);
+  useEffect(() => {
+    if (!spec) return;
+    setStorySettled(false);
+    const entry = ensureStory(key, storyInput(spec));
+    const upd = () => { if (entry.settled) setStorySettled(true); };
+    upd();
+    return subscribeStory(key, upd);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  const loaderDone = !loading && artSettled && storySettled;
+  useEffect(() => {
+    if (!spec || !storySettled || shown?.key === key) return;
+    const e = ensureStory(key, storyInput(spec));
+    setShown({ key, title: e.title ?? spec.title, story: e.story ?? spec.story });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storySettled, key]);
+
   // Rich AI scene art streams in over the instant drawing; offline or on failure the drawing stays.
   // The picture was usually already painted while the previous puzzle was being solved.
   useEffect(() => {
@@ -122,6 +145,7 @@ function Play() {
     nextRef.current = next;
     if (next.t && next.s) {
       const ns = generate(next.t, band, next.s);
+      ensureStory(`${band}-${next.t}-${next.s}`, storyInput(ns));
       ensureArt(`${band}-${next.t}-${next.s}`, imagePrompt(ns.title, ns.story, band), key);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +174,7 @@ function Play() {
     <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
-      <div className={cn("quest-loader", !loading && artSettled && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={!loading && artSettled}>
+      <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>
         <div className="quest-loader-orbit" aria-hidden>{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ ["--i" as string]: i }} />)}</div>
         <span className="quest-loader-icon" aria-hidden>{tpl.icon}</span>
         <p className="quest-loader-text">Painting your {tpl.name} puzzle…</p>
@@ -165,13 +189,13 @@ function Play() {
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
           <PuzzleDrawing template={spec.template} seed={s ?? 1} />
-          {art && <div key={key} className={cn("scene-watercolor", imageReady && !loading && artSettled && "scene-watercolor-reveal")}>
+          {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
             <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
           </div>}
           <div className="scene-text">
             <span className="scene-tag">{tpl.icon} {tpl.name}</span>
-            <h1 className="scene-title">{spec.title}</h1>
-            <p className="puzzle-prompt">{spec.story}</p>
+            <h1 className="scene-title">{shown?.key === key ? shown.title : spec.title}</h1>
+            <p className="puzzle-prompt">{shown?.key === key ? shown.story : spec.story}</p>
           </div>
         </div>
         <p className="puzzle-task">{spec.task}</p>
