@@ -526,3 +526,16 @@ html { -webkit-font-smoothing: antialiased; }
   .puzzle-world *, .puzzle-world *::after { animation: none !important; transition: none !important; }
   .carving-dust { display: none; }
 }
+
+/* Full-screen tactile scene: the material world is the whole app background. */
+.world-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.world-backdrop img { width: 100%; height: 100%; object-fit: cover; }
+.world-backdrop::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, var(--material-shadow)); }
+.is-celebrating .world-backdrop img { animation: party-bg 0.6s ease-in-out 4 alternate; }
+.puzzle-screen:has(.world-backdrop) .play-bg { display: none; }
+.puzzle-screen:has(.world-backdrop) .puzzle-sheet { background: transparent !important; border: 0 !important; box-shadow: none; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.puzzle-world { background: transparent; box-shadow: none; }
+/* Story picture hangs in the scene like a framed painting set into the surface. */
+.puzzle-screen:has(.world-backdrop) .scene { border: 6px solid var(--material-wood-edge); outline: 2px solid var(--material-gold); outline-offset: -8px; box-shadow: 0 10px 0 -4px var(--material-wood-edge), 0 18px 28px var(--material-shadow), inset 0 0 18px var(--material-shadow); margin-bottom: .5rem; }
+.puzzle-screen:has(.world-backdrop) .puzzle-task, .puzzle-screen:has(.world-backdrop) .puzzle-hint > p { display: block; width: fit-content; margin-inline: auto; padding: .35rem .9rem; border-radius: 10px; color: var(--material-ink); background: color-mix(in oklab, var(--material-highlight) 82%, transparent); box-shadow: 0 3px 0 var(--material-shadow); }
+@media (prefers-reduced-motion: reduce) { .world-backdrop img { animation: none !important; } }

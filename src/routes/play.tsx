@@ -1,3 +1,4 @@
+import { WorldBackdrop } from "@/gen/PuzzleWorld";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -174,6 +175,7 @@ function Play() {
   return (
     <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
+      <WorldBackdrop template={spec.template} />
       <Confetti burst={party} />
       <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>
         <div className="quest-loader-content">

@@ -37,12 +37,19 @@ const WORLDS: Record<string, { surface: string; material: string; image: string 
   fraction: { surface: "bakery", material: "linen", image: linen },
 };
 
+export function worldFor(template: string) { return WORLDS[template] ?? WORLDS.count!; }
+
+/** Full-screen scene behind the whole puzzle screen. */
+export function WorldBackdrop({ template }: { template: string }) {
+  const world = worldFor(template);
+  return <div className={`world-backdrop material-${world.material}`} aria-hidden="true"><img src={world.image} alt="" draggable={false} /></div>;
+}
+
 /** Fixed local surfaces stay available offline; storyline art remains independent. */
 export function PuzzleWorld({ template, children }: { template: string; children: ReactNode }) {
   const world = WORLDS[template] ?? WORLDS.count;
   if (!world) return <div>{children}</div>;
   return <div className={`puzzle-world world-${world.surface} material-${world.material}`} data-template={template}>
-    <img className="world-surface" src={world.image} alt="" width={1536} height={1024} loading="lazy" draggable={false} />
     <div className="world-content">{children}</div>
   </div>;
 }
