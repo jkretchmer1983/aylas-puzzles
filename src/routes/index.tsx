@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import wood from "@/assets/tree-workshop.jpg";
 import { cn } from "@/lib/utils";
 import { BANDS, TEMPLATES } from "@/gen/templates";
 import { readProgress, tierFor, useProgress } from "@/lib/progress";
@@ -38,6 +39,7 @@ function Start() {
 
   return (
     <main className="start-screen">
+      <img className="start-surface" src={wood} alt="" aria-hidden draggable={false} />
       <div className="start-floaters" aria-hidden>
         {TEMPLATES.map((t, i) => <span key={t.id} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 7) * -1.3}s`, animationDuration: `${9 + (i % 5) * 2}s` }}>{t.icon}</span>)}
       </div>
