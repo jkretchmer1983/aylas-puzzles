@@ -409,3 +409,120 @@ html { -webkit-font-smoothing: antialiased; }
 @media (prefers-reduced-transparency: reduce) {
   .pill, .puzzle-sheet, .nav-soft, .tile, .puzzle-navigation, .start-badge, .band-card, .quest-loader { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--card) !important; }
 }
+
+/* Tangible play materials. These do not affect Apple navigation or storyline art. */
+:root {
+  --material-wood-face: oklch(.72 .10 65);
+  --material-wood-edge: oklch(.38 .08 55);
+  --material-carving: oklch(.28 .06 50);
+  --material-highlight: oklch(.98 .02 90);
+  --material-shadow: oklch(.15 .02 70 / .55);
+  --material-stone-face: oklch(.82 .015 210);
+  --material-stone-edge: oklch(.42 .025 220);
+  --material-metal-face: oklch(.85 .04 190);
+  --material-metal-edge: oklch(.37 .05 190);
+  --material-linen-face: oklch(.97 .02 85);
+  --material-linen-edge: oklch(.58 .05 80);
+  --material-gold: oklch(.81 .13 85);
+  --material-gold-edge: oklch(.44 .09 70);
+  --material-ink: oklch(.25 .035 200);
+  --material-red: oklch(.65 .23 27);
+  --material-yellow: oklch(.9 .17 95);
+  --material-blue: oklch(.59 .18 250);
+  --material-green: oklch(.68 .17 145);
+  --material-orange: oklch(.73 .19 55);
+  --material-purple: oklch(.59 .19 305);
+  --material-brown: oklch(.45 .08 55);
+  --material-press-shadow: 0 2px 0 var(--piece-edge), 0 4px 5px var(--material-shadow), inset 0 1px 1px var(--material-highlight);
+}
+.puzzle-world { position: relative; isolation: isolate; border-radius: 8px; padding: 24px 30px 28px; overflow: hidden; color: var(--material-ink); --piece-face: var(--material-wood-face); --piece-edge: var(--material-wood-edge); box-shadow: inset 0 2px 8px var(--material-shadow), 0 5px 12px var(--material-shadow); }
+.material-stone { --piece-face: var(--material-stone-face); --piece-edge: var(--material-stone-edge); }
+.material-bench { --piece-face: var(--material-metal-face); --piece-edge: var(--material-metal-edge); }
+.material-linen { --piece-face: var(--material-linen-face); --piece-edge: var(--material-linen-edge); }
+.world-surface { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; pointer-events: none; }
+.world-content { position: relative; }
+.game-control { white-space: normal; cursor: pointer; backdrop-filter: none; letter-spacing: 0; }
+.puzzle-world .pz-key { height: auto; min-height: 54px; border: 1px solid var(--piece-edge); border-radius: 8px; color: var(--material-ink); background: linear-gradient(160deg, color-mix(in oklab, var(--piece-face) 75%, var(--material-highlight)), var(--piece-face)); box-shadow: 0 5px 0 var(--piece-edge), 0 8px 9px var(--material-shadow), inset 0 1px 2px var(--material-highlight); text-shadow: 0 1px 0 color-mix(in oklab, var(--material-highlight) 65%, transparent); transition: transform .16s ease, box-shadow .16s ease, filter .16s; }
+.puzzle-world .pz-key:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.04); }
+.puzzle-world .pz-key:active:not(:disabled) { transform: translateY(4px); box-shadow: var(--material-press-shadow); }
+.puzzle-world .pz-key-right { background: var(--success); color: var(--success-foreground); --piece-edge: color-mix(in oklab, var(--success) 60%, var(--material-ink)); }
+.puzzle-world .pz-key-wrong { background: var(--destructive); color: var(--destructive-foreground); }
+.puzzle-world .pz-check { height: auto; min-height: 48px; border-radius: 8px; border: 1px solid var(--material-gold-edge); color: var(--material-carving); background: linear-gradient(160deg, color-mix(in oklab, var(--material-gold) 65%, var(--material-highlight)), var(--material-gold)); box-shadow: 0 4px 0 var(--material-gold-edge), 0 7px 10px var(--material-shadow), inset 0 1px 0 var(--material-highlight); }
+.puzzle-world .pz-check:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--material-gold-edge); }
+.puzzle-world .pz-display { display: grid; place-items: center; color: var(--material-carving); border: 1px solid var(--piece-edge); background: color-mix(in oklab, var(--piece-face) 55%, transparent); box-shadow: inset 0 4px 8px var(--material-shadow), inset 0 -1px 0 var(--material-highlight); border-radius: 8px; text-shadow: 0 1px 0 var(--material-highlight); }
+.answer-imprint { animation: answer-stamp .22s ease-out; }
+.world-object { position: relative; height: 44px; min-width: 44px; font-size: 30px; padding: 3px; border-radius: 50%; background: color-mix(in oklab, var(--material-highlight) 20%, transparent); filter: drop-shadow(0 3px 2px var(--material-shadow)); transition: transform .2s, background .2s; }
+.world-object:hover { transform: translateY(-3px); }
+.world-object:active { transform: translateY(2px); }
+.world-object-touched { transform: translateY(-4px); background: color-mix(in oklab, var(--success) 30%, var(--material-highlight)); }
+.world-object-touched::after { content: ""; position: absolute; bottom: -2px; width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 1px 2px var(--material-shadow); }
+.world-object-symbol { align-self: center; font-size: 28px; }
+.puzzle-world .pz-row { gap: 4px; }
+.puzzle-world .pz-equation { color: var(--material-ink); background: color-mix(in oklab, var(--material-highlight) 85%, transparent); border-radius: 4px; box-shadow: 0 2px 4px var(--material-shadow); }
+.world-runes .pz-equation { color: var(--material-carving); background: color-mix(in oklab, var(--material-stone-face) 82%, transparent); box-shadow: inset 0 2px 5px var(--material-shadow); text-shadow: 0 1px 0 var(--material-highlight); }
+.puzzle-world .pz-slot { height: auto; min-width: 62px; min-height: 70px; flex: 1 1 62px; max-width: 145px; border: 1px solid var(--piece-edge); border-radius: 8px; box-shadow: inset 0 4px 8px var(--material-shadow), inset 0 -1px 0 var(--material-highlight); background: color-mix(in oklab, var(--piece-face) 50%, transparent); color: var(--material-ink); }
+.puzzle-world .pz-slot small { opacity: 1; }
+.puzzle-world .pz-slot-full { background: var(--piece-face); box-shadow: 0 3px 0 var(--piece-edge), 0 5px 6px var(--material-shadow), inset 0 1px 0 var(--material-highlight); }
+.placed-piece { animation: piece-settle .3s ease-out; }
+.sudoku-tree-board { display: grid; grid-template-columns: repeat(4, 58px); gap: 4px; padding: 10px; border: 2px solid var(--material-wood-edge); border-radius: 8px; background: color-mix(in oklab, var(--material-wood-face) 28%, transparent); box-shadow: inset 0 2px 7px var(--material-shadow), 0 2px 0 var(--material-highlight), 0 8px 15px var(--material-shadow); }
+.puzzle-world .pz-sudoku { position: relative; width: 58px; height: 58px; padding: 0; border-radius: 4px; border: 1px solid color-mix(in oklab, var(--material-wood-edge) 75%, transparent); background: color-mix(in oklab, var(--material-wood-face) 18%, transparent); box-shadow: inset 0 3px 6px var(--material-shadow), inset 0 -1px 0 color-mix(in oklab, var(--material-highlight) 55%, transparent); overflow: hidden; }
+.puzzle-world .pz-sudoku-fixed { opacity: 1; background: color-mix(in oklab, var(--material-wood-face) 35%, transparent); }
+.puzzle-world .pz-sudoku-sel { outline: 3px solid var(--material-gold); outline-offset: -3px; }
+.carved-mark { display: grid; place-items: center; width: 100%; height: 100%; }
+.carved-number { width: 52px; height: 52px; overflow: visible; font-family: var(--font-play); font-weight: 700; font-size: 44px; }
+.carved-number text { fill: var(--material-carving); stroke: var(--material-carving); stroke-width: .8px; paint-order: stroke fill; filter: drop-shadow(0 1px 0 var(--material-highlight)); }
+.carved-fresh .carved-number text { animation: carve-number .75s ease-out both; stroke-dasharray: 180; }
+.carved-symbol { font-size: 32px; filter: drop-shadow(0 2px 2px var(--material-shadow)); }
+.carved-fresh .carved-symbol { animation: piece-settle .35s ease-out; }
+.carving-dust { position: absolute; inset: 0; pointer-events: none; }
+.carving-dust i { position: absolute; width: 3px; height: 5px; border-radius: 1px; left: 48%; top: 40%; background: var(--material-wood-face); animation: carving-dust .65s ease-out both; --dust-x: -22px; }
+.carving-dust i:nth-child(2) { --dust-x: 24px; animation-delay: .08s; }
+.carving-dust i:nth-child(3) { --dust-x: -12px; animation-delay: .16s; }
+.carving-dust i:nth-child(4) { --dust-x: 18px; animation-delay: .24s; }
+.carving-dust i:nth-child(5) { --dust-x: 4px; animation-delay: .32s; }
+.nim-stone-bed { display: flex; flex-wrap: wrap; justify-content: center; max-width: 440px; gap: 6px; }
+.nim-stone { display: grid; place-items: center; width: 44px; height: 44px; font-size: 30px; border-radius: 42% 55% 45% 38%; background: linear-gradient(145deg, var(--material-highlight), var(--material-stone-face)); box-shadow: 0 4px 0 var(--material-stone-edge), 0 6px 5px var(--material-shadow); transition: transform .4s, opacity .4s; }
+.nim-stone-taken { transform: translateY(-30px) scale(.7); opacity: 0; pointer-events: none; }
+.world-status { color: var(--material-ink); background: color-mix(in oklab, var(--material-highlight) 90%, transparent); border-radius: 4px; padding: 4px 12px; text-align: center; }
+.world-treasure .pz-key, .world-market .pz-key-pad { --piece-face: var(--material-gold); --piece-edge: var(--material-gold-edge); }
+.puzzle-world .pz-coin { background: linear-gradient(145deg, var(--material-highlight), var(--material-gold)); border: 3px double var(--material-gold-edge); color: var(--material-carving); box-shadow: 0 3px 0 var(--material-gold-edge), 0 6px 6px var(--material-shadow), inset 0 0 0 2px var(--material-gold); text-shadow: 0 1px 0 var(--material-highlight); }
+.puzzle-world .pz-coin-copper { background: var(--material-wood-face); }
+.world-beads .pz-key { border-radius: 50%; min-height: 76px; aspect-ratio: 1; max-width: 100px; justify-self: center; width: 100%; }
+.world-beads .pz-row { border-bottom: 3px solid var(--material-wood-edge); padding-bottom: 7px; }
+.world-finish-line .pz-slot { border-bottom: 5px solid var(--material-metal-edge); }
+.world-clockmaker svg { filter: drop-shadow(0 5px 3px var(--material-shadow)); }
+.world-clockmaker svg circle:first-child { fill: var(--material-linen-face); stroke: var(--material-gold-edge); }
+.world-clockmaker svg text { fill: var(--material-ink); }
+.world-clockmaker .pz-key { border-radius: 50%; }
+.world-paint .pz-key { border-radius: 50% 50% 40% 40%; font-size: 0; min-height: 78px; max-width: 110px; width: 100%; justify-self: center; box-shadow: 0 6px 0 var(--material-metal-edge), 0 10px 10px var(--material-shadow), inset 0 4px 5px var(--material-highlight); }
+.world-paint .pz-key:nth-child(1) { --paint-color: var(--material-orange); }
+.world-paint .pz-key { font-size: 38px; background: linear-gradient(160deg, var(--material-linen-face), var(--material-metal-face)); }
+.world-toybox .pz-key { border: 5px solid var(--material-wood-face); box-shadow: inset 0 3px 7px var(--material-shadow), 0 4px 0 var(--material-wood-edge), 0 7px 8px var(--material-shadow); }
+.world-calendar .pz-key { border-radius: 3px; border-top: 8px solid var(--berry); background: var(--material-linen-face); transform-origin: top; }
+.world-calendar .pz-key:active { transform: rotateX(-8deg); }
+.world-mirror .pz-display { background: linear-gradient(120deg, var(--material-highlight), var(--material-metal-face), var(--material-highlight)); border: 5px solid var(--material-gold-edge); }
+.world-runes .pz-cell { background: var(--material-stone-face); color: var(--material-carving); border: 1px solid var(--material-stone-edge); box-shadow: 0 4px 0 var(--material-stone-edge), 0 7px 7px var(--material-shadow), inset 0 1px 0 var(--material-highlight); text-shadow: 0 1px 0 var(--material-highlight); }
+.world-runes .pz-cell-glow { background: var(--material-gold); }
+.world-basket .pz-row, .world-harvest .pz-row, .world-parcel .pz-row { border-radius: 4px 4px 18px 18px; padding: 6px 10px; border-bottom: 5px double var(--material-wood-edge); background: color-mix(in oklab, var(--material-wood-face) 18%, transparent); }
+.world-bakery .pz-row, .world-picnic .pz-row { padding: 8px 16px; border: 2px solid var(--material-linen-edge); border-radius: 50%; background: var(--material-linen-face); box-shadow: 0 3px 5px var(--material-shadow), inset 0 0 0 4px var(--material-highlight); }
+.world-farm .pz-row { padding: 3px 8px; border-bottom: 6px double var(--material-wood-edge); }
+.world-burrow .pz-display { border-radius: 50%; border-width: 4px; background: color-mix(in oklab, var(--material-wood-edge) 75%, var(--material-wood-face)); color: var(--material-highlight); text-shadow: none; }
+.world-specimens .pz-key { border: 3px solid var(--material-metal-edge); background: var(--material-linen-face); }
+.tier-little .puzzle-world .pz-key { border-radius: 16px; }
+.tier-big .puzzle-world .pz-key { border-radius: 4px; }
+@keyframes carve-number { 0% { fill: transparent; stroke-dashoffset: 180; } 65% { fill: transparent; } 100% { fill: var(--material-carving); stroke-dashoffset: 0; } }
+@keyframes carving-dust { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dust-x), 28px) rotate(100deg); } }
+@keyframes piece-settle { from { opacity: .4; transform: translateY(-16px) scale(1.1); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes answer-stamp { from { opacity: .3; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 639px) {
+  .puzzle-world { padding: 14px 16px 20px; }
+  .puzzle-world .pz-key { padding: 8px; font-size: 20px; }
+  .puzzle-world .pz-key-big { font-size: 30px; }
+  .puzzle-world .pz-check { font-size: 20px; padding: 8px 20px; }
+  .puzzle-world .pz-slot { font-size: 16px; padding: 4px; }
+  .world-paint .pz-key { font-size: 38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .puzzle-world *, .puzzle-world *::after { animation: none !important; transition: none !important; }
+  .carving-dust { display: none; }
+}

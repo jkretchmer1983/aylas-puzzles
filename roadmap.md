@@ -1,4 +1,7 @@
 # Puzzle pictures
+- [x] Refine materials toward the uploaded dimensional, polished game reference rather than hyperreal photography.
+- [x] Add tactile, puzzle-specific play surfaces and dimensional game pieces while preserving storyline art and Apple navigation.
+- [x] Animate placing and carving answers; verify touch, answers and phone fit.
 - [x] Replace delayed AI pictures with instant, seeded animated drawings for every puzzle type.
 - [x] Keep puzzle title, story and instructions stable while playing.
 - [x] Verify answers, replay, celebration and phone layout.

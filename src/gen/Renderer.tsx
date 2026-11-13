@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
+import { Button } from "@/components/ui/button";
+import { CarvedMark, PuzzleWorld } from "./PuzzleWorld";
 
 type Report = (ok: boolean) => void;
 
 function Key({ children, onClick, className, disabled }: { children: React.ReactNode; onClick: () => void; className?: string; disabled?: boolean }) {
   return (
-    <button disabled={disabled} onClick={onClick} className={cn("pz-key", className)}>
+    <Button variant="game" size="game" disabled={disabled} onClick={onClick} className={cn("pz-key", className)}>
       {children}
-    </button>
+    </Button>
   );
 }
 
 function CheckButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
   return (
     <div className="mt-4 flex justify-center">
-      <button disabled={disabled} onClick={onClick} className="pz-check">Check my answer ✓</button>
+      <Button variant="game" size="game" disabled={disabled} onClick={onClick} className="pz-check">Check my answer ✓</Button>
     </div>
   );
 }
@@ -45,7 +47,7 @@ function Clock({ h, m }: { h: number; m: number }) {
 }
 
 export function PuzzleVisual({ v }: { v: Visual }) {
-  if (v.type === "rows") return <div className="flex flex-col items-center gap-2">{v.rows.map((r, i) => <div key={i} className="pz-row">{r.map((e, j) => <span key={j} className="pz-emoji" style={{ animationDelay: `${j * 60}ms` }}>{e}</span>)}</div>)}</div>;
+  if (v.type === "rows") return <CountingObjects rows={v.rows} />;
   if (v.type === "clock") return <Clock h={v.h} m={v.m} />;
   if (v.type === "coins") return <div className="flex flex-wrap justify-center gap-2">{v.coins.map((c, i) => <span key={i} className={cn("pz-coin", c === 1 && "pz-coin-copper", c >= 25 && "pz-coin-big")}>{c}¢</span>)}</div>;
   if (v.type === "shapes") return <div className="flex flex-wrap justify-center gap-3">{v.shapes.map((s, i) => <ShapeSvg key={i} kind={s} />)}</div>;
@@ -55,6 +57,15 @@ export function PuzzleVisual({ v }: { v: Visual }) {
       {v.grid.map((n, i) => <div key={i} className={cn("pz-cell", n === -1 && "pz-cell-glow")}>{n === -1 ? "❓" : n ?? ""}</div>)}
     </div>
   );
+}
+
+function CountingObjects({ rows }: { rows: string[][] }) {
+  const [touched, setTouched] = useState<string[]>([]);
+  return <div className="flex flex-col items-center gap-2">{rows.map((row, i) => <div key={i} className="pz-row">{row.map((value, j) => {
+    const id = `${i}-${j}`;
+    const decorative = ["➕", "🟰", "❓", "🚩"].includes(value);
+    return decorative ? <span key={id} className="world-object-symbol">{value}</span> : <Button key={id} variant="game" size="game" aria-label={`${value}, row ${i + 1}, item ${j + 1}`} aria-pressed={touched.includes(id)} className={cn("world-object", touched.includes(id) && "world-object-touched")} onClick={() => setTouched((old) => old.includes(id) ? old.filter((x) => x !== id) : [...old, id])}>{value}</Button>;
+  })}</div>)}</div>;
 }
 
 /* ---------- interactions ---------- */
@@ -73,7 +84,7 @@ function NumberPad({ k, report }: { k: Extract<Kind, { type: "number" }>; report
   const [v, setV] = useState("");
   return (
     <div className="mx-auto max-w-sm">
-      <div className="pz-display" aria-live="polite">{v || <span className="opacity-30">?</span>}</div>
+      <div className="pz-display" aria-live="polite"><span key={v} className="answer-imprint">{v || <span className="opacity-30">?</span>}</span></div>
       <div className="mt-3 grid grid-cols-6 gap-2">
         {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((d) => <Key key={d} className="pz-key-pad" onClick={() => setV((x) => (x + d).slice(0, 4))}>{d}</Key>)}
         <Key className="pz-key-pad col-span-2" onClick={() => setV((x) => x.slice(0, -1))}>⌫</Key>
@@ -89,10 +100,10 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
     <div>
       <div className="flex flex-wrap justify-center gap-2">
         {k.answer.map((_, i) => (
-          <button key={i} className={cn("pz-slot", seq[i] && "pz-slot-full")} onClick={() => seq[i] && setSeq(seq.filter((_, j) => j !== i))}>
+          <Button variant="game" size="game" key={i} aria-label={`Position ${i + 1}${seq[i] ? `: ${seq[i]}, remove` : ": empty"}`} className={cn("pz-slot", seq[i] && "pz-slot-full")} onClick={() => seq[i] && setSeq(seq.filter((_, j) => j !== i))}>
             <small>{i === 0 ? k.first : i === k.answer.length - 1 ? k.last : i + 1}</small>
-            <span>{seq[i] ?? ""}</span>
-          </button>
+            <span key={seq[i]} className="placed-piece">{seq[i] ?? ""}</span>
+          </Button>
         ))}
       </div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -106,20 +117,21 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
 function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
   const [cells, setCells] = useState<(number | null)[]>(k.given);
   const [sel, setSel] = useState<number | null>(k.given.findIndex((x) => x === null));
+  const [carving, setCarving] = useState<{ cell: number; revision: number } | null>(null);
   return (
     <div className="flex flex-col items-center">
-      <div className="grid grid-cols-4 gap-1 rounded-2xl bg-ink/80 p-1.5">
+      <div className="sudoku-tree-board">
         {cells.map((c, i) => {
           const fixed = k.given[i] !== null;
           return (
-            <button key={i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel", i % 4 === 1 && "mr-1", Math.floor(i / 4) === 1 && "mb-1")}>
-              {c === null ? "" : k.symbols[c]}
-            </button>
+            <Button variant="game" size="game" key={i} aria-label={`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel", i % 4 === 1 && "mr-1", Math.floor(i / 4) === 1 && "mb-1")}>
+              {c !== null && <CarvedMark key={carving?.cell === i ? carving.revision : `fixed-${c}`} value={k.symbols[c] ?? ""} fresh={!fixed && carving?.cell === i} />}
+            </Button>
           );
         })}
       </div>
       <div className="mt-3 flex gap-2">
-        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big" disabled={sel === null} onClick={() => sel !== null && setCells(cells.map((c, j) => (j === sel ? i : c)))}>{s}</Key>)}
+        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}>{s}</Key>)}
       </div>
       <CheckButton disabled={cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
     </div>
@@ -149,8 +161,8 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   };
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex max-w-md flex-wrap justify-center gap-1">{Array.from({ length: left }, (_, i) => <span key={i} className="pz-emoji text-3xl">{k.icon}</span>)}</div>
-      <p className="font-display text-xl font-semibold">{left} left · {msg}</p>
+      <div className="nim-stone-bed">{Array.from({ length: k.stones }, (_, i) => <span key={i} className={cn("nim-stone", i >= left && "nim-stone-taken")} aria-hidden={i >= left}>{k.icon}</span>)}</div>
+      <p className="world-status font-display text-xl font-semibold">{left} left · {msg}</p>
       {turn === "done" ? (
         <Key onClick={() => { setLeft(k.stones); setTurn("you"); setMsg("Your turn!"); }}>Play again 🔁</Key>
       ) : (
@@ -163,13 +175,13 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
 export function PuzzleBody({ spec, report }: { spec: PuzzleSpec; report: Report }) {
   const k = spec.kind;
   return (
-    <div className="flex flex-col gap-4">
+    <PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
       {spec.visual && <PuzzleVisual v={spec.visual} />}
       {k.type === "choice" && <Choice k={k} report={report} />}
       {k.type === "number" && <NumberPad k={k} report={report} />}
       {k.type === "order" && <Order k={k} report={report} />}
       {k.type === "sudoku" && <Sudoku k={k} report={report} />}
       {k.type === "nim" && <Nim k={k} report={report} />}
-    </div>
+    </div></PuzzleWorld>
   );
 }

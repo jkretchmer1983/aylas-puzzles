@@ -15,3 +15,4 @@
 - Age bands map to three visual tiers (`tier-little`, `tier-mid`, `tier-big` in styles.css) that override theme tokens.
 - Keep the picture reveal on a separate masked layer from image motion; begin after image load and loader dismissal so prefetched pictures also animate, without restarting for streamed frames.
 - Puzzle types are dealt per age band like a shuffled deck (src/gen/deck.ts) so every type plays before any repeats.
+- Keep local material surfaces and template-specific game treatments in PuzzleWorld, independent of streamed storyline art; Renderer retains generator-owned answers and uses the game Button variant so tactile styling never changes Apple navigation.
