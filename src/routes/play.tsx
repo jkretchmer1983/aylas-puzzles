@@ -11,6 +11,7 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
+import { Puzzle } from "lucide-react";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -175,9 +176,12 @@ function Play() {
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
       <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>
-        <div className="quest-loader-orbit" aria-hidden>{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ ["--i" as string]: i }} />)}</div>
-        <span className="quest-loader-icon" aria-hidden>{tpl.icon}</span>
-        <p className="quest-loader-text">Painting your {tpl.name} puzzle…</p>
+        <div className="quest-loader-content">
+          <div className="quest-loader-emblem" aria-hidden="true"><Puzzle strokeWidth={1.5} /></div>
+          <p className="quest-loader-text">Your next puzzle</p>
+          <p className="quest-loader-detail">A little wonder is on its way.</p>
+          <div className="quest-loader-track" aria-hidden="true"><span /></div>
+        </div>
       </div>
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
