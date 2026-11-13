@@ -81,6 +81,13 @@ function Play() {
 
   const spec = t && s ? generate(t, band, s) : null;
   const key = `${band}-${t}-${s}`;
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!t || !s) return;
+    setLoading(true);
+    const id = setTimeout(() => setLoading(false), 1100);
+    return () => clearTimeout(id);
+  }, [t, s]);
 
   const report = useCallback((ok: boolean) => {
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
@@ -105,6 +112,13 @@ function Play() {
     <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
+      {loading && (
+        <div className="quest-loader" role="status" aria-label="Loading next puzzle">
+          <div className="quest-loader-orbit" aria-hidden>{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ ["--i" as string]: i }} />)}</div>
+          <span className="quest-loader-icon" aria-hidden>{tpl.icon}</span>
+          <p className="quest-loader-text">Getting your {tpl.name} puzzle ready…</p>
+        </div>
+      )}
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
         <div className="flex items-center gap-2">
