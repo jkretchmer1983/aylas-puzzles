@@ -348,3 +348,64 @@
 .age-step-0 .puzzle-sheet, .age-step-1 .puzzle-sheet { border-width: 4px; }
 .age-step-5 .puzzle-sheet, .age-step-6 .puzzle-sheet { border-width: 1px; box-shadow: 0 24px 60px -30px oklch(0 0 0 / .7); }
 .age-step-6 h1, .age-step-6 h2 { letter-spacing: -0.03em; text-transform: none; }
+
+/* ================= Apple Liquid Glass layer (iOS 26 / iPadOS 26 HIG) ================= */
+:root {
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+  --font-apple-rounded: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+  --glass-tint: color-mix(in oklab, var(--card) 55%, transparent);
+  --glass-edge: color-mix(in oklab, white 70%, transparent);
+  --glass-shadow: 0 8px 32px -12px oklch(0.2 0.03 260 / .35), inset 0 1px 0 0 var(--glass-edge), inset 0 -1px 0 0 oklch(1 0 0 / .12);
+  --glass-blur: blur(24px) saturate(180%);
+  /* Apple system colors */
+  --success: oklch(0.72 0.19 145); /* systemGreen */
+  --destructive: oklch(0.64 0.23 27); /* systemRed */
+}
+html, body { font-family: var(--font-apple); -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
+h1, h2, h3 { font-family: var(--font-apple-rounded); letter-spacing: -0.02em; }
+.puzzle-screen, .start-screen { --font-play: var(--font-apple-rounded); font-family: var(--font-apple); }
+.tier-big, .age-step-5, .age-step-6 { --font-play: var(--font-apple); font-family: var(--font-apple); }
+.tier-big .glassy, .tier-big { --glass-tint: color-mix(in oklab, var(--card) 45%, transparent); --glass-edge: oklch(1 0 0 / .22); }
+
+/* Glass material: pills, sheet, nav, cards, loader */
+.pill, .puzzle-sheet, .nav-soft, .start-badge, .band-card, .tile, .feedback {
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+.pill { background: var(--glass-tint); border: .5px solid var(--glass-edge); font-weight: 600; font-size: .95rem; min-height: 44px; display: inline-flex; align-items: center; padding: .4rem 1rem; }
+.puzzle-sheet { background: var(--glass-tint); border: .5px solid var(--glass-edge) !important; border-radius: max(var(--pz-radius), 1.6rem); }
+.scene { border-radius: max(calc(var(--pz-radius) - .4rem), 1.2rem); }
+.scene-text .scene-title, .scene-text .puzzle-prompt { background: color-mix(in oklab, var(--card) 55%, transparent); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); border-radius: .7rem; text-shadow: none; }
+.scene-title { font-weight: 700; letter-spacing: -0.02em; }
+.puzzle-prompt { font-weight: 500; }
+.puzzle-task { font-weight: 600; letter-spacing: -0.01em; }
+
+/* Capsule buttons, 44pt minimum targets */
+.nav-btn { min-height: 52px; border-radius: 999px; font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; transition: transform .25s cubic-bezier(.3,1.6,.5,1), filter .2s; }
+.nav-btn:active { transform: scale(.94); filter: brightness(1.08); }
+.nav-soft { background: var(--glass-tint); border: .5px solid var(--glass-edge); }
+.nav-main { background: linear-gradient(180deg, color-mix(in oklab, var(--primary) 85%, white), var(--primary)); box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--primary) 70%, transparent), inset 0 1px 0 oklch(1 0 0 / .45); border: none; }
+.puzzle-navigation { padding: .5rem; border-radius: 999px; background: var(--glass-tint); border: .5px solid var(--glass-edge); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); box-shadow: var(--glass-shadow); margin-bottom: env(safe-area-inset-bottom); }
+.feedback { border-radius: 999px; font-weight: 700; font-size: 1.9rem; padding: .7rem 2rem; letter-spacing: -0.02em; }
+
+/* Answer tiles: glass cards with Apple-style selection */
+.tile { background: var(--glass-tint) !important; border: .5px solid var(--glass-edge) !important; border-radius: max(var(--pz-radius), 1.1rem); transition: transform .25s cubic-bezier(.3,1.6,.5,1), box-shadow .2s; }
+.tile:active { transform: scale(.95); }
+.tile-on { background: color-mix(in oklab, var(--primary) 18%, var(--card)) !important; box-shadow: 0 0 0 3px var(--primary), var(--glass-shadow) !important; }
+.chunky { border-radius: 999px; border-bottom-width: 0; font-family: var(--font-apple); font-weight: 600; box-shadow: 0 8px 22px -10px oklch(0.2 0.03 260 / .45), inset 0 1px 0 oklch(1 0 0 / .4); }
+.chunky:active { transform: scale(.95); border-bottom-width: 0; }
+
+/* Start screen */
+.start-badge { background: var(--glass-tint); border: .5px solid var(--glass-edge); font-weight: 600; }
+.start-title { font-family: var(--font-apple-rounded); font-weight: 800; letter-spacing: -0.04em; }
+.band-card { border: .5px solid var(--glass-edge); border-radius: 1.6rem; font-weight: 600; }
+.band-card:hover { transform: translateY(-2px); }
+.band-card-current { box-shadow: 0 0 0 3px var(--primary), var(--glass-shadow); }
+
+/* Loader: frosted full-screen material */
+.quest-loader { background: color-mix(in oklab, var(--card) 60%, transparent); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); }
+.quest-loader-text { font-family: var(--font-apple); font-weight: 600; }
+
+@media (prefers-reduced-transparency: reduce) {
+  .pill, .puzzle-sheet, .nav-soft, .tile, .puzzle-navigation, .start-badge, .band-card, .quest-loader { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--card) !important; }
+}
