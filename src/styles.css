@@ -207,27 +207,29 @@
 @keyframes drawing-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 @keyframes drawing-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
 @keyframes drawing-cheer { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-18px) rotate(-8deg); } 65% { transform: translateY(-10px) rotate(8deg); } }
-/* Feathered brush strokes sweep across the picture, alternating direction, independently of the picture's gentle motion. */
+/* Overlapping feathered brush strokes sweep back and forth; a soft wash (--fill) fills the edges as they finish. */
+@property --fill { syntax: "<number>"; inherits: false; initial-value: 0; }
 .scene-watercolor {
-  position: absolute; inset: 0; pointer-events: none;
-  --stroke: radial-gradient(closest-side, #000 55%, rgb(0 0 0 / .7) 78%, transparent 100%);
-  -webkit-mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(#000, #000);
-  mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(#000, #000);
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; --fill: 0;
+  --stroke: radial-gradient(closest-side, #000 65%, rgb(0 0 0 / .6) 85%, transparent 100%);
+  -webkit-mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(rgb(0 0 0 / var(--fill)), rgb(0 0 0 / var(--fill)));
+  mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(rgb(0 0 0 / var(--fill)), rgb(0 0 0 / var(--fill)));
   -webkit-mask-position: 0% 0%, 100% 25%, 0% 50%, 100% 75%, 0% 100%, center;
   mask-position: 0% 0%, 100% 25%, 0% 50%, 100% 75%, 0% 100%, center;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-  -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%;
-  opacity: 0;
+  -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%;
 }
-.scene-watercolor-reveal { opacity: 1; animation: brush-paint 2.4s cubic-bezier(.45,.05,.35,1) both; }
+.scene-watercolor-reveal { opacity: 1; animation: brush-paint 2.6s linear both; }
 @keyframes brush-paint {
-  0%   { -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
-  20%  { -webkit-mask-size: 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
-  40%  { -webkit-mask-size: 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
-  60%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 0%; }
-  80%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 0%; }
-  99%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 0%; }
-  100% { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 100% 100%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 100% 100%; }
+  0% { -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; --fill: 0.00; }
+  14% { -webkit-mask-size: 74% 55%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; mask-size: 74% 55%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; --fill: 0.00; }
+  28% { -webkit-mask-size: 147% 55%, 74% 55%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; mask-size: 147% 55%, 74% 55%, 0% 34%, 0% 34%, 0% 34%, 100% 100%; --fill: 0.00; }
+  42% { -webkit-mask-size: 200% 55%, 147% 55%, 74% 55%, 0% 34%, 0% 34%, 100% 100%; mask-size: 200% 55%, 147% 55%, 74% 55%, 0% 34%, 0% 34%, 100% 100%; --fill: 0.00; }
+  56% { -webkit-mask-size: 200% 55%, 200% 55%, 147% 55%, 74% 55%, 0% 34%, 100% 100%; mask-size: 200% 55%, 200% 55%, 147% 55%, 74% 55%, 0% 34%, 100% 100%; --fill: 0.02; }
+  70% { -webkit-mask-size: 200% 55%, 200% 55%, 200% 55%, 147% 55%, 74% 55%, 100% 100%; mask-size: 200% 55%, 200% 55%, 200% 55%, 147% 55%, 74% 55%, 100% 100%; --fill: 0.33; }
+  80% { -webkit-mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 126% 55%, 100% 100%; mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 126% 55%, 100% 100%; --fill: 0.56; }
+  94% { -webkit-mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 200% 55%, 100% 100%; mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 200% 55%, 100% 100%; --fill: 0.87; }
+  100% { -webkit-mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 200% 55%, 100% 100%; mask-size: 200% 55%, 200% 55%, 200% 55%, 200% 55%, 200% 55%, 100% 100%; --fill: 1.00; }
 }
 .scene-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: kenburns 20s ease-in-out infinite alternate; transition: filter .6s, opacity .6s; }
 .scene-art-preview { filter: blur(18px) saturate(1.25); opacity: .9; transform: scale(1.06); }
