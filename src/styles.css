@@ -207,24 +207,27 @@
 @keyframes drawing-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 @keyframes drawing-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
 @keyframes drawing-cheer { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-18px) rotate(-8deg); } 65% { transform: translateY(-10px) rotate(8deg); } }
-/* Feathered pools spread like wet pigment, independently of the picture's gentle motion. */
+/* Feathered brush strokes sweep across the picture, alternating direction, independently of the picture's gentle motion. */
 .scene-watercolor {
-  position: absolute; inset: 0; pointer-events: none; opacity: 0;
-  --paint-pool: radial-gradient(ellipse, var(--ink) 38%, color-mix(in srgb, var(--ink) 85%, transparent) 53%, color-mix(in srgb, var(--ink) 35%, transparent) 65%, transparent 74%);
-  -webkit-mask-image: var(--paint-pool), var(--paint-pool), var(--paint-pool), var(--paint-pool);
-  mask-image: var(--paint-pool), var(--paint-pool), var(--paint-pool), var(--paint-pool);
-  -webkit-mask-position: 78% 28%, 22% 65%, 48% 12%, 92% 85%;
-  mask-position: 78% 28%, 22% 65%, 48% 12%, 92% 85%;
+  position: absolute; inset: 0; pointer-events: none;
+  --stroke: radial-gradient(closest-side, #000 55%, rgb(0 0 0 / .7) 78%, transparent 100%);
+  -webkit-mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(#000, #000);
+  mask-image: var(--stroke), var(--stroke), var(--stroke), var(--stroke), var(--stroke), linear-gradient(#000, #000);
+  -webkit-mask-position: 0% 0%, 100% 25%, 0% 50%, 100% 75%, 0% 100%, center;
+  mask-position: 0% 0%, 100% 25%, 0% 50%, 100% 75%, 0% 100%, center;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-  -webkit-mask-size: 0% 0%; mask-size: 0% 0%;
+  -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%;
+  opacity: 0;
 }
-.scene-watercolor-reveal { animation: watercolor-wash 2.6s cubic-bezier(.22,.61,.36,1) both; }
-@keyframes watercolor-wash {
-  0% { opacity: 0; -webkit-mask-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%; mask-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
-  16% { opacity: .75; -webkit-mask-size: 55% 85%, 12% 20%, 0% 0%, 0% 0%; mask-size: 55% 85%, 12% 20%, 0% 0%, 0% 0%; }
-  42% { opacity: 1; -webkit-mask-size: 110% 170%, 85% 140%, 45% 85%, 25% 40%; mask-size: 110% 170%, 85% 140%, 45% 85%, 25% 40%; }
-  72% { opacity: 1; -webkit-mask-size: 170% 250%, 150% 230%, 120% 180%, 100% 160%; mask-size: 170% 250%, 150% 230%, 120% 180%, 100% 160%; }
-  100% { opacity: 1; -webkit-mask-size: 320% 400%, 320% 400%, 320% 400%, 320% 400%; mask-size: 320% 400%, 320% 400%, 320% 400%, 320% 400%; }
+.scene-watercolor-reveal { opacity: 1; animation: brush-paint 2.4s cubic-bezier(.45,.05,.35,1) both; }
+@keyframes brush-paint {
+  0%   { -webkit-mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
+  20%  { -webkit-mask-size: 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
+  40%  { -webkit-mask-size: 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 34%, 0% 0%; }
+  60%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 34%, 0% 0%; }
+  80%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 34%, 0% 0%; }
+  99%  { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 0%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 0% 0%; }
+  100% { -webkit-mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 100% 100%; mask-size: 150% 40%, 150% 40%, 150% 40%, 150% 40%, 150% 40%, 100% 100%; }
 }
 .scene-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: kenburns 20s ease-in-out infinite alternate; transition: filter .6s, opacity .6s; }
 .scene-art-preview { filter: blur(18px) saturate(1.25); opacity: .9; transform: scale(1.06); }
@@ -232,7 +235,9 @@
 @keyframes kenburns { from { transform: scale(1.05) translate(0, 0); } to { transform: scale(1.18) translate(-3%, -2%); } }
 .scene-floaters span { position: absolute; top: 12%; font-size: 2.6rem; filter: drop-shadow(0 4px 6px oklch(0 0 0 / .25)); animation: bob 3.2s ease-in-out infinite; }
 @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-14px) rotate(6deg); } }
-.scene-text { position: relative; width: 100%; padding: 1rem 1.1rem; color: var(--foreground); background: linear-gradient(to top, var(--drawing-backdrop) 8%, color-mix(in oklab, var(--drawing-backdrop) 90%, transparent) 65%, transparent); }
+.scene-text { position: relative; width: 100%; padding: 1rem 1.1rem; color: var(--foreground); text-shadow: 0 1px 2px color-mix(in oklab, var(--card) 90%, transparent), 0 0 12px color-mix(in oklab, var(--card) 80%, transparent); }
+.scene-text .scene-title, .scene-text .puzzle-prompt { display: inline; box-decoration-break: clone; -webkit-box-decoration-break: clone; background: color-mix(in oklab, var(--card) 72%, transparent); border-radius: .5rem; padding: .05rem .4rem; }
+.scene-text .puzzle-prompt { display: inline-block; }
 .scene-tag { display: inline-block; border-radius: 999px; background: var(--card); padding: .15rem .7rem; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0; }
 .scene-title { margin-top: .3rem; font-family: var(--font-play); font-size: 2rem; font-weight: 700; line-height: 1.1; }
 .puzzle-prompt { margin-top: .25rem; font-size: 1.1rem; font-weight: 700; }
