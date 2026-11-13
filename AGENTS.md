@@ -13,3 +13,4 @@
 - Puzzles are generated, not hand-written: `src/gen/templates.ts` holds seeded templates (seed in the URL makes a puzzle reproducible); answers come only from the generator, and the AI may rewrite title/story but never the task, so correctness never depends on AI output.
 - Play renders generator text directly (stable, never AI-rewritten) over template-specific SVG scenes with a separate decoration seed; when online, a richer AI picture streams in over the drawing via src/lib/art-cache.ts, which prefetches the next puzzle's picture during play. The drawing is the offline/failure fallback.
 - Age bands map to three visual tiers (`tier-little`, `tier-mid`, `tier-big` in styles.css) that override theme tokens.
+- Keep the picture reveal on a separate masked layer from image motion; begin after image load and loader dismissal so prefetched pictures also animate, without restarting for streamed frames.

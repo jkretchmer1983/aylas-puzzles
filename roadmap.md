@@ -4,3 +4,4 @@
 - [x] Verify answers, replay, celebration and phone layout.
 - [x] Layer richer AI-painted scenes over the drawings (streamed, blur preview → sharp final).
 - [x] Prefetch the next puzzle's picture while the current one is being solved.
+- [x] Reveal incoming pictures with a feathered watercolor wash; verify phone layout, next-puzzle transitions and reduced motion.

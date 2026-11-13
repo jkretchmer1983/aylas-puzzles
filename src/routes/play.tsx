@@ -86,6 +86,7 @@ function Play() {
   const [loading, setLoading] = useState(true);
   const [art, setArt] = useState<{ src: string; final: boolean } | null>(null);
   const [artSettled, setArtSettled] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
   useEffect(() => {
     if (!t || !s) return;
     setLoading(true);
@@ -99,6 +100,7 @@ function Play() {
     if (!spec) return;
     setArt(null);
     setArtSettled(false);
+    setImageReady(false);
     const entry = ensureArt(key, imagePrompt(spec.title, spec.story, band));
     const update = () => {
       setArt(entry.src ? { src: entry.src, final: entry.final } : null);
@@ -163,7 +165,9 @@ function Play() {
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
           <PuzzleDrawing template={spec.template} seed={s ?? 1} />
-          {art && <img src={art.src} alt="" className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />}
+          {art && <div key={key} className={cn("scene-watercolor", imageReady && !loading && artSettled && "scene-watercolor-reveal")}>
+            <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
+          </div>}
           <div className="scene-text">
             <span className="scene-tag">{tpl.icon} {tpl.name}</span>
             <h1 className="scene-title">{spec.title}</h1>
