@@ -361,10 +361,10 @@
   --success: oklch(0.72 0.19 145); /* systemGreen */
   --destructive: oklch(0.64 0.23 27); /* systemRed */
 }
-html, body { font-family: var(--font-apple); -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
-h1, h2, h3 { font-family: var(--font-apple-rounded); letter-spacing: -0.02em; }
-.puzzle-screen, .start-screen { --font-play: var(--font-apple-rounded); font-family: var(--font-apple); }
-.tier-big, .age-step-5, .age-step-6 { --font-play: var(--font-apple); font-family: var(--font-apple); }
+/* Apple lettering is for the Apple chrome only (pills, capsule buttons, start screen, loader).
+   Puzzle text keeps its own fonts: Fredoka for little/mid, Outfit for the big tier, Nunito for body copy. */
+html { -webkit-font-smoothing: antialiased; }
+.start-screen { font-family: var(--font-apple); }
 .tier-big .glassy, .tier-big { --glass-tint: color-mix(in oklab, var(--card) 45%, transparent); --glass-edge: oklch(1 0 0 / .22); }
 
 /* Glass material: pills, sheet, nav, cards, loader */
@@ -372,7 +372,7 @@ h1, h2, h3 { font-family: var(--font-apple-rounded); letter-spacing: -0.02em; }
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   box-shadow: var(--glass-shadow);
 }
-.pill { background: var(--glass-tint); border: .5px solid var(--glass-edge); font-weight: 600; font-size: .95rem; min-height: 44px; display: inline-flex; align-items: center; padding: .4rem 1rem; }
+.pill { background: var(--glass-tint); border: .5px solid var(--glass-edge); font-family: var(--font-apple); font-weight: 600; font-size: .95rem; min-height: 44px; display: inline-flex; align-items: center; padding: .4rem 1rem; }
 .puzzle-sheet { background: var(--glass-tint); border: .5px solid var(--glass-edge) !important; border-radius: max(var(--pz-radius), 1.6rem); }
 .scene { border-radius: max(calc(var(--pz-radius) - .4rem), 1.2rem); }
 .scene-text .scene-title, .scene-text .puzzle-prompt { background: color-mix(in oklab, var(--card) 55%, transparent); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); border-radius: .7rem; text-shadow: none; }
@@ -381,7 +381,7 @@ h1, h2, h3 { font-family: var(--font-apple-rounded); letter-spacing: -0.02em; }
 .puzzle-task { font-weight: 600; letter-spacing: -0.01em; }
 
 /* Capsule buttons, 44pt minimum targets */
-.nav-btn { min-height: 52px; border-radius: 999px; font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; transition: transform .25s cubic-bezier(.3,1.6,.5,1), filter .2s; }
+.nav-btn { min-height: 52px; border-radius: 999px; font-family: var(--font-apple); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; transition: transform .25s cubic-bezier(.3,1.6,.5,1), filter .2s; }
 .nav-btn:active { transform: scale(.94); filter: brightness(1.08); }
 .nav-soft { background: var(--glass-tint); border: .5px solid var(--glass-edge); }
 .nav-main { background: linear-gradient(180deg, color-mix(in oklab, var(--primary) 85%, white), var(--primary)); box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--primary) 70%, transparent), inset 0 1px 0 oklch(1 0 0 / .45); border: none; }
