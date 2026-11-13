@@ -35,14 +35,14 @@ function permutations<T>(a: T[]): T[][] {
 }
 
 export const TEMPLATES: Template[] = [
-  { id: "count", name: "Counting", icon: "🔢", min: 0, max: 2, make: (r, b) => {
+  { id: "count", name: "Counting", icon: "🔢", min: 0, max: 3, make: (r, b) => {
     const e = r.pick([...FRUITS, "⭐", "🐞", "🎈"]);
-    const n = r.int([3, 5, 9][b]!, [6, 10, 18][b]!);
+    const n = r.int([3, 5, 9, 12][b]!, [6, 10, 18, 24][b]!);
     const rows: string[][] = [];
     for (let i = 0; i < n; i += 5) rows.push(Array(Math.min(5, n - i)).fill(e));
     return { template: "count", title: "Count them all", story: `Look at all the ${e} in the basket!`, task: `How many ${e} are there?`, hint: "Touch each one as you count out loud.", theme: `counting ${e}`, scene: [e, "🧺", "✨"], visual: { type: "rows", rows }, kind: { type: "number", answer: n } };
   } },
-  { id: "pattern", name: "Patterns", icon: "🧩", min: 0, max: 4, make: (r, b) => {
+  { id: "pattern", name: "Patterns", icon: "🧩", min: 0, max: 6, make: (r, b) => {
     const units = [["A", "B"], ["A", "A", "B"], ["A", "B", "C"], ["A", "B", "B", "C"], ["A", "B", "C", "C", "B"]];
     const unit = units[Math.min(b + r.int(0, 1), units.length - 1)]!;
     const syms = r.shuffle(r.pick(Object.values(CATS))).slice(0, 3);
@@ -55,7 +55,7 @@ export const TEMPLATES: Template[] = [
     const opts = r.shuffle(options);
     return { template: "pattern", title: "What comes next?", story: "A magic parade marches by in a special pattern.", task: "Which one comes next?", hint: "Say the pattern out loud. Where does it start again?", theme: "a repeating parade pattern", scene: syms, visual: { type: "rows", rows: [[...seq, "❓"]] }, kind: { type: "choice", options: opts, answer: opts.indexOf(answer), bigOptions: true } };
   } },
-  { id: "odd", name: "Odd one out", icon: "🔍", min: 0, max: 3, make: (r) => {
+  { id: "odd", name: "Odd one out", icon: "🔍", min: 0, max: 6, make: (r) => {
     const keys = r.shuffle(Object.keys(CATS));
     const main = r.shuffle(CATS[keys[0]!]!).slice(0, 3);
     const odd = r.pick(CATS[keys[1]!]!);
@@ -78,19 +78,19 @@ export const TEMPLATES: Template[] = [
     const e = r.pick(["🎈", "🍪", "🧁", "🍬"]);
     return { template: "take", title: "Oops, they're gone!", story: `There were treats everywhere — then some disappeared!`, task: `There were ${a} ${e}. ${c} were taken. How many are left?`, hint: "Start at the big number and count back.", theme: `treats vanishing at a party`, scene: [e, "🎉", "😮"], visual: b < 2 ? { type: "rows", rows: [Array(a).fill(e)] } : undefined, kind: { type: "number", answer: a - c } };
   } },
-  { id: "size", name: "Smallest to biggest", icon: "📏", min: 0, max: 4, make: (r, b) => {
+  { id: "size", name: "Smallest to biggest", icon: "📏", min: 0, max: 6, make: (r, b) => {
     if (b <= 2) {
       const pick = r.shuffle(SIZES).slice(0, 3 + b).sort((x, y) => SIZES.indexOf(x) - SIZES.indexOf(y));
       const answer = pick.map(([e, n]) => `${e} ${n}`);
       return { template: "size", title: "Line up by size", story: "The animals want a photo, smallest in front!", task: "Tap them from smallest to biggest.", hint: "Which animal could fit in your hand?", theme: "animals lining up for a photo", scene: pick.map(([e]) => e), kind: { type: "order", items: r.shuffle(answer), answer, first: "smallest", last: "biggest" } };
     }
-    const nums = new Set<number>(); while (nums.size < 5) nums.add(r.int(10, b === 3 ? 99 : 999));
+    const nums = new Set<number>(); while (nums.size < 5) nums.add(r.int(10, b === 3 ? 99 : b <= 5 ? 999 : 9999));
     const answer = [...nums].sort((x, y) => x - y).map(String);
     return { template: "size", title: "Number lineup", story: "The robots wear number badges and need to line up.", task: "Tap the numbers from smallest to biggest.", hint: "Compare the first digit, then the next.", theme: "robots lining up by number", scene: ["🤖", "🔢", "⚡"], kind: { type: "order", items: r.shuffle(answer), answer, first: "smallest", last: "biggest" } };
   } },
-  { id: "sequence", name: "Number trail", icon: "🪜", min: 2, max: 6, make: (r, b) => {
+  { id: "sequence", name: "Number trail", icon: "🪜", min: 0, max: 6, make: (r, b) => {
     let seq: number[];
-    if (b === 2) { const s = r.int(1, 5), k = r.int(1, 2); seq = [0, 1, 2, 3, 4].map((i) => s + i * k); }
+    if (b <= 2) { const s = r.int(1, 5), k = b === 0 ? 1 : r.int(1, 2); seq = [0, 1, 2, 3, 4].map((i) => s + i * k); }
     else if (b === 3) { const k = r.pick([5, 10]), s = k * r.int(0, 3); seq = [0, 1, 2, 3, 4].map((i) => s + i * k); }
     else if (b === 4) { const k = r.int(3, 9), s = r.int(50, 80); seq = [0, 1, 2, 3, 4].map((i) => s - i * k); }
     else if (b === 5) { const s = r.int(1, 4), m = r.pick([2, 3]); seq = [0, 1, 2, 3, 4].map((i) => s * m ** i); }
@@ -140,7 +140,7 @@ export const TEMPLATES: Template[] = [
     const coins = Array.from({ length: r.int(3, 3 + b) }, () => r.pick(kinds)).sort((x, y) => y - x);
     return { template: "coins", title: "The piggy bank", story: "Piggy shook out some coins!", task: "How many cents is that altogether?", hint: "Count the biggest coins first, then add the small ones.", theme: "a piggy bank spilling coins", scene: ["🐷", "🪙", "💰"], visual: { type: "coins", coins }, kind: { type: "number", answer: coins.reduce((s, c) => s + c, 0) } };
   } },
-  { id: "sides", name: "Shape sides", icon: "🔺", min: 1, max: 5, make: (r, b) => {
+  { id: "sides", name: "Shape sides", icon: "🔺", min: 0, max: 6, make: (r, b) => {
     const pool: ShapeName[] = b <= 2 ? ["triangle", "square", "circle"] : ["triangle", "square", "pentagon", "hexagon", "circle"];
     const shapes = Array.from({ length: r.int(2, 2 + Math.min(b, 4)) }, () => r.pick(pool));
     return { template: "sides", title: "The shape builders", story: "The builders need one stick for every straight side.", task: "How many straight sides are there in total?", hint: "A circle has no straight sides!", theme: "builders making shapes from sticks", scene: ["🔺", "🟦", "🛠️"], visual: { type: "shapes", shapes }, kind: { type: "number", answer: shapes.reduce((s, x) => s + SIDES[x], 0) } };
@@ -189,9 +189,9 @@ export const TEMPLATES: Template[] = [
     const opts = exprs.map((e) => e[0]);
     return { template: "compare", title: "The hungry crocodile", story: "Croc always eats the BIGGEST number.", task: "Which one will Croc eat?", hint: "Work out each one first.", theme: "a hungry crocodile choosing numbers", scene: ["🐊", "🔢", "😋"], kind: { type: "choice", options: opts, answer: opts.indexOf(best[0]) } };
   } },
-  { id: "clock", name: "Tell the time", icon: "⏰", min: 3, max: 6, make: (r, b) => {
+  { id: "clock", name: "Tell the time", icon: "⏰", min: 2, max: 6, make: (r, b) => {
     const h = r.int(1, 12);
-    const m = b === 3 ? 0 : b === 4 ? r.pick([0, 30]) : b === 5 ? r.pick([0, 15, 30, 45]) : r.int(1, 11) * 5;
+    const m = b <= 3 ? 0 : b === 4 ? r.pick([0, 30]) : b === 5 ? r.pick([0, 15, 30, 45]) : r.int(1, 11) * 5;
     const fmt = (hh: number, mm: number) => `${hh}:${String(mm).padStart(2, "0")}`;
     const wrong = [fmt(h % 12 + 1, m), fmt(h, (m + 30) % 60), fmt(((h + 10) % 12) + 1, m), fmt(m / 5 || 12, h * 5 % 60)];
     const c = choiceWith(r, fmt(h, m), wrong);
@@ -209,8 +209,8 @@ export const TEMPLATES: Template[] = [
     const what = findOdd ? "an ODD number" : k === 2 ? "an EVEN number" : `a multiple of ${k}`;
     return { template: "evenodd", title: "Number detective", story: `Only one of these suspects is ${what}.`, task: `Tap the number that is ${what}.`, hint: k === 2 ? "Even numbers can be split into two equal groups." : `Count by ${k}s.`, theme: "a detective looking for a number", scene: ["🕵️", "🔢", "🔍"], kind: { type: "choice", ...c } };
   } },
-  { id: "groups", name: "Groups of", icon: "🎁", min: 3, max: 6, make: (r, b) => {
-    const k = r.int(2, b + 1), m = r.int(2, b + 2);
+  { id: "groups", name: "Groups of", icon: "🎁", min: 0, max: 6, make: (r, b) => {
+    const k = r.int(2, Math.max(2, b + 1)), m = r.int(2, Math.max(3, b + 2));
     const e = r.pick(["🍪", "🍬", "🌸", "⭐"]);
     return { template: "groups", title: "Party bags", story: `Every party bag gets the same number of ${e}.`, task: `There are ${k} bags with ${m} ${e} each. How many ${e} in total?`, hint: `Count by ${m}s, ${k} times.`, theme: "packing party bags", scene: ["🎁", e, "🎉"], visual: b <= 4 ? { type: "rows", rows: Array.from({ length: k }, () => ["🎁", ...Array(m).fill(e)]) } : undefined, kind: { type: "number", answer: k * m } };
   } },
@@ -246,6 +246,75 @@ export const TEMPLATES: Template[] = [
     const left = cands.filter((n) => used.every((u) => u.ok(n)));
     if (left.length > 1) used.push({ text: `It is one of: ${left.slice(0, 4).join(", ")}${left.length > 4 ? "…" : ""} — and it's the ${left.indexOf(ans) + 1 === 1 ? "smallest" : `number #${left.indexOf(ans) + 1}`} of those.`, ok: (n) => n === ans });
     return { template: "riddle", title: "The mystery number", story: `The owl is thinking of a number from 1 to ${top}. ${used.map((u) => u.text).join(" ")}`, task: "What is the owl's number?", hint: "Write down the numbers that fit the first clue, then cross some out.", theme: "a wise owl with a number riddle", scene: ["🦉", "❓", "🌙"], kind: { type: "number", answer: ans } };
+  } },
+  { id: "position", name: "Who's in line?", icon: "🚩", min: 0, max: 4, make: (r, b) => {
+    const line = r.shuffle(ANIMALS).slice(0, 3 + Math.min(b, 2));
+    const k = r.int(0, line.length - 1);
+    const ord = ["1st", "2nd", "3rd", "4th", "5th"][k]!;
+    const opts = line.map((e) => `${e} ${nm(e)}`);
+    return { template: "position", title: "The ice-cream line", story: "The animals are waiting for ice cream. The flag shows the front of the line!", task: `Who is ${ord} in line, counting from the flag?`, hint: "Put your finger on the flag and count each animal.", theme: "animals queueing at an ice-cream truck", scene: [...line.slice(0, 2), "🍦"], visual: { type: "rows", rows: [["🚩", ...line]] }, kind: { type: "choice", options: opts, answer: k } };
+  } },
+  { id: "colors", name: "Color mixing", icon: "🎨", min: 0, max: 2, make: (r) => {
+    const [a, c, ans] = r.pick([["🔴", "🟡", "🟠"], ["🔵", "🟡", "🟢"], ["🔴", "🔵", "🟣"]] as const);
+    const opts = r.shuffle(["🟠", "🟢", "🟣", "🟤"]);
+    return { template: "colors", title: "The paint pots", story: "Bunny the painter is mixing two paints together.", task: "What color do they make?", hint: "Think of something that has both colors in it.", theme: "a bunny painter mixing paint pots", scene: ["🐰", "🎨", "🖌️"], visual: { type: "rows", rows: [[a, "➕", c, "🟰", "❓"]] }, kind: { type: "choice", options: opts, answer: opts.indexOf(ans), bigOptions: true } };
+  } },
+  { id: "shapepick", name: "Shape hunt", icon: "🔷", min: 0, max: 2, make: (r, b) => {
+    const pool = [["🔺", "triangle", 3], ["🟦", "square", 4], ["⚪", "circle", 0], ["🛑", "octagon", 8]] as const;
+    const [e, name, n] = r.pick(pool);
+    const opts = r.shuffle(pool.map((x) => x[0] as string));
+    const task = b === 0 ? `Tap the ${name}.` : n === 0 ? "Tap the shape with no corners." : `Tap the shape with ${n} sides.`;
+    return { template: "shapepick", title: "The shape hunt", story: "The shapes are playing hide and seek in the toy box.", task, hint: "Trace around each shape with your finger.", theme: "shapes hiding in a toy box", scene: ["🧸", "🔷", "🔺"], kind: { type: "choice", options: opts, answer: opts.indexOf(e), bigOptions: true } };
+  } },
+  { id: "double", name: "Doubles & halves", icon: "👯", min: 0, max: 6, make: (r, b) => {
+    const n = r.int(1, [3, 5, 10, 25, 50, 100, 250][b]!);
+    const e = r.pick(["🦋", "🐞", "🌟", "🍩"]);
+    const half = b >= 3 && r.next() < 0.5;
+    return { template: "double", title: half ? "Split in half" : "Mirror magic", story: half ? "The twins share everything exactly in half." : "A magic mirror doubles everything that looks into it!", task: half ? `The twins share ${n * 2} ${e} equally. How many does each twin get?` : `${n} ${e} look into the mirror. How many ${e} are there now, counting the reflections?`, hint: half ? "What number plus itself makes the total?" : "Add the number to itself.", theme: half ? "twins sharing treats" : "a sparkling magic mirror", scene: [e, "🪞", "✨"], visual: !half && b < 2 ? { type: "rows", rows: [Array(n).fill(e), Array(n).fill(e)] } : undefined, kind: { type: "number", answer: half ? n : n * 2 } };
+  } },
+  { id: "share", name: "Fair shares", icon: "🍕", min: 0, max: 6, make: (r, b) => {
+    const k = b < 2 ? 2 : r.int(2, Math.min(b + 1, 6));
+    const m = r.int(1, [2, 3, 5, 6, 8, 10, 12][b]!);
+    const e = r.pick(["🍪", "🍓", "🍬", "🧁"]);
+    const kids = r.shuffle(ANIMALS).slice(0, k);
+    return { template: "share", title: "Fair shares", story: `${kids.map(nm).join(", ")} found a pile of ${e} to share fairly.`, task: `${k * m} ${e} shared equally between ${k} friends. How many does each friend get?`, hint: "Hand them out one at a time, like dealing cards.", theme: "friends sharing a picnic", scene: [...kids.slice(0, 2), e], visual: b < 2 ? { type: "rows", rows: [Array(k * m).fill(e), kids] } : undefined, kind: { type: "number", answer: m } };
+  } },
+  { id: "missing", name: "Missing number", icon: "🕳️", min: 1, max: 6, make: (r, b) => {
+    const mul = b >= 5 && r.next() < 0.5;
+    const lim = [0, 5, 10, 20, 50, 100, 500][b]!;
+    const a = mul ? r.int(2, 12) : r.int(1, lim), x = mul ? r.int(2, 12) : r.int(1, lim);
+    return { template: "missing", title: "The hole in the sum", story: "A sneaky mole dug a hole right through the number sum!", task: mul ? `${a} × ❓ = ${a * x}. What number fell in the hole?` : `${a} + ❓ = ${a + x}. What number fell in the hole?`, hint: mul ? `Count up in ${a}s.` : `Count up from ${a}.`, theme: "a mole popping out of a hole", scene: ["🦫", "🕳️", "🔢"], kind: { type: "number", answer: x } };
+  } },
+  { id: "days", name: "Days of the week", icon: "📅", min: 1, max: 6, make: (r, b) => {
+    const D = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const i = r.int(0, 6);
+    const step = b === 1 ? 1 : b === 2 ? -1 : b <= 4 ? r.int(2, 4) : r.int(8, 30);
+    const ans = D[(((i + step) % 7) + 7) % 7]!;
+    const task = step === 1 ? `Today is ${D[i]}. What day is tomorrow?` : step === -1 ? `Today is ${D[i]}. What day was yesterday?` : `Today is ${D[i]}. What day will it be in ${step} days?`;
+    const c = choiceWith(r, ans, r.shuffle(D));
+    return { template: "days", title: "The party calendar", story: "Owl is counting down the days to a big party.", task, hint: step > 7 ? "Every 7 days it's the same day again." : "Say the days out loud in order.", theme: "an owl with a party calendar", scene: ["🦉", "📅", "🎉"], kind: { type: "choice", ...c } };
+  } },
+  { id: "legs", name: "Leg count", icon: "🐔", min: 1, max: 6, make: (r, b) => {
+    const kinds = b < 4 ? [["🐔", 2], ["🐄", 4]] as const : [["🐔", 2], ["🐄", 4], ["🕷️", 8]] as const;
+    const counts = kinds.map(() => r.int(1, b < 3 ? 3 : 2 + b));
+    const total = kinds.reduce((s, [, l], i) => s + l * counts[i]!, 0);
+    return { template: "legs", title: "Farm legs", story: "The farmer peeked under the fence and saw only legs!", task: `There are ${kinds.map(([e], i) => `${counts[i]} ${e}`).join(" and ")}. How many legs altogether?`, hint: "A hen has 2 legs, a cow has 4" + (kinds.length > 2 ? ", a spider has 8." : "."), theme: "a busy farmyard", scene: kinds.map(([e]) => e), visual: b < 3 ? { type: "rows", rows: kinds.map(([e], i) => Array(counts[i]!).fill(e)) } : undefined, kind: { type: "number", answer: total } };
+  } },
+  { id: "change", name: "Shop change", icon: "🛒", min: 3, max: 6, make: (r, b) => {
+    const item = r.pick(["🧃", "🍭", "🎈", "📒", "🪀"]);
+    if (b <= 4) {
+      const p = r.int(2, 19) * 5, q = b === 4 ? r.int(1, 19 - p / 5) * 5 : 0;
+      const pay = 100;
+      return { template: "change", title: "The corner shop", story: "Fox runs a tiny corner shop full of treasures.", task: q ? `You buy ${item} for ${p}¢ and a 🍬 for ${q}¢ with a 100¢ coin. How much change?` : `You buy ${item} for ${p}¢ and pay with a 100¢ coin. How much change in cents?`, hint: "Count up from the price to 100.", theme: "a fox shopkeeper in a tiny shop", scene: ["🦊", item, "🪙"], kind: { type: "number", answer: pay - p - q } };
+    }
+    const pay = b === 5 ? 20 : 50, p = r.int(2, pay / 2 - 1), q = r.int(1, pay / 2 - 1);
+    return { template: "change", title: "The toy market", story: "The toy market is busy and you have money to spend.", task: `${item} costs $${p} and a 🧸 costs $${q}. You pay with $${pay}. How many dollars change?`, hint: "Add the prices first, then take away from what you paid.", theme: "a bustling toy market", scene: [item, "🧸", "💵"], kind: { type: "number", answer: pay - p - q } };
+  } },
+  { id: "fraction", name: "Fraction feast", icon: "🥧", min: 4, max: 6, make: (r, b) => {
+    const [num, den] = b === 4 ? r.pick([[1, 2], [1, 4]] as const) : b === 5 ? r.pick([[1, 3], [1, 4], [1, 5], [2, 3]] as const) : r.pick([[3, 4], [2, 5], [3, 8], [5, 6]] as const);
+    const total = den * r.int(2, b === 6 ? 12 : 8);
+    const e = r.pick(["🍒", "🫐", "🍓"]);
+    return { template: "fraction", title: "The berry pie", story: `Bear picked ${total} ${e} for a pie.`, task: `${num}/${den} of the ${total} ${e} go in the pie. How many is that?`, hint: `Split ${total} into ${den} equal groups, then take ${num}.`, theme: "a bear baking a berry pie", scene: ["🐻", e, "🥧"], kind: { type: "number", answer: (total / den) * num } };
   } },
 ];
 

@@ -14,3 +14,4 @@
 - Play shows an AI-rewritten title/story (src/lib/story-cache.ts, prefetched for the next puzzle) only after the loader waits for it, then freezes it for the puzzle; generator text is the fallback over template-specific SVG scenes with a separate decoration seed; when online, a richer AI picture streams in over the drawing via src/lib/art-cache.ts, which prefetches the next puzzle's picture during play. The drawing is the offline/failure fallback.
 - Age bands map to three visual tiers (`tier-little`, `tier-mid`, `tier-big` in styles.css) that override theme tokens.
 - Keep the picture reveal on a separate masked layer from image motion; begin after image load and loader dismissal so prefetched pictures also animate, without restarting for streamed frames.
+- Puzzle types are dealt per age band like a shuffled deck (src/gen/deck.ts) so every type plays before any repeats.

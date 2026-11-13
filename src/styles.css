@@ -334,3 +334,17 @@
 @keyframes quest-loader-spin { to { transform: rotate(360deg); } }
 @keyframes quest-loader-out { to { opacity: 0; transform: scale(1.08); visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .quest-loader-icon, .quest-loader-orbit { animation: none; } }
+
+/* ---------- per-age maturity steps (after tiers so they refine them) ---------- */
+.age-step-0 { --pz-radius: 2.4rem; --step-stroke: 7; }
+.age-step-1 { --pz-radius: 2rem; --step-stroke: 6; }
+.age-step-2 { --pz-radius: 1.7rem; --step-stroke: 5.5; }
+.age-step-3 { --pz-radius: 1.4rem; --step-stroke: 5; }
+.age-step-4 { --pz-radius: 1.1rem; --step-stroke: 4.5; }
+.age-step-5 { --pz-radius: .85rem; --step-stroke: 3.5; }
+.age-step-6 { --pz-radius: .55rem; --step-stroke: 2.5; --primary: oklch(0.8 0.15 190); --accent: oklch(0.72 0.17 290);
+  --bg-a: oklch(0.26 0.08 250); --bg-b: oklch(0.24 0.07 200); --bg-c: oklch(0.27 0.09 300); }
+[class*="age-step-"] .puzzle-drawing { stroke-width: var(--step-stroke); }
+.age-step-0 .puzzle-sheet, .age-step-1 .puzzle-sheet { border-width: 4px; }
+.age-step-5 .puzzle-sheet, .age-step-6 .puzzle-sheet { border-width: 1px; box-shadow: 0 24px 60px -30px oklch(0 0 0 / .7); }
+.age-step-6 h1, .age-step-6 h2 { letter-spacing: -0.03em; text-transform: none; }

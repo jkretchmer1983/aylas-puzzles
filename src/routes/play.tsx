@@ -5,6 +5,7 @@ import { BANDS, TEMPLATES, generate, templatesFor } from "@/gen/templates";
 import { newSeed } from "@/gen/rng";
 import { PuzzleBody } from "@/gen/Renderer";
 import { tierFor, useProgress } from "@/lib/progress";
+import { drawTemplate } from "@/gen/deck";
 import { PuzzleDrawing } from "@/gen/PuzzleDrawing";
 import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
@@ -74,8 +75,7 @@ function Play() {
   const trail = useRef<Search[]>([]);
 
   const pickNext = useCallback((exclude?: string) => {
-    const pool = templatesFor(band).filter((x) => x.id !== exclude);
-    return { band, t: pool[Math.floor(Math.random() * pool.length)]?.id, s: newSeed() };
+    return { band, t: drawTemplate(band, templatesFor(band).map((x) => x.id), exclude), s: newSeed() };
   }, [band]);
 
   // Fill in a puzzle when the address has none.
@@ -171,7 +171,7 @@ function Play() {
   const celebrating = result?.ok;
 
   return (
-    <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
+    <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
       <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>

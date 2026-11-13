@@ -7,19 +7,25 @@ export const DRAWING_THEMES = {
   lineup: "houses", coins: "treasure", sides: "shapes", balance: "scales",
   magic: "wizard", nim: "robot", compare: "crocodile", clock: "clocktower",
   evenodd: "detective", groups: "gifts", cipher: "lock", riddle: "crystal",
+  position: "houses", colors: "beads", shapepick: "shapes", double: "magnifier", share: "gifts",
+  missing: "detective", days: "clocktower", legs: "garden", change: "treasure", fraction: "basket",
 } as const;
 
 export type DrawingTheme = (typeof DRAWING_THEMES)[keyof typeof DRAWING_THEMES];
 
 const PROMPT_STYLES = [
-  "cute chunky children's cartoon, thick rounded outlines, bright cheerful colors, big friendly shapes",
-  "colorful storybook illustration, playful shapes, warm palette, gentle texture",
-  "sleek modern flat illustration, bold colors, confident shapes, older-kid appeal",
+  "cute chunky toddler cartoon, very thick rounded outlines, bright primary colors, big soft cuddly shapes",
+  "cheerful preschool picture-book illustration, rounded shapes, candy colors, smiling characters",
+  "colorful storybook illustration, playful shapes, warm palette, gentle crayon texture",
+  "detailed storybook adventure illustration, richer colors, painterly texture, sense of wonder",
+  "vibrant animated-film concept art, dynamic composition, expressive characters, cinematic lighting",
+  "sleek modern adventure illustration, bold confident shapes, moody cinematic lighting, older-kid appeal",
+  "stylish graphic-novel illustration, dramatic lighting, sophisticated palette, cool and grown-up for a 10 year old",
 ] as const;
 
 /** Rich AI scene art built only from the puzzle's title and story — never its task or answers. */
 export function imagePrompt(title: string, story: string, band: number): string {
-  const style = PROMPT_STYLES[band <= 1 ? 0 : band <= 3 ? 1 : 2];
+  const style = PROMPT_STYLES[Math.min(Math.max(band, 0), PROMPT_STYLES.length - 1)];
   return `${style}. Whimsical scene for a kids puzzle called "${title}": ${story} Absolutely no text, words, letters, or numbers anywhere in the image.`;
 }
 
