@@ -193,7 +193,6 @@ function Play() {
             <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
           </div>}
           <div className="scene-text">
-            <span className="scene-tag">{tpl.icon} {tpl.name}</span>
             <h1 className="scene-title">{shown?.key === key ? shown.title : spec.title}</h1>
             <p className="puzzle-prompt">{shown?.key === key ? shown.story : spec.story}</p>
           </div>
