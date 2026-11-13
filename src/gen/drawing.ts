@@ -11,6 +11,18 @@ export const DRAWING_THEMES = {
 
 export type DrawingTheme = (typeof DRAWING_THEMES)[keyof typeof DRAWING_THEMES];
 
+const PROMPT_STYLES = [
+  "cute chunky children's cartoon, thick rounded outlines, bright cheerful colors, big friendly shapes",
+  "colorful storybook illustration, playful shapes, warm palette, gentle texture",
+  "sleek modern flat illustration, bold colors, confident shapes, older-kid appeal",
+] as const;
+
+/** Rich AI scene art built only from the puzzle's title and story — never its task or answers. */
+export function imagePrompt(title: string, story: string, band: number): string {
+  const style = PROMPT_STYLES[band <= 1 ? 0 : band <= 3 ? 1 : 2];
+  return `${style}. Whimsical scene for a kids puzzle called "${title}": ${story} Absolutely no text, words, letters, or numbers anywhere in the image.`;
+}
+
 export function drawingFor(template: string, seed: number) {
   const rng = makeRng(seed ^ 0x5f3759df);
   const theme = DRAWING_THEMES[template as keyof typeof DRAWING_THEMES] ?? "crystal";

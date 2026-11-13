@@ -6,6 +6,8 @@ import { newSeed } from "@/gen/rng";
 import { PuzzleBody } from "@/gen/Renderer";
 import { tierFor, useProgress } from "@/lib/progress";
 import { PuzzleDrawing } from "@/gen/PuzzleDrawing";
+import { imagePrompt } from "@/gen/drawing";
+import { ensureArt, subscribeArt } from "@/lib/art-cache";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -82,12 +84,46 @@ function Play() {
   const spec = t && s ? generate(t, band, s) : null;
   const key = `${band}-${t}-${s}`;
   const [loading, setLoading] = useState(true);
+  const [art, setArt] = useState<{ src: string; final: boolean } | null>(null);
+  const [artSettled, setArtSettled] = useState(false);
   useEffect(() => {
     if (!t || !s) return;
     setLoading(true);
     const id = setTimeout(() => setLoading(false), 1100);
     return () => clearTimeout(id);
   }, [t, s]);
+
+  // Rich AI scene art streams in over the instant drawing; offline or on failure the drawing stays.
+  // The picture was usually already painted while the previous puzzle was being solved.
+  useEffect(() => {
+    if (!spec) return;
+    setArt(null);
+    setArtSettled(false);
+    const entry = ensureArt(key, imagePrompt(spec.title, spec.story, band));
+    const update = () => {
+      setArt(entry.src ? { src: entry.src, final: entry.final } : null);
+      if (entry.settled) setArtSettled(true);
+    };
+    update();
+    const unsub = subscribeArt(key, update);
+    // The loader gives up waiting after a while, but the picture still fades in whenever it finishes.
+    const giveUp = setTimeout(() => setArtSettled(true), 12000);
+    return () => { unsub(); clearTimeout(giveUp); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  // Pick the next puzzle now and start painting its picture while this one is being solved.
+  const nextRef = useRef<Search | null>(null);
+  useEffect(() => {
+    if (!spec) return;
+    const next = pickNext(t);
+    nextRef.current = next;
+    if (next.t && next.s) {
+      const ns = generate(next.t, band, next.s);
+      ensureArt(`${band}-${next.t}-${next.s}`, imagePrompt(ns.title, ns.story, band), key);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
   const report = useCallback((ok: boolean) => {
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
@@ -98,7 +134,7 @@ function Play() {
   }, [update]);
 
   const reset = () => { setResult(null); setHint(false); };
-  const goNext = () => { trail.current.push({ band, t, s }); reset(); nav({ search: pickNext(t) }); };
+  const goNext = () => { trail.current.push({ band, t, s }); reset(); nav({ search: nextRef.current ?? pickNext(t) }); };
   const goPrev = () => { const prev = trail.current.pop(); if (prev) { reset(); nav({ search: prev }); } };
   const replay = () => { reset(); nav({ search: { band, t, s: newSeed() }, replace: true }); };
 
@@ -112,13 +148,11 @@ function Play() {
     <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <Confetti burst={party} />
-      {loading && (
-        <div className="quest-loader" role="status" aria-label="Loading next puzzle">
-          <div className="quest-loader-orbit" aria-hidden>{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ ["--i" as string]: i }} />)}</div>
-          <span className="quest-loader-icon" aria-hidden>{tpl.icon}</span>
-          <p className="quest-loader-text">Getting your {tpl.name} puzzle ready…</p>
-        </div>
-      )}
+      <div className={cn("quest-loader", !loading && artSettled && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={!loading && artSettled}>
+        <div className="quest-loader-orbit" aria-hidden>{[0, 1, 2, 3, 4, 5].map((i) => <i key={i} style={{ ["--i" as string]: i }} />)}</div>
+        <span className="quest-loader-icon" aria-hidden>{tpl.icon}</span>
+        <p className="quest-loader-text">Painting your {tpl.name} puzzle…</p>
+      </div>
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
         <div className="flex items-center gap-2">
@@ -129,6 +163,7 @@ function Play() {
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
           <PuzzleDrawing template={spec.template} seed={s ?? 1} />
+          {art && <img src={art.src} alt="" className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />}
           <div className="scene-text">
             <span className="scene-tag">{tpl.icon} {tpl.name}</span>
             <h1 className="scene-title">{spec.title}</h1>

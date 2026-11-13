@@ -1,6 +1,6 @@
 export const imageSettings = {
   baseURL: "https://ai.gateway.lovable.dev",
-  model: "openai/gpt-image-2.5-sunburst",
+  model: "openai/gpt-image-2.5-flare",
 };
 
 export function generateImage(apiKey: string, prompt: string, stream = true) {
@@ -11,8 +11,8 @@ export function generateImage(apiKey: string, prompt: string, stream = true) {
       model: imageSettings.model,
       prompt,
       size: "1536x1024",
-      quality: "low",
-      ...(stream ? { stream: true, partial_images: 1 } : {}),
+      quality: "medium",
+      ...(stream ? { stream: true, partial_images: 2 } : {}),
     }),
   });
 }
