@@ -1246,15 +1246,23 @@ html, body { overflow-x: clip; }
   text-wrap: balance;
 }
 
-/* One portrait composition, uniformly fitted to phones, tablets and landscape.
-   Surplus viewport space stays outside the tree instead of widening the art. */
+/* The original portrait foreground and the outpainted forest share one scale.
+   Only surrounding scenery is cropped; controls and central tree stay intact. */
 .forest-viewport {
   position: fixed; inset: 0; width: 100%; height: 100dvh;
   box-sizing: border-box; overflow: hidden;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background: radial-gradient(ellipse, #344323, #162012);
+  background: var(--forest-cut);
   display: grid; place-items: center;
 }
+.forest-viewport-scenery {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(1920px * var(--forest-scale, 1));
+  height: calc(1280px * var(--forest-scale, 1));
+  max-width: none; object-fit: contain; pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.forest-viewport .forest-spatial .world-backdrop { background: none; }
 .forest-viewport > .puzzle-screen.forest-spatial {
   position: absolute; left: 50%; top: 50%;
   width: 393px; max-width: none; height: 852px; min-height: 0;

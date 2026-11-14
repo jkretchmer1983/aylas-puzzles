@@ -20,3 +20,4 @@
 - [x] Fix the tiny Sudoku board in the shorter, wide preview; verify square cells, usable targets and wooden navigation at the reported size.
 - [x] Asset-pack Pass 1: clean prototype sprites, use supplied forest environment, correct proportions, and show phone screenshot for approval.
 - [x] Forest Sudoku cleanup: remove pale edge seams, separate full-leaf title plaque, align cells to carved recesses
+- [x] Extend forest scenery around the unchanged proportional Sudoku composition; validate phone, wide portrait, tablet and landscape.
