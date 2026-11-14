@@ -12,7 +12,7 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
-import { Puzzle } from "lucide-react";
+import { ArrowLeft, RotateCcw, Puzzle } from "lucide-react";
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
@@ -195,9 +195,9 @@ function Play() {
         </div>}
       </div>
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
-        <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
+        <Link to="/" search={{ pick: 1 }} className={cn("pill", spec.template === "sudoku" && "forest-round-control")} aria-label={`Choose age range, ${BANDS[band]?.label}`} title="Choose age range">{spec.template === "sudoku" ? <ArrowLeft aria-hidden="true" /> : `← ${BANDS[band]?.label}`}</Link>
         <div className="flex items-center gap-2">
-          <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>
+          {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>}
         </div>
       </header>
 

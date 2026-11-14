@@ -24,6 +24,6 @@ export function WoodenTitleSign({ title, story, spatial }: { title: string; stor
   return <div className="wooden-title-sign"><h1>{title}</h1>{!spatial && <p>{story}</p>}</div>;
 }
 
-export function WoodenActionButton({ children, onClick, disabled, primary, className = "" }: { children: ReactNode; onClick: () => void; disabled?: boolean; primary?: boolean; className?: string }) {
-  return <Button variant="game" size="game" disabled={disabled} onClick={onClick} className={`wooden-action ${primary ? "wooden-action-primary" : ""} ${className}`}>{children}</Button>;
+export function WoodenActionButton({ children, onClick, disabled, primary, className = "", label }: { children: ReactNode; onClick: () => void; disabled?: boolean; primary?: boolean; className?: string; label?: string }) {
+  return <Button variant="game" size="game" disabled={disabled} onClick={onClick} aria-label={label} title={label} className={`wooden-action ${primary ? "wooden-action-primary" : ""} ${className}`}>{children}</Button>;
 }
