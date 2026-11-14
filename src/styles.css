@@ -533,7 +533,7 @@ html { -webkit-font-smoothing: antialiased; }
 .world-backdrop::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, var(--material-shadow)); }
 .is-celebrating .world-backdrop img { animation: party-bg 0.6s ease-in-out 4 alternate; }
 .puzzle-screen:has(.world-backdrop) .play-bg { display: none; }
-.puzzle-screen:has(.world-backdrop) .puzzle-sheet { background: transparent !important; border: 0 !important; box-shadow: none; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.puzzle-screen:has(.world-backdrop) .puzzle-sheet { background: transparent !important; border: 0 !important; box-shadow: none; backdrop-filter: none !important; }
 .puzzle-world { background: transparent; box-shadow: none; }
 /* Story picture hangs in the scene like a framed painting set into the surface. */
 .puzzle-screen:has(.world-backdrop) .scene { border: 6px solid var(--material-wood-edge); outline: 2px solid var(--material-gold); outline-offset: -8px; box-shadow: 0 10px 0 -4px var(--material-wood-edge), 0 18px 28px var(--material-shadow), inset 0 0 18px var(--material-shadow); margin-bottom: .5rem; }
@@ -565,3 +565,69 @@ html { -webkit-font-smoothing: antialiased; }
 .puzzle-world .pz-key.pz-key-wrong { --paint: var(--destructive); }
 .start-title span { background: none !important; -webkit-text-fill-color: var(--sun) !important; color: var(--sun); animation: none; }
 .start-screen p { color: oklch(.98 .02 85); text-shadow: 0 2px 4px oklch(.2 .04 50 / .7); }
+
+/* ===== One continuous scene: everything is carved into, inlaid in, or resting on the full-screen surface. ===== */
+html, body { overflow-x: clip; }
+.material-wood { --carve-floor: oklch(.32 .07 55 / .5); --carve-rim: oklch(.3 .07 50); --carve-lip: oklch(.95 .06 80 / .55); }
+.material-stone { --carve-floor: oklch(.24 .03 240 / .5); --carve-rim: oklch(.28 .03 240); --carve-lip: oklch(.95 .01 230 / .5); }
+.material-bench { --carve-floor: oklch(.22 .05 45 / .55); --carve-rim: oklch(.22 .05 40); --carve-lip: oklch(.85 .07 70 / .45); }
+.material-linen { --carve-floor: oklch(.5 .04 70 / .28); --carve-rim: oklch(.55 .05 70); --carve-lip: oklch(1 0 0 / .7); }
+.puzzle-screen { --carve-floor: oklch(.32 .07 55 / .5); --carve-rim: oklch(.3 .07 50); --carve-lip: oklch(.95 .06 80 / .55); }
+.puzzle-screen:has(.world-backdrop.material-stone) { --carve-floor: oklch(.24 .03 240 / .5); --carve-rim: oklch(.28 .03 240); --carve-lip: oklch(.95 .01 230 / .5); }
+.puzzle-screen:has(.world-backdrop.material-bench) { --carve-floor: oklch(.22 .05 45 / .55); --carve-rim: oklch(.22 .05 40); --carve-lip: oklch(.85 .07 70 / .45); }
+.puzzle-screen:has(.world-backdrop.material-linen) { --carve-floor: oklch(.5 .04 70 / .28); --carve-rim: oklch(.55 .05 70); --carve-lip: oklch(1 0 0 / .7); }
+.world-backdrop img { object-position: center top; }
+.is-celebrating .world-backdrop img { animation: none; }
+
+/* No floating panels: the sheet is just layout on the surface. */
+.puzzle-screen .puzzle-sheet, .puzzle-screen:has(.world-backdrop) .puzzle-sheet { background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; padding-inline: 0; }
+
+/* Story picture is inlaid into a recess cut into the surface. */
+.puzzle-screen:has(.world-backdrop) .scene { border: 0; outline: 0; border-radius: 18px; margin-bottom: .6rem;
+  box-shadow: 0 -2px 0 oklch(0 0 0 / .35), 0 2px 0 var(--carve-lip), 0 0 0 6px var(--carve-floor), 0 -1px 0 7px oklch(0 0 0 / .25), 0 2px 0 7px var(--carve-lip); }
+.puzzle-screen:has(.world-backdrop) .scene::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 8px 14px -4px oklch(0 0 0 / .6), inset 0 -2px 4px oklch(0 0 0 / .25), inset 0 0 0 1px oklch(0 0 0 / .35); }
+.puzzle-screen:has(.world-backdrop) .scene-text { z-index: 2; }
+
+/* Task and hint are painted plaques screwed onto the surface. */
+.puzzle-screen:has(.world-backdrop) .puzzle-task, .puzzle-screen:has(.world-backdrop) .puzzle-hint > p {
+  position: relative; padding: .45rem 1.6rem; border-radius: 10px; color: oklch(.28 .05 55);
+  background: radial-gradient(circle at 10px 50%, oklch(.55 .08 70) 0 2.5px, oklch(.85 .1 85) 3px, transparent 4px), radial-gradient(circle at calc(100% - 10px) 50%, oklch(.55 .08 70) 0 2.5px, oklch(.85 .1 85) 3px, transparent 4px), linear-gradient(180deg, oklch(.97 .03 88), oklch(.9 .05 82));
+  border: 1px solid oklch(.62 .07 70); box-shadow: 0 3px 0 oklch(.55 .07 65), 0 6px 10px oklch(0 0 0 / .35), inset 0 1px 0 oklch(1 0 0 / .8); }
+.puzzle-screen:has(.world-backdrop) .puzzle-hint > button { color: oklch(.98 .02 85); text-shadow: 0 1px 2px oklch(0 0 0 / .6); }
+
+/* The puzzle itself sits in a deep cavity carved into the surface (like the reference board). */
+.puzzle-screen .puzzle-world { border-radius: 22px; padding: 22px 26px 26px; color: oklch(.98 .02 85); background: var(--carve-floor) !important;
+  border: 3px solid var(--carve-rim);
+  box-shadow: inset 0 14px 22px -6px oklch(0 0 0 / .65), inset 0 -3px 0 oklch(1 0 0 / .14), inset 0 0 0 2px oklch(0 0 0 / .25), 0 2px 0 var(--carve-lip), 0 -2px 0 oklch(0 0 0 / .3) !important;
+  overflow: visible; }
+.puzzle-screen .puzzle-world .pz-display, .puzzle-screen .puzzle-world .pz-slot, .puzzle-screen .puzzle-world .pz-sudoku { color: var(--material-ink); }
+.puzzle-screen .puzzle-world .pz-display, .puzzle-screen .puzzle-world .pz-slot:not(.pz-slot-full) { background: color-mix(in oklab, var(--material-highlight) 78%, transparent); }
+.puzzle-screen .sudoku-tree-board { background: color-mix(in oklab, var(--material-wood-face) 85%, transparent); }
+.puzzle-screen .puzzle-world .pz-sudoku { background: color-mix(in oklab, var(--material-wood-edge) 30%, var(--material-wood-face)); }
+.puzzle-screen .puzzle-world .pz-sudoku-fixed { background: color-mix(in oklab, var(--material-wood-face) 80%, var(--material-highlight)); }
+.puzzle-screen .world-object-symbol { text-shadow: 0 2px 3px oklch(0 0 0 / .5); }
+.tier-little .puzzle-screen .puzzle-world, .tier-little.puzzle-screen .puzzle-world { border-radius: 30px; }
+.tier-big.puzzle-screen .puzzle-world { border-radius: 12px; }
+
+/* Bottom shelf carved across the full width; the Apple controls rest in it. */
+.world-ledge { margin-top: auto; margin-inline: calc(50% - 50vw); margin-bottom: -1rem; padding: 14px max(1rem, calc(50vw - 50% + .25rem)) calc(1rem + env(safe-area-inset-bottom)); position: relative; flex-shrink: 0;
+  background: linear-gradient(180deg, oklch(0 0 0 / .32), oklch(0 0 0 / .18) 30%, oklch(0 0 0 / .26));
+  box-shadow: inset 0 14px 16px -10px oklch(0 0 0 / .7), 0 -2px 0 var(--carve-lip), inset 0 -2px 0 oklch(1 0 0 / .12); }
+.world-ledge::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 8px; background: linear-gradient(180deg, transparent, oklch(0 0 0 / .2)); pointer-events: none; }
+.world-ledge .puzzle-navigation { margin: 0 auto; max-width: calc(56rem - 2rem); }
+.puzzle-screen .puzzle-navigation { padding-top: .5rem; }
+@media (max-width: 639px) {
+  .world-ledge { margin-bottom: calc(-1 * max(8px, env(safe-area-inset-bottom))); padding: 10px 10px max(8px, env(safe-area-inset-bottom)); }
+  .puzzle-screen .puzzle-world { padding: 12px 12px 16px; border-radius: 18px; }
+  .puzzle-screen:has(.world-backdrop) .scene { margin: 6px 6px .5rem; }
+  .puzzle-screen:has(.world-backdrop) .puzzle-task { padding: 4px 1.4rem; }
+}
+
+/* Loader waits on the same surface the puzzle will use. */
+.quest-loader { background: var(--material-wood-edge); overflow: hidden; }
+.quest-loader-surface { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; pointer-events: none; }
+.quest-loader-content { position: relative; padding: 1.6rem 1.4rem; border-radius: 28px; background: var(--glass-tint); border: .5px solid var(--glass-edge); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-shadow); }
+/* The carved cavity hugs the puzzle like the reference board, rather than spanning the screen. */
+.puzzle-screen .puzzle-world { width: fit-content; max-width: 100%; min-width: min(100%, 20rem); margin-inline: auto; }
+.puzzle-screen:has(.world-backdrop) .puzzle-hint > button { padding: .3rem 1rem; border-radius: 999px; text-decoration: none; color: oklch(.28 .05 55); text-shadow: none; background: linear-gradient(180deg, oklch(.97 .03 88), oklch(.9 .05 82)); border: 1px solid oklch(.62 .07 70); box-shadow: 0 3px 0 oklch(.55 .07 65), 0 5px 8px oklch(0 0 0 / .3); }

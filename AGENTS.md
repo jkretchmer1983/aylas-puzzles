@@ -16,3 +16,4 @@
 - Keep the picture reveal on a separate masked layer from image motion; begin after image load and loader dismissal so prefetched pictures also animate, without restarting for streamed frames.
 - Puzzle types are dealt per age band like a shuffled deck (src/gen/deck.ts) so every type plays before any repeats.
 - Keep local material surfaces and template-specific game treatments in PuzzleWorld, independent of streamed storyline art; Renderer retains generator-owned answers and uses the game Button variant so tactile styling never changes Apple navigation.
+- Play is one continuous scene: the full-screen material surface is the only background; the story picture is inlaid in a recess, the puzzle sits in a carved cavity sized to its content, and the Apple nav rests on a full-width carved ledge — never add floating panels or soft color washes over the surface. Why: the user wants everything to feel physically set into one real scene.

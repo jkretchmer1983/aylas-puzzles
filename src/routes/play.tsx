@@ -1,4 +1,4 @@
-import { WorldBackdrop } from "@/gen/PuzzleWorld";
+import { WorldBackdrop, worldFor } from "@/gen/PuzzleWorld";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -178,6 +178,7 @@ function Play() {
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} />
       <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>
+        <img className="quest-loader-surface" src={worldFor(spec.template).image} alt="" draggable={false} />
         <div className="quest-loader-content">
           <div className="quest-loader-emblem" aria-hidden="true"><Puzzle strokeWidth={1.5} /></div>
           <p className="quest-loader-text">Your next puzzle</p>
@@ -220,11 +221,13 @@ function Play() {
         )}
       </div>
 
+      <div className="world-ledge">
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
         <button className="nav-btn nav-soft" disabled={!trail.current.length} onClick={goPrev}>← Previous</button>
         <button className="nav-btn nav-soft" onClick={replay}>🔁 New numbers</button>
         <button className={cn("nav-btn nav-main", celebrating && "nav-glow")} onClick={goNext}>Next puzzle →</button>
       </nav>
+      </div>
     </main>
   );
 }
