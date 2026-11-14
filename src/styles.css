@@ -1049,3 +1049,73 @@ html, body { overflow-x: clip; }
  .forest-spatial .puzzle-task { min-height: 58px; font-size: 14px; }
  .forest-spatial .puzzle-navigation .wooden-action { height: 54px; min-height: 54px; font-size: 14px; }
 }
+
+/* Reference forest composition: the board owns the remaining viewport height.
+   The rack scales with it, while feedback and navigation keep reserved space. */
+.puzzle-screen.forest-spatial {
+  height: 100dvh; min-height: 0; max-width: 960px;
+  padding: max(8px, env(safe-area-inset-top)) 10px max(8px, env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+.forest-spatial .puzzle-sheet {
+  position: relative; display: flex; flex-direction: column;
+  flex: 1; min-height: 0; padding: 0;
+}
+.forest-spatial .puzzle-header.forest-reference-header { flex-basis: 60px; min-height: 60px; }
+.forest-spatial .story-illustration-frame { height: clamp(120px, 23dvh, 300px); }
+.forest-spatial .story-title-plaque h1 { font-size: clamp(16px, 2.5vw, 26px); }
+.forest-spatial .puzzle-task {
+  width: 94% !important; min-height: 54px;
+  padding: 9px 7% !important; font-size: clamp(13px, 2.1vw, 20px);
+  text-wrap: balance;
+}
+.forest-spatial .forest-sudoku {
+  --board-size: min(80cqw, 560px, calc((100cqh - 54px) / 1.22));
+  justify-content: center; gap: 4px;
+}
+.forest-spatial .sudoku-tree-board { width: var(--board-size); }
+.forest-spatial .forest-number-rack {
+  width: var(--board-size); max-width: none;
+  height: calc(var(--board-size) * .22); margin-top: 0; gap: 6px;
+}
+.forest-spatial .puzzle-world .forest-number-tile {
+  height: 100%; min-height: 0; flex: 1; min-width: 0;
+}
+.forest-spatial .forest-sudoku > div:last-child { flex: 0 0 46px; margin: 0; }
+.forest-spatial .pz-check { height: 44px; min-height: 44px; font-size: 15px; }
+.forest-spatial.is-solving .pz-check {
+  outline: 2px solid #fff4a0; outline-offset: -5px;
+  filter: drop-shadow(0 0 7px #ffca36);
+  box-shadow: 0 0 18px #ffbd35aa;
+}
+.forest-spatial.is-celebrating .pz-check { filter: none; box-shadow: none; }
+/* A small signpost sits beside the lower tree rather than consuming a row. */
+.forest-spatial .puzzle-hint {
+  position: absolute; right: 0; bottom: 0;
+  width: 68px; height: 64px; margin: 0; z-index: 5;
+}
+.forest-spatial .puzzle-hint::before {
+  content: ""; position: absolute; top: 26px; bottom: 0; left: 48%; width: 9px;
+  background: linear-gradient(90deg, #633610, #be8643, #764118);
+  border-radius: 2px; box-shadow: 2px 2px 3px #281b1480; z-index: -1;
+}
+.puzzle-screen.forest-spatial .puzzle-hint > .wooden-action {
+  width: 68px; min-height: 44px; padding: 6px 8px;
+  font-size: 11px; line-height: 1.1; white-space: normal; gap: 2px;
+  transform: rotate(-5deg);
+}
+.forest-spatial .forest-reference-hint svg { width: 14px; height: 18px; flex-shrink: 0; }
+.puzzle-screen.forest-spatial .puzzle-hint > .forest-hint-plaque {
+  bottom: 70px; right: 0; width: min(300px, 85vw); padding: 20px 24px !important;
+}
+.forest-spatial .puzzle-navigation .wooden-action-primary {
+  filter: drop-shadow(0 0 7px #ffcf40); outline: 2px solid #fff0a0; outline-offset: -7px;
+}
+.forest-spatial .pz-check:focus-visible,
+.forest-spatial .wooden-action:focus-visible { outline: 3px solid #fff7ba; outline-offset: 2px; }
+@media (max-height: 650px) {
+  .forest-spatial .puzzle-header.forest-reference-header { flex-basis: 48px; min-height: 48px; }
+  .forest-spatial .story-illustration-frame { height: 100px; }
+  .forest-spatial .puzzle-task { min-height: 46px; font-size: 12px; }
+  .forest-spatial .puzzle-navigation .wooden-action { min-height: 46px; height: 46px; font-size: 12px; }
+}
