@@ -1,5 +1,4 @@
 # Puzzle pictures
-- [ ] Review all 30 puzzle types on phone and iPad; repair flat interactions and off-screen controls; verify answers and touch flows.
 - [x] Refine materials toward the uploaded dimensional, polished game reference rather than hyperreal photography.
 - [x] Add tactile, puzzle-specific play surfaces and dimensional game pieces while preserving storyline art and Apple navigation.
 - [x] Animate placing and carving answers; verify touch, answers and phone fit.
