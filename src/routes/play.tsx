@@ -186,6 +186,12 @@ function Play() {
           <div className="quest-loader-track" aria-hidden="true"><span /></div>
         </div>
       </div>
+      <div className={cn("scene-banner", celebrating && "scene-party")} aria-hidden="true">
+        <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
+        {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
+          <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
+        </div>}
+      </div>
       <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className="pill">← {BANDS[band]?.label}</Link>
         <div className="flex items-center gap-2">
@@ -195,12 +201,6 @@ function Play() {
 
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
-          <div className="scene-artwork" aria-hidden="true">
-            <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
-            {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
-              <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
-            </div>}
-          </div>
           <div className="scene-text">
             <h1 className="scene-title">{shown?.key === key ? shown.title : spec.title}</h1>
             <p className="puzzle-prompt">{shown?.key === key ? shown.story : spec.story}</p>
