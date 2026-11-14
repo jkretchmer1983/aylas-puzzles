@@ -36,7 +36,7 @@ export const Route = createFileRoute("/play")({
   component: Play,
 });
 
-function PuzzleStage({ children }: { children: ReactNode }) {
+function PuzzleStage({ children, spatial }: { children: ReactNode; spatial: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -44,6 +44,7 @@ function PuzzleStage({ children }: { children: ReactNode }) {
     const outer = frame.current, inner = content.current;
     if (!outer || !inner) return;
     const fit = () => {
+      if (spatial) return setScale(1);
       if (!window.matchMedia("(max-width: 1024px)").matches) return setScale(1);
       setScale(Math.min(1, outer.clientHeight / Math.max(1, inner.offsetHeight), outer.clientWidth / Math.max(1, inner.scrollWidth)));
     };
@@ -52,7 +53,7 @@ function PuzzleStage({ children }: { children: ReactNode }) {
     window.addEventListener("resize", fit);
     fit();
     return () => { ro.disconnect(); window.removeEventListener("resize", fit); };
-  }, []);
+  }, [spatial]);
   return <div ref={frame} className="puzzle-stage"><div ref={content} className="puzzle-stage-content" style={{ transform: `scale(${scale})` }}>{children}</div></div>;
 }
 
@@ -207,7 +208,7 @@ function Play() {
           </div>
         </div>
         <p className="puzzle-task">{spec.task}</p>
-        <PuzzleStage>
+        <PuzzleStage spatial={spec.template === "sudoku"}>
           <PuzzleBody key={key} spec={spec} report={report} />
         </PuzzleStage>
         <div className="puzzle-hint text-center">
