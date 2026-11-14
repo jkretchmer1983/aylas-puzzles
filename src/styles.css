@@ -689,3 +689,115 @@ html, body { overflow-x: clip; }
 .puzzle-screen .puzzle-world[class] .pz-key.pz-key-right { background: var(--success); color: var(--success-foreground); text-shadow: none; }
 .puzzle-screen .puzzle-world[class] .pz-key.pz-key-wrong { background: var(--destructive); color: var(--destructive-foreground); text-shadow: none; }
 @media (prefers-reduced-motion: reduce) { .puzzle-screen .puzzle-world.stage-tree .pz-key { animation: none; } }
+
+/* Scene mechanisms: local shadows and highlights belong to physical objects, not the backdrop. */
+:root {
+  --scene-water: oklch(.65 .1 195 / .6);
+  --scene-water-light: oklch(.94 .045 190 / .8);
+  --scene-chalk: oklch(.96 .02 85);
+  --scene-pie: oklch(.55 .2 15);
+  --scene-pie-crust: oklch(.82 .11 75);
+  --scene-contact-shadow: 0 1px 0 var(--material-highlight), inset 0 5px 9px var(--material-shadow);
+}
+.choice-socket { min-width: 0; position: relative; padding: 5px; border-radius: 8px; box-shadow: var(--scene-contact-shadow); border: 1px solid var(--piece-edge); }
+.choice-socket .pz-key { position: relative; width: 100%; height: 100%; min-width: 0; }
+.choice-piece { overflow-wrap: anywhere; }
+.socket-filled .choice-piece { display: inline-block; animation: object-seat .4s ease-out; }
+.socket-filled { box-shadow: inset 0 8px 12px var(--material-shadow), 0 1px 0 var(--material-highlight); }
+.scene-contact { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+.scene-contact i { position: absolute; left: 50%; top: 65%; width: 5px; height: 5px; border-radius: 50%; background: var(--material-highlight); animation: contact-spark .55s ease-out both; --contact-x: -30px; }
+.scene-contact i:nth-child(2) { --contact-x: 30px; animation-delay: .06s; }
+.scene-contact i:nth-child(3) { --contact-x: 5px; animation-delay: .12s; }
+.scene-answer { position: relative; overflow: hidden; }
+.puzzle-screen .stage-workshop .scene-answer { background: var(--material-ink); color: var(--scene-chalk); border: 5px ridge var(--material-gold); text-shadow: 0 0 2px var(--scene-chalk); }
+.stage-workshop .scene-answer .answer-imprint { animation: chalk-write .35s ease-out; }
+.stage-workshop .choice-socket { border: 3px solid var(--material-wood-edge); background: color-mix(in oklab, var(--material-wood-edge) 70%, transparent); }
+.stage-workshop .socket-filled .pz-key { transform: translateY(3px); box-shadow: inset 0 2px 0 var(--material-highlight), 0 1px 0 var(--piece-edge); }
+.stage-workshop .world-object { border-radius: 6px; background: var(--material-metal-face); box-shadow: 0 4px 0 var(--material-metal-edge); }
+.stage-workshop .world-object-touched { transform: translateY(3px); box-shadow: 0 1px 0 var(--material-metal-edge); }
+.stage-workshop .order-track { border-bottom: 6px ridge var(--material-gold); padding-bottom: 7px; }
+.piece-rack { padding: 10px 6px; border-top: 3px solid var(--piece-edge); box-shadow: inset 0 4px 6px var(--material-shadow); }
+.stage-picnic .world-object { background: var(--material-linen-face); box-shadow: 0 3px 0 var(--material-linen-edge); }
+.stage-picnic .world-object-touched { transform: translateY(-7px); box-shadow: 0 7px 5px var(--material-shadow); }
+.puzzle-screen .stage-picnic .scene-answer { background: var(--material-linen-face); border: 3px double var(--material-linen-edge); outline: 2px dashed var(--material-linen-edge); outline-offset: -9px; }
+.stage-picnic .answer-imprint { animation: fabric-stamp .35s ease-out; }
+.stage-picnic .choice-socket { border: 2px dashed var(--material-linen-edge); }
+.stage-picnic .socket-filled { background: var(--material-linen-face); }
+.sharing-table { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.serving-basket { display: flex; flex-direction: column; min-width: 65px; min-height: 80px; font-size: 24px; background: var(--material-wood-face); border: 5px double var(--material-wood-edge); border-radius: 8px 8px 24px 24px; box-shadow: inset 0 5px 7px var(--material-shadow), 0 4px 0 var(--material-wood-edge); color: var(--material-carving); }
+.sharing-plates { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 340px; }
+.serving-plate { display: flex; flex-direction: column; width: 66px; height: 66px; border-radius: 50%; background: var(--material-linen-face); border: 5px double var(--material-linen-edge); box-shadow: inset 0 3px 5px var(--material-shadow), 0 3px 0 var(--material-linen-edge); color: var(--material-ink); }
+.serving-plate small { font-size: 18px; line-height: 1; }
+.serving-plate span { font-family: var(--font-play); font-size: 24px; animation: object-seat .3s ease-out; }
+.coin-tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 12px; border-radius: 8px; border: 5px ridge var(--material-wood-edge); box-shadow: inset 0 7px 12px var(--material-shadow); }
+.coin-tray .pz-coin { padding: 0; font-size: 18px; font-family: var(--font-play); transition: transform .3s, box-shadow .3s; }
+.coin-tray .coin-collected { transform: translateY(-8px); outline: 3px solid var(--material-gold); outline-offset: 2px; }
+.puzzle-screen .stage-market .scene-answer { background: var(--material-linen-face); border-radius: 2px; border: 0; border-top: 5px solid var(--material-red); box-shadow: 0 3px 0 var(--material-linen-edge), 0 5px 8px var(--material-shadow); }
+.stage-market .answer-imprint { animation: receipt-print .35s ease-out; }
+.stage-market .scene-contact i { background: var(--material-gold); border-radius: 0; }
+.stage-market .choice-socket { border: 0; box-shadow: none; }
+.stage-market .socket-filled .pz-key { animation: tag-pin .45s ease-out; }
+.balance-clues { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.market-scale { position: relative; width: min(100%, 380px); display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 14px 0 22px; }
+.scale-beam { position: absolute; top: 4px; left: 12%; right: 12%; height: 6px; background: var(--material-gold); box-shadow: 0 3px 0 var(--material-gold-edge); }
+.scale-post { position: absolute; top: 0; bottom: 0; left: calc(50% - 3px); width: 6px; background: var(--material-gold-edge); z-index: -1; }
+.scale-post::after { content: ''; position: absolute; bottom: 0; width: 60px; height: 8px; left: -27px; border-radius: 4px; background: var(--material-gold); box-shadow: 0 3px 0 var(--material-gold-edge); }
+.scale-pan { position: relative; text-align: center; padding: 10px 5px 5px; border-bottom: 5px solid var(--material-gold-edge); border-radius: 0 0 45% 45%; background: color-mix(in oklab, var(--material-gold) 80%, var(--material-highlight)); color: var(--material-carving); font-family: var(--font-play); font-size: 22px; overflow-wrap: anywhere; }
+.scale-pan::before { content: ''; position: absolute; height: 10px; top: -10px; left: 50%; border-left: 2px solid var(--material-gold-edge); }
+.scale-pan:active { animation: pan-settle .6s ease-out; }
+.scale-pan.pan-weighed { animation: pan-settle .6s ease-out; }
+.puzzle-screen .scale-pan, .puzzle-screen .serving-plate, .puzzle-screen .serving-basket { color: var(--material-carving); }
+.scale-pan { height: auto; min-height: 48px; white-space: normal; }
+.pie-board { display: flex; justify-content: center; }
+.fraction-pie { width: 150px; height: 150px; padding: 5px; border: 6px solid var(--material-linen-face); border-radius: 50%; box-shadow: 0 4px 0 var(--material-linen-edge), 0 8px 10px var(--material-shadow); background: var(--material-linen-face); }
+.fraction-pie svg { filter: drop-shadow(0 3px 1px var(--material-gold-edge)); }
+.fraction-pie path { stroke: var(--material-gold-edge); stroke-width: 3; }
+.pie-berry { fill: var(--scene-pie); }
+.pie-crust { fill: var(--scene-pie-crust); }
+.puzzle-screen .stage-temple .scene-answer { color: var(--material-carving); background: var(--material-stone-face); border: 4px ridge var(--material-gold); text-shadow: 0 1px 0 var(--material-highlight); }
+.stage-temple .answer-imprint { animation: inscription-write .5s ease-out; }
+.stage-temple .scene-contact i { background: var(--material-stone-face); }
+.stage-temple .choice-socket { border: 3px ridge var(--material-gold-edge); }
+.stage-temple .socket-filled .pz-key { transform: translateY(3px); box-shadow: inset 0 2px 6px var(--material-shadow); }
+.stage-temple .socket-filled::after { content: ''; position: absolute; inset: -3px; pointer-events: none; border: 2px solid var(--material-gold); animation: inscription-light .8s ease-out; }
+.river-trail { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px 6px; border-bottom: 3px solid var(--scene-water-light); }
+.trail-stone { width: 48px; height: 44px; display: grid; place-items: center; border-radius: 45% 55% 40% 50%; background: var(--material-stone-face); color: var(--material-ink); box-shadow: 0 4px 0 var(--material-stone-edge), 0 7px 6px var(--material-shadow); font-family: var(--font-play); font-size: 21px; font-weight: 700; }
+.trail-stone:nth-child(even) { margin-top: 8px; }
+.trail-gap { background: var(--scene-water); color: var(--scene-water-light); box-shadow: inset 0 4px 6px var(--material-shadow); }
+.puzzle-screen .stage-river .scene-answer { border-radius: 40% 45% 35% 40%; background: var(--material-stone-face); border: 3px solid var(--material-stone-edge); }
+.stage-river .scene-contact { animation: water-ring .6s ease-out; border: 2px solid var(--scene-water-light); }
+.stage-river .choice-socket { border-radius: 45%; border-color: var(--material-stone-edge); }
+.stage-river .socket-filled .pz-key { transform: translateY(3px); }
+.river-collection { display: flex; align-items: center; flex-direction: column; gap: 14px; }
+.river-collection .nim-stone-bed { padding: 10px; border-bottom: 4px solid var(--material-stone-edge); }
+.river-collection .nim-stone { padding: 0; border: 0; color: var(--material-ink); font-family: var(--font-play); font-size: 20px; font-weight: 700; }
+.river-collection .nim-stone-selected { transform: translateY(-7px); outline: 3px solid var(--material-gold); outline-offset: 2px; }
+.river-collection .nim-stone-taken { transform: translateY(55px) scale(.5); opacity: 0; }
+.river-catch { position: relative; width: 130px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--scene-water-light); background: var(--scene-water); box-shadow: inset 0 3px 5px var(--material-shadow); color: var(--material-ink); font-weight: 700; }
+.river-catch span { animation: water-ring .45s ease-out; }
+@keyframes object-seat { from { transform: translateY(-12px); } 65% { transform: translateY(2px); } to { transform: none; } }
+@keyframes contact-spark { from { opacity: 1; transform: translate(0,0); } to { opacity: 0; transform: translate(var(--contact-x), -25px); } }
+@keyframes water-ring { from { opacity: .3; scale: .8; } to { opacity: 1; scale: 1; } }
+@keyframes chalk-write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes inscription-write { from { clip-path: inset(0 0 100%); } to { clip-path: inset(0); } }
+@keyframes inscription-light { from { box-shadow: 0 0 12px var(--material-gold); } to { box-shadow: none; } }
+@keyframes receipt-print { from { transform: translateY(-30px); } to { transform: none; } }
+@keyframes fabric-stamp { from { scale: 1.15; opacity: .3; } to { scale: 1; opacity: 1; } }
+@keyframes tag-pin { from { rotate: -8deg; } 60% { rotate: 3deg; } to { rotate: 0deg; } }
+@keyframes pan-settle { 25% { transform: translateY(4px); } 65% { transform: translateY(-2px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .puzzle-world .scene-contact { display: none; }
+  .puzzle-world .socket-filled::after { animation: none; }
+}
+/* Reserve the ledge on iPad too; tall mechanisms fit into the remaining scene. */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .puzzle-screen { height: 100dvh; min-height: 0; overflow: hidden; }
+  .puzzle-header, .scene, .puzzle-task, .puzzle-hint { flex-shrink: 0; }
+  .puzzle-sheet { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .scene { height: 25dvh; min-height: 0; max-height: 300px; }
+  .puzzle-stage { position: relative; flex: 1; min-height: 0; }
+  .puzzle-stage-content { position: absolute; top: 0; left: 0; width: 100%; padding: 3px; }
+  .puzzle-feedback { min-height: 60px; flex-shrink: 0; }
+  .feedback { margin: 0; }
+  .puzzle-hint { margin-top: 8px; }
+}

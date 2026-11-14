@@ -43,7 +43,7 @@ function PuzzleStage({ children }: { children: ReactNode }) {
     const outer = frame.current, inner = content.current;
     if (!outer || !inner) return;
     const fit = () => {
-      if (!window.matchMedia("(max-width: 639px)").matches) return setScale(1);
+      if (!window.matchMedia("(max-width: 1024px)").matches) return setScale(1);
       setScale(Math.min(1, outer.clientHeight / Math.max(1, inner.offsetHeight), outer.clientWidth / Math.max(1, inner.scrollWidth)));
     };
     const ro = new ResizeObserver(fit);

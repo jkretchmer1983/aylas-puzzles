@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
 import { Button } from "@/components/ui/button";
 import { CarvedMark, PuzzleWorld } from "./PuzzleWorld";
+import { BalanceClues, SceneClues } from "./SceneMechanics";
 
 type Report = (ok: boolean) => void;
 
@@ -46,17 +47,22 @@ function Clock({ h, m }: { h: number; m: number }) {
   );
 }
 
-export function PuzzleVisual({ v }: { v: Visual }) {
+export function PuzzleVisual({ v, template }: { v: Visual; template?: string }) {
   if (v.type === "rows") return <CountingObjects rows={v.rows} />;
   if (v.type === "clock") return <Clock h={v.h} m={v.m} />;
-  if (v.type === "coins") return <div className="flex flex-wrap justify-center gap-2">{v.coins.map((c, i) => <span key={i} className={cn("pz-coin", c === 1 && "pz-coin-copper", c >= 25 && "pz-coin-big")}>{c}¢</span>)}</div>;
+  if (v.type === "coins") return <CoinTray coins={v.coins} />;
   if (v.type === "shapes") return <div className="flex flex-wrap justify-center gap-3">{v.shapes.map((s, i) => <ShapeSvg key={i} kind={s} />)}</div>;
-  if (v.type === "equations") return <div className="flex flex-col items-center gap-2">{v.lines.map((l, i) => <div key={i} className="pz-equation">{l}</div>)}</div>;
+  if (v.type === "equations") return template === "balance" ? <BalanceClues lines={v.lines} /> : <div className="flex flex-col items-center gap-2">{v.lines.map((l, i) => <div key={i} className="pz-equation">{l}</div>)}</div>;
   return (
     <div className="mx-auto grid w-fit grid-cols-3 gap-2">
       {v.grid.map((n, i) => <div key={i} className={cn("pz-cell", n === -1 && "pz-cell-glow")}>{n === -1 ? "❓" : n ?? ""}</div>)}
     </div>
   );
+}
+
+function CoinTray({ coins }: { coins: number[] }) {
+  const [collected, setCollected] = useState<number[]>([]);
+  return <div className="coin-tray" aria-label="Coin counting tray">{coins.map((c, i) => <Button variant="game" size="game" key={i} aria-label={`${c} cent coin ${i + 1}`} aria-pressed={collected.includes(i)} onClick={() => setCollected((old) => old.includes(i) ? old.filter((n) => n !== i) : [...old, i])} className={cn("pz-coin", c === 1 && "pz-coin-copper", c >= 25 && "pz-coin-big", collected.includes(i) && "coin-collected")}>{c}¢</Button>)}</div>;
 }
 
 function CountingObjects({ rows }: { rows: string[][] }) {
@@ -74,7 +80,7 @@ function Choice({ k, report }: { k: Extract<Kind, { type: "choice" }>; report: R
   return (
     <div className={cn("grid gap-3", k.options.length === 2 ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4")}>
       {k.options.map((o, i) => (
-        <Key key={i} className={cn(k.bigOptions && "pz-key-big", picked === i && (i === k.answer ? "pz-key-right" : "pz-key-wrong"))} onClick={() => { setPicked(i); report(i === k.answer); }}>{o}</Key>
+        <div className={cn("choice-socket", picked === i && "socket-filled")} key={i}><Key className={cn(k.bigOptions && "pz-key-big", picked === i && (i === k.answer ? "pz-key-right" : "pz-key-wrong"))} onClick={() => { setPicked(i); report(i === k.answer); }}><span className="choice-piece">{o}</span>{picked === i && <span className="scene-contact" aria-hidden="true"><i /><i /><i /></span>}</Key></div>
       ))}
     </div>
   );
@@ -84,7 +90,7 @@ function NumberPad({ k, report }: { k: Extract<Kind, { type: "number" }>; report
   const [v, setV] = useState("");
   return (
     <div className="mx-auto max-w-sm">
-      <div className="pz-display" aria-live="polite"><span key={v} className="answer-imprint">{v || <span className="opacity-30">?</span>}</span></div>
+      <div className="pz-display scene-answer" aria-live="polite"><span key={v} className="answer-imprint">{v || <span className="opacity-30">?</span>}</span>{v && <span key={`contact-${v}`} className="scene-contact" aria-hidden="true"><i /><i /><i /></span>}</div>
       <div className="mt-3 grid grid-cols-6 gap-2">
         {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((d) => <Key key={d} className="pz-key-pad" onClick={() => setV((x) => (x + d).slice(0, 4))}>{d}</Key>)}
         <Key className="pz-key-pad col-span-2" onClick={() => setV((x) => x.slice(0, -1))}>⌫</Key>
@@ -98,7 +104,7 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
   const [seq, setSeq] = useState<string[]>([]);
   return (
     <div>
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="order-track flex flex-wrap justify-center gap-2">
         {k.answer.map((_, i) => (
           <Button variant="game" size="game" key={i} aria-label={`Position ${i + 1}${seq[i] ? `: ${seq[i]}, remove` : ": empty"}`} className={cn("pz-slot", seq[i] && "pz-slot-full")} onClick={() => seq[i] && setSeq(seq.filter((_, j) => j !== i))}>
             <small>{i === 0 ? k.first : i === k.answer.length - 1 ? k.last : i + 1}</small>
@@ -106,7 +112,7 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
           </Button>
         ))}
       </div>
-      <div className="mt-3 flex flex-wrap justify-center gap-2">
+      <div className="piece-rack mt-3 flex flex-wrap justify-center gap-2">
         {k.items.filter((x) => !seq.includes(x)).map((x) => <Key key={x} onClick={() => setSeq([...seq, x])}>{x}</Key>)}
       </div>
       <CheckButton disabled={seq.length < k.answer.length} onClick={() => report(seq.every((x, i) => x === k.answer[i]))} />
@@ -142,6 +148,7 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   const [left, setLeft] = useState(k.stones);
   const [turn, setTurn] = useState<"you" | "robot" | "done">("you");
   const [msg, setMsg] = useState("Your turn!");
+  const [selected, setSelected] = useState<number[]>([]);
   useEffect(() => {
     if (turn !== "robot") return;
     const t = setTimeout(() => {
@@ -154,6 +161,7 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
     return () => clearTimeout(t);
   }, [turn, left, k.maxTake, report]);
   const take = (n: number) => {
+    setSelected([]);
     const now = left - n;
     setLeft(now);
     if (now === 0) { setTurn("done"); setMsg("You took the last one!"); report(true); }
@@ -161,12 +169,12 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   };
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="nim-stone-bed">{Array.from({ length: k.stones }, (_, i) => <span key={i} className={cn("nim-stone", i >= left && "nim-stone-taken")} aria-hidden={i >= left}>{k.icon}</span>)}</div>
+      <div className="river-collection" aria-label="River stone game"><div className="nim-stone-bed">{Array.from({ length: k.stones }, (_, i) => <Button variant="game" size="game" key={i} disabled={i >= left || turn !== "you"} aria-label={`Stone ${i + 1}`} aria-pressed={selected.includes(i)} className={cn("nim-stone", i >= left && "nim-stone-taken", selected.includes(i) && "nim-stone-selected")} onClick={() => setSelected((old) => old.includes(i) ? old.filter((n) => n !== i) : old.length < k.maxTake ? [...old, i] : old)}><span>{i + 1}</span></Button>)}</div><div className="river-catch" aria-hidden="true">{k.stones - left > 0 && <span key={left}>{k.stones - left}</span>}</div></div>
       <p className="world-status font-display text-xl font-semibold">{left} left · {msg}</p>
       {turn === "done" ? (
-        <Key onClick={() => { setLeft(k.stones); setTurn("you"); setMsg("Your turn!"); }}>Play again 🔁</Key>
+        <Key onClick={() => { setLeft(k.stones); setSelected([]); setTurn("you"); setMsg("Your turn!"); }}>Play again 🔁</Key>
       ) : (
-        <div className="flex gap-2">{Array.from({ length: k.maxTake }, (_, i) => i + 1).map((n) => <Key key={n} disabled={turn !== "you" || n > left} onClick={() => take(n)}>Take {n}</Key>)}</div>
+        <div className="flex flex-wrap justify-center gap-2">{selected.length ? <Key disabled={turn !== "you"} onClick={() => take(selected.length)}>Collect {selected.length}</Key> : Array.from({ length: k.maxTake }, (_, i) => i + 1).map((n) => <Key key={n} disabled={turn !== "you" || n > left} onClick={() => take(n)}>Take {n}</Key>)}</div>
       )}
     </div>
   );
@@ -176,7 +184,8 @@ export function PuzzleBody({ spec, report }: { spec: PuzzleSpec; report: Report 
   const k = spec.kind;
   return (
     <PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
-      {spec.visual && <PuzzleVisual v={spec.visual} />}
+      <SceneClues spec={spec} />
+      {spec.visual && spec.template !== "share" && <PuzzleVisual v={spec.visual} template={spec.template} />}
       {k.type === "choice" && <Choice k={k} report={report} />}
       {k.type === "number" && <NumberPad k={k} report={report} />}
       {k.type === "order" && <Order k={k} report={report} />}
