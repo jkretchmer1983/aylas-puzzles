@@ -1245,3 +1245,43 @@ html, body { overflow-x: clip; }
   letter-spacing: 0;
   text-wrap: balance;
 }
+
+/* One portrait composition, uniformly fitted to phones, tablets and landscape.
+   Surplus viewport space stays outside the tree instead of widening the art. */
+.forest-viewport {
+  position: fixed; inset: 0; width: 100%; height: 100dvh;
+  box-sizing: border-box; overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: radial-gradient(ellipse, #344323, #162012);
+  display: grid; place-items: center;
+}
+.forest-viewport > .puzzle-screen.forest-spatial {
+  position: absolute; left: 50%; top: 50%;
+  width: 393px; max-width: none; height: 852px; min-height: 0;
+  margin: 0; padding: 8px 10px; box-sizing: border-box;
+  transform: translate(-50%, -50%) scale(var(--forest-scale, 1));
+  transform-origin: center;
+}
+.forest-viewport .forest-spatial .puzzle-header.forest-reference-header { flex: 0 0 60px; min-height: 60px; }
+.forest-viewport .forest-spatial .story-illustration-frame { height: 196px; }
+.forest-viewport .forest-spatial .story-title-plaque { width: 246px; }
+.forest-viewport .forest-spatial .story-title-plaque h1 { font: 700 16px/1.1 var(--font-forest); }
+.forest-viewport .forest-spatial .puzzle-task {
+  height: 54px; min-height: 54px; flex: 0 0 54px;
+  padding: 9px 41.5px !important; font: 800 13px/1.25 var(--font-sans);
+}
+.forest-viewport .forest-spatial .sudoku-tree-board { width: var(--board-size); }
+.forest-viewport .forest-spatial .forest-number-rack {
+  width: var(--board-size); height: calc(var(--board-size) * .22);
+}
+.forest-viewport .forest-spatial .puzzle-world .forest-number-tile { height: 100%; }
+.forest-viewport .forest-spatial .forest-age-control { font-size: 14px; }
+.forest-viewport .forest-spatial .pz-check-wrap .pz-check { font-size: 15px; }
+.forest-viewport .forest-spatial .puzzle-navigation {
+  grid-template-columns: 30fr 30fr 40fr; gap: 3px;
+}
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action {
+  height: 58px; min-height: 58px; font-size: 13px;
+  padding: 10px 4px 13px; gap: 2px; white-space: nowrap;
+}
+.forest-viewport .forest-spatial .puzzle-navigation svg { width: 16px; height: 16px; }
