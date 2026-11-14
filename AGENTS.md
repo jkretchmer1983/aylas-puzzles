@@ -24,3 +24,4 @@
 - Forest Sudoku places cached story art in StoryIllustrationFrame below compact shared controls, with an overlapping dynamic title; height-aware board sizing reserves the hint, answer check, feedback and root navigation so decoration yields before touch targets.
 - SceneMechanics renders manipulatable visual clues from public task/visual data only; Renderer alone checks generator-owned answers, keeping physical play aids independent of correctness.
 - Agent integrations: public MCP server in src/lib/mcp/ reuses the seeded generator and never returns answers; why: assistants get the same puzzles without exposing solutions.
+- Forest Sudoku board grid tracks mirror the carved recesses measured from sudoku_board_blank (asymmetric rim, wider 2x2 gutters), and the story frame and title plaque are separate cutouts. Why: interactive cells and overlays must sit exactly on the painted art.

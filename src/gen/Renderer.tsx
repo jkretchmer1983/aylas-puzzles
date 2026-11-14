@@ -131,7 +131,7 @@ function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: R
         {cells.map((c, i) => {
           const fixed = k.given[i] !== null;
           return (
-            <Button variant="game" size="game" key={i} aria-label={`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel", i % 4 === 1 && "mr-1", Math.floor(i / 4) === 1 && "mb-1")}>
+            <Button variant="game" size="game" key={i} aria-label={`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel")}>
               {c !== null && <CarvedMark key={carving?.cell === i ? carving.revision : `fixed-${c}`} value={k.symbols[c] ?? ""} fresh={!fixed && carving?.cell === i} />}
             </Button>
           );

@@ -981,12 +981,12 @@ html, body { overflow-x: clip; }
 .forest-spatial {
   --forest-environment: url('/__l5e/assets-v1/a8279454-6780-47ba-93cc-5444b979bd42/forest-forest_background.png');
   --forest-board-art: url('/__l5e/assets-v1/8f8b317b-7f55-4784-8b3a-edecb35433f2/forest-sudoku_board_blank.png');
-  --forest-tile-art: url('/__l5e/assets-v1/7670785a-8c8a-4989-b913-0491b0a39109/forest-number_tile_1.png');
-  --forest-instruction-art: url('/__l5e/assets-v1/220adbb1-9efb-45d7-8387-9ffeb4e3c175/forest-instruction_plaque.png');
-  --forest-gold-art: url('/__l5e/assets-v1/599502c0-0c0b-4458-ba64-143abf2f5782/forest-previous_button.png');
-  --forest-green-art: url('/__l5e/assets-v1/94db5d03-d56e-47a2-a5b4-6cb356650aaf/forest-next_puzzle_button.png');
-  --forest-hint-art: url('/__l5e/assets-v1/220adbb1-9efb-45d7-8387-9ffeb4e3c175/forest-instruction_plaque.png');
-  --forest-age-art: url('/__l5e/assets-v1/220adbb1-9efb-45d7-8387-9ffeb4e3c175/forest-instruction_plaque.png');
+  --forest-tile-art: url('/__l5e/assets-v1/94e8dbe0-21a2-4296-ace0-2d9b15b36354/number_tile_1_clean.png');
+  --forest-instruction-art: url('/__l5e/assets-v1/9fc2db95-732a-485a-aadd-f738cf2f2151/instruction_plaque_clean.png');
+  --forest-gold-art: url('/__l5e/assets-v1/447e6c30-28bd-4958-add1-536fc79a3120/previous_button_clean.png');
+  --forest-green-art: url('/__l5e/assets-v1/491dd877-d6e4-4e92-b52c-8b451b288604/next_puzzle_button_clean.png');
+  --forest-hint-art: url('/__l5e/assets-v1/9fc2db95-732a-485a-aadd-f738cf2f2151/instruction_plaque_clean.png');
+  --forest-age-art: url('/__l5e/assets-v1/9fc2db95-732a-485a-aadd-f738cf2f2151/instruction_plaque_clean.png');
   width: 100%; max-width: 820px; padding: max(10px, env(safe-area-inset-top)) 3% max(20px, env(safe-area-inset-bottom)); gap: 0;
 }
 .forest-spatial .world-backdrop { background: var(--forest-environment) center / cover; }
@@ -1118,4 +1118,32 @@ html, body { overflow-x: clip; }
   .forest-spatial .story-illustration-frame { height: 100px; }
   .forest-spatial .puzzle-task { min-height: 46px; font-size: 12px; }
   .forest-spatial .puzzle-navigation .wooden-action { min-height: 46px; height: 46px; font-size: 12px; }
+}
+
+/* Forest Sudoku art alignment: tracks mirror the carved recesses in sudoku_board_blank (364x358),
+   including its asymmetric outer rim and wider central 2x2 gutters. */
+.forest-spatial .sudoku-tree-board {
+  padding: 0; gap: 0;
+  grid-template-columns: 6.32fr 20.88fr 1.1fr 20.33fr 3.3fr 20.33fr 1.1fr 20.33fr 6.32fr;
+  grid-template-rows: 6.15fr 21.23fr 1.12fr 20.67fr 3.35fr 20.67fr 1.12fr 20.11fr 5.59fr;
+}
+.forest-spatial .sudoku-tree-board > :nth-child(4n+1) { grid-column: 2; }
+.forest-spatial .sudoku-tree-board > :nth-child(4n+2) { grid-column: 4; }
+.forest-spatial .sudoku-tree-board > :nth-child(4n+3) { grid-column: 6; }
+.forest-spatial .sudoku-tree-board > :nth-child(4n+4) { grid-column: 8; }
+.forest-spatial .sudoku-tree-board > :nth-child(-n+4) { grid-row: 2; }
+.forest-spatial .sudoku-tree-board > :nth-child(n+5):nth-child(-n+8) { grid-row: 4; }
+.forest-spatial .sudoku-tree-board > :nth-child(n+9):nth-child(-n+12) { grid-row: 6; }
+.forest-spatial .sudoku-tree-board > :nth-child(n+13) { grid-row: 8; }
+.forest-spatial .sudoku-tree-board > .pz-sudoku { margin: 0; min-height: 0; min-width: 0; border-radius: 10%; outline-offset: -2px; }
+
+/* Story window: the picture runs beneath the opaque bark on every side, and stays covered at image-motion extremes. */
+.forest-spatial .story-window-content { inset: 7% 3% 7% 4%; border-radius: 6%/14%; }
+.forest-spatial .story-window-art .scene-img { inset: -4%; width: 108%; height: 108%; }
+.forest-spatial .story-window-border { filter: drop-shadow(0 3px 3px #24140a8c); }
+/* Separate full-silhouette title plaque (leaves complete), placed where the frame's own plaque sat. */
+.forest-spatial .story-title-plaque {
+  left: 0; bottom: -2%; width: 66%; height: auto; aspect-ratio: 641 / 223;
+  padding: 3% 12% 2%; background: center / 100% 100% no-repeat;
+  filter: drop-shadow(0 3px 3px #24140a8c);
 }
