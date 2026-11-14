@@ -23,3 +23,4 @@
 - Sudoku board padding uses stage-relative bounded lengths, never percentages of its wider parent, and tablet decorations require sufficient viewport height; this prevents narrow distorted boards in short editor previews.
 - Forest Sudoku places cached story art in StoryIllustrationFrame below compact shared controls, with an overlapping dynamic title; height-aware board sizing reserves the hint, answer check, feedback and root navigation so decoration yields before touch targets.
 - SceneMechanics renders manipulatable visual clues from public task/visual data only; Renderer alone checks generator-owned answers, keeping physical play aids independent of correctness.
+- Agent integrations: public MCP server in src/lib/mcp/ reuses the seeded generator and never returns answers; why: assistants get the same puzzles without exposing solutions.
