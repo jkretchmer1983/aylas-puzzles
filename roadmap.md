@@ -17,3 +17,4 @@
 - [x] Refine forest Sudoku integration, align wooden signs and lettering to the reference, and verify phone/iPad fit.
 - [x] Match forest Sudoku button proportions and placement to the main reference; verify phone and iPad touch use.
 - [x] Correct Sudoku composition to the latest reference: cinematic story window, larger board, chunky root navigation, phone/iPad comparison.
+- [x] Fix the tiny Sudoku board in the shorter, wide preview; verify square cells, usable targets and wooden navigation at the reported size.
