@@ -801,3 +801,68 @@ html, body { overflow-x: clip; }
   .feedback { margin: 0; }
   .puzzle-hint { margin-top: 8px; }
 }
+
+/* Story art lives on the surface, not in a second framed board. */
+.puzzle-screen:has(.world-backdrop) .scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  align-items: center;
+  gap: 12px;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  flex-shrink: 0;
+  overflow: visible;
+  margin: 0 0 8px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.puzzle-screen:has(.world-backdrop) .scene::after { display: none; }
+.scene-artwork {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  width: 150px;
+  height: 140px;
+  pointer-events: none;
+  isolation: isolate;
+  /* A painted, irregular silhouette, with no rectangular frame or backing. */
+  border-radius: 42% 58% 36% 64% / 55% 38% 62% 45%;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse at center, var(--ink) 57%, transparent 73%);
+  mask-image: radial-gradient(ellipse at center, var(--ink) 57%, transparent 73%);
+}
+.scene-artwork .scene-img { object-position: center; }
+.puzzle-screen:has(.world-backdrop) .scene-text {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  color: var(--material-ink);
+  text-shadow: 0 1px 1px var(--material-highlight), 0 0 5px var(--material-highlight);
+}
+.puzzle-screen .scene-text .scene-title,
+.puzzle-screen .scene-text .puzzle-prompt {
+  display: block;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-shadow: inherit;
+  letter-spacing: 0;
+}
+.puzzle-screen .scene-title { font-size: 24px; margin: 0; }
+.puzzle-screen .puzzle-prompt { font-size: 15px; line-height: 1.35; max-height: 5.4em; overflow: auto; }
+.puzzle-screen .scene-party { animation: none; }
+.puzzle-screen .scene-party .scene-artwork { animation: scene-jump .5s ease-in-out 3; }
+@media (max-width: 639px) {
+  .puzzle-screen:has(.world-backdrop) .scene { grid-template-columns: minmax(0, 1fr) 96px; gap: 4px; margin: 0 0 4px; }
+  .scene-artwork { width: 96px; height: 110px; }
+  .puzzle-screen .scene-title { font-size: 20px; }
+  .puzzle-screen .puzzle-prompt { font-size: 13px; line-height: 1.3; max-height: 5.2em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .puzzle-screen .scene-party .scene-artwork { animation: none; }
+}

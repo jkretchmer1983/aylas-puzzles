@@ -25,8 +25,11 @@ function Motif({ theme }: { theme: DrawingTheme }) {
   }
 }
 
-export function PuzzleDrawing({ template, seed }: { template: string; seed: number }) {
+export function PuzzleDrawing({ template, seed, ornament = false }: { template: string; seed: number; ornament?: boolean }) {
   const art = drawingFor(template, seed);
+  if (ornament) return <svg className={`puzzle-drawing drawing-variant-${art.variant}`} viewBox="-145 -145 290 290" aria-hidden="true" focusable="false">
+    <g transform={`rotate(${art.tilt})`}><g className="drawing-character"><Motif theme={art.theme} /></g></g>
+  </svg>;
   return <svg className={`puzzle-drawing drawing-variant-${art.variant}`} viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
     <path d="M0 260 Q180 190 380 265 T800 235 V320 H0 Z" className="drawing-land" />
     {art.sparks.map((spark, i) => <path key={i} d={`M${spark.x - spark.size} ${spark.y} h${spark.size * 2} M${spark.x} ${spark.y - spark.size} v${spark.size * 2}`} className="drawing-spark drawing-pulse" />)}
