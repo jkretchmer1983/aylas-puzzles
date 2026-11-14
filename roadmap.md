@@ -12,3 +12,5 @@
 - [x] Replace flat patterns with six real places (tree, river, workshop, picnic, market, temple); pieces made of each place (bark chips, pebbles, patches, tags, tablets)
 - [x] Add scene-integrated play moments beyond tree sudoku: river collections, workshop sockets, picnic serving, market weighing and temple inscriptions.
 - [x] Verify the new interactions, answers and phone/iPad fit; preserve tree sudoku and storyline art.
+- [x] Pass 1: illustrated forest Sudoku, carved board and wooden controls; phone/iPad screenshots and functional checks ready for user review.
+- [ ] Pass 2: physical interactions and animations — blocked until the user approves Pass 1.

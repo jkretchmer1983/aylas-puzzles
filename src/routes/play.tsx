@@ -13,6 +13,7 @@ import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
 import { Puzzle } from "lucide-react";
+import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -173,7 +174,7 @@ function Play() {
   const celebrating = result?.ok;
 
   return (
-    <main className={cn("puzzle-screen mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
+    <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} />
@@ -202,8 +203,7 @@ function Play() {
       <section className="puzzle-sheet">
         <div className={cn("scene", celebrating && "scene-party")}>
           <div className="scene-text">
-            <h1 className="scene-title">{shown?.key === key ? shown.title : spec.title}</h1>
-            <p className="puzzle-prompt">{shown?.key === key ? shown.story : spec.story}</p>
+            <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
           </div>
         </div>
         <p className="puzzle-task">{spec.task}</p>
@@ -211,7 +211,8 @@ function Play() {
           <PuzzleBody key={key} spec={spec} report={report} />
         </PuzzleStage>
         <div className="puzzle-hint text-center">
-          {hint ? <p className="rounded-2xl bg-secondary p-3 text-lg">💡 {spec.hint}</p> : <button className="text-base font-bold text-primary underline" onClick={() => setHint(true)}>Need a hint?</button>}
+          {hint && <p className="forest-hint-plaque">{spec.hint}</p>}
+          <WoodenActionButton onClick={() => setHint((v) => !v)}>{hint ? "Close hint" : "Need a hint?"}</WoodenActionButton>
         </div>
       </section>
 
@@ -225,9 +226,9 @@ function Play() {
 
       <div className="world-ledge">
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
-        <button className="nav-btn nav-soft" disabled={!trail.current.length} onClick={goPrev}>← Previous</button>
-        <button className="nav-btn nav-soft" onClick={replay}>🔁 New numbers</button>
-        <button className={cn("nav-btn nav-main", celebrating && "nav-glow")} onClick={goNext}>Next puzzle →</button>
+        <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>← Previous</WoodenActionButton>
+        <WoodenActionButton onClick={replay}>New numbers</WoodenActionButton>
+        <WoodenActionButton primary onClick={goNext}>Next puzzle →</WoodenActionButton>
       </nav>
       </div>
     </main>

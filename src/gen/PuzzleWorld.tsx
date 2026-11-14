@@ -5,6 +5,7 @@ import workshop from "@/assets/scene-workshop.jpg";
 import picnic from "@/assets/scene-picnic.jpg";
 import market from "@/assets/scene-market.jpg";
 import temple from "@/assets/scene-temple.jpg";
+import { EngravedNumber } from "./ForestObjects";
 
 /** Each place is a real scene; its pieces are made of that place (bark chips, pebbles, price tags…). */
 const STAGES = {
@@ -51,7 +52,7 @@ const WORLDS: Record<string, { surface: string; stage: Stage }> = {
 };
 
 export function worldFor(template: string) {
-  const w = WORLDS[template] ?? WORLDS.count!;
+  const w = WORLDS[template] ?? { surface: "basket", stage: "picnic" as const };
   return { ...w, ...STAGES[w.stage] };
 }
 
@@ -72,7 +73,7 @@ export function PuzzleWorld({ template, children }: { template: string; children
 export function CarvedMark({ value, fresh }: { value: string; fresh: boolean }) {
   const numeric = /^\d+$/.test(value);
   return <span className={fresh ? "carved-mark carved-fresh" : "carved-mark"}>
-    {numeric ? <svg viewBox="0 0 64 64" aria-hidden="true" className="carved-number"><text x="32" y="47" textAnchor="middle">{value}</text></svg> : <span className="carved-symbol">{value}</span>}
+    {numeric ? <EngravedNumber value={value} /> : <span className="carved-symbol">{value}</span>}
     {fresh && <span className="carving-dust" aria-hidden="true"><i /><i /><i /><i /><i /></span>}
   </span>;
 }

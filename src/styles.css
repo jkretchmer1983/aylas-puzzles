@@ -858,3 +858,80 @@ html, body { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .puzzle-screen .scene-party { animation: none; }
 }
+
+/* Pass 1: illustrated physical objects, with no new motion until visual approval. */
+:root {
+  --forest-ink: oklch(.26 .065 55);
+  --forest-cut: oklch(.33 .08 53);
+  --forest-floor: oklch(.48 .1 57);
+  --forest-light: oklch(.9 .12 80);
+  --forest-glow: oklch(.94 .17 92);
+  --forest-shadow: oklch(.15 .04 50 / .65);
+  --forest-green: oklch(.36 .09 140);
+  --forest-label: oklch(.96 .06 86);
+}
+.forest-game-scene { height: 100dvh; min-height: 0; max-width: 720px; padding: max(8px, env(safe-area-inset-top)) 18px max(8px, env(safe-area-inset-bottom)); overflow: hidden; color: var(--forest-ink); }
+.forest-game-scene *, .forest-game-scene *::after { letter-spacing: 0; }
+.forest-game-scene .puzzle-sheet { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.forest-game-scene .world-backdrop { background: url('./assets/forest-empty-scene.jpg') center / cover; }
+.forest-game-scene .world-backdrop img { display: none; }
+.forest-game-scene .scene-banner { position: absolute; top: 62px; right: 24px; width: 92px; height: 62px; margin: 0; z-index: 4; border: 5px solid var(--forest-cut); border-radius: 38% 28% 34% 26%; box-shadow: 0 3px 7px var(--forest-shadow); }
+.forest-spatial .scene-banner { top: 9px; right: 80px; width: 54px; height: 44px; }
+.forest-game-scene .puzzle-header { display: grid; grid-template-columns: minmax(0,1fr) auto; min-height: 46px; margin-bottom: 4px; z-index: 5; }
+.forest-game-scene .pill { color: var(--forest-ink); font-family: Georgia, serif; background: url('./assets/forest/plaque.png') center / 100% 100%; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; padding: 12px 15px; font-size: 13px; min-height: 44px; text-decoration: none; }
+.forest-game-scene .puzzle-header > a { justify-self: start; }
+.forest-game-scene .scene-text { padding: 0 !important; text-shadow: none !important; }
+.wooden-title-sign { background: url('./assets/forest/sign.png') center / 100% 100%; min-height: 88px; padding: 17px 28px 18px; text-align: center; }
+.wooden-title-sign h1 { font: bold 26px/1.05 Georgia, serif; color: var(--forest-ink); margin: 0; letter-spacing: 0; }
+.wooden-title-sign p { font-size: 13px; line-height: 1.25; margin: 5px 0 0; max-height: 3.75em; overflow: auto; color: var(--forest-ink); }
+.forest-game-scene .puzzle-task { background: url('./assets/forest/plaque.png') center / 100% 100% !important; border: 0 !important; box-shadow: none !important; color: var(--forest-ink) !important; margin: 0 auto 8px; padding: 14px 28px !important; width: 100% !important; font: bold 16px/1.25 Georgia, serif; border-radius: 0 !important; min-height: 66px; }
+.forest-game-scene .puzzle-stage { position: relative; flex: 1; min-height: 0; margin-top: 0; }
+.forest-game-scene .puzzle-stage-content { position: absolute; top: 0; left: 0; width: 100%; padding: 0; }
+.forest-game-scene .puzzle-world { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; min-width: 0; width: 100%; color: var(--forest-ink); }
+.forest-sudoku { width: 100%; }
+.forest-game-scene .sudoku-tree-board { width: min(100%, 460px); aspect-ratio: 1; grid-template-columns: repeat(4,minmax(0,1fr)); grid-template-rows: repeat(4,minmax(0,1fr)); gap: 0; padding: 3.4%; border: 0 !important; border-radius: 0; background: url('./assets/forest/board.png') center / 100% 100% !important; box-shadow: none !important; }
+.forest-game-scene .puzzle-world .pz-sudoku { width: 100%; height: 100%; min-height: 44px; margin: 0; border: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 12px; opacity: 1; padding: 0; transform: none; }
+.forest-game-scene .pz-sudoku-sel { outline: 2px solid var(--forest-glow); outline-offset: -4px; box-shadow: inset 0 0 10px var(--forest-glow), 0 0 7px var(--forest-glow) !important; }
+.forest-game-scene .forest-numeral { width: 85%; height: 85%; max-width: 86px; overflow: visible; font-family: Georgia, serif; font-size: 76px; font-weight: 500; }
+.engraving-mask { fill: oklch(1 0 0); }
+.engraving-lip { fill: var(--forest-light); }
+.engraving-depth { fill: var(--forest-cut); }
+.engraving-floor { fill: var(--forest-floor); }
+.forest-game-scene .forest-number-rack { width: min(95%,440px); display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; margin-top: 10px; }
+.forest-game-scene .puzzle-world .forest-number-tile { background: url('./assets/forest/tile.png') center / 100% 100% !important; border: 0 !important; border-radius: 0 !important; width: 100%; height: auto; min-height: 60px; aspect-ratio: .78; padding: 8px 5px 12px; rotate: 0deg; box-shadow: none !important; color: var(--forest-ink); animation: none; text-shadow: none; }
+.forest-game-scene .forest-number-tile:nth-child(2) { rotate: 2deg; }
+.forest-game-scene .forest-number-tile:nth-child(3) { rotate: -2deg; }
+.forest-game-scene .pz-check, .wooden-action { background: url('./assets/forest/plaque.png') center / 100% 100% !important; color: var(--forest-ink) !important; border: 0; box-shadow: none !important; border-radius: 0; min-height: 44px; padding: 10px 16px; font: bold 14px/1.15 Georgia, serif; white-space: normal; }
+.forest-game-scene .pz-check { font-size: 15px; min-height: 44px; padding: 10px 24px; }
+.forest-game-scene .puzzle-hint { position: relative; min-height: 44px; margin-top: 4px; }
+.forest-game-scene .puzzle-hint .wooden-action { min-width: 158px; }
+.forest-game-scene .forest-hint-plaque { position: absolute; bottom: 48px; z-index: 10; width: 100%; padding: 20px 24px !important; background: url('./assets/forest/plaque.png') center / 100% 100% !important; color: var(--forest-ink); font-size: 15px; box-shadow: none !important; border: 0 !important; }
+.forest-game-scene .puzzle-feedback { flex-shrink: 0; height: 28px; min-height: 28px; }
+.forest-game-scene .feedback { font-size: 18px; padding: 2px 12px; margin: 0; }
+.forest-game-scene .world-ledge { background: none; box-shadow: none; padding: 0 14px max(8px, env(safe-area-inset-bottom)); margin-bottom: -8px; }
+.forest-game-scene .world-ledge::before { display: none; }
+.forest-game-scene .puzzle-navigation { padding: 0; gap: 5px; max-width: 550px; }
+.forest-game-scene .wooden-action-primary { background-color: var(--forest-green) !important; background-blend-mode: multiply; color: var(--forest-label) !important; }
+.forest-game-scene .quest-loader-surface { content: url('./assets/forest-empty-scene.jpg'); }
+.forest-game-scene .carving-dust { display: none; }
+.forest-game-scene .carved-mark, .forest-game-scene .carved-mark * { animation: none !important; }
+@media (min-width: 640px) {
+  .forest-game-scene .wooden-title-sign { min-height: 114px; }
+  .forest-game-scene .wooden-title-sign h1 { font-size: 32px; }
+  .forest-game-scene .puzzle-task { font-size: 20px; min-height: 84px; }
+}
+@media (max-height: 740px) {
+  .forest-game-scene .wooden-title-sign { min-height: 68px; padding: 12px 24px; }
+  .forest-game-scene .wooden-title-sign h1 { font-size: 21px; }
+  .forest-game-scene .puzzle-task { min-height: 52px; padding: 10px 24px !important; font-size: 14px; }
+}
+
+/* Illustrated silhouettes trim the source crops rather than leaving rectangular scenery edges. */
+.forest-game-scene .wooden-title-sign { clip-path: polygon(9% 6%, 92% 5%, 99% 27%, 96% 79%, 88% 96%, 11% 96%, 2% 78%, 0 30%); }
+.forest-game-scene .wooden-title-sign h1 { white-space: normal; overflow-wrap: anywhere; text-wrap: balance; font-size: 24px; line-height: 1.08; max-width: 100%; }
+.forest-game-scene .puzzle-task { clip-path: polygon(5% 3%, 94% 3%, 100% 30%, 98% 79%, 92% 98%, 7% 98%, 0 73%, 0 26%); }
+.forest-game-scene .forest-number-tile { clip-path: polygon(19% 6%, 72% 6%, 94% 20%, 95% 76%, 86% 96%, 13% 96%, 1% 80%, 8% 26%); }
+.forest-game-scene .wooden-action, .forest-game-scene .pill, .forest-game-scene .pz-check { clip-path: polygon(8% 2%, 93% 2%, 100% 25%, 98% 80%, 91% 98%, 8% 98%, 0 77%, 0 28%); }
+@media (max-height: 740px) { .forest-game-scene .wooden-title-sign h1 { font-size: 20px; } }
+
+.forest-game-scene .wooden-title-sign h1 { width: 100%; max-width: 260px; margin-inline: auto; font-size: 24px; white-space: normal !important; }

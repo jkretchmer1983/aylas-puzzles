@@ -4,6 +4,7 @@ import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
 import { Button } from "@/components/ui/button";
 import { CarvedMark, PuzzleWorld } from "./PuzzleWorld";
 import { BalanceClues, SceneClues } from "./SceneMechanics";
+import { EngravedNumber } from "./ForestObjects";
 
 type Report = (ok: boolean) => void;
 
@@ -125,7 +126,7 @@ function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: R
   const [sel, setSel] = useState<number | null>(k.given.findIndex((x) => x === null));
   const [carving, setCarving] = useState<{ cell: number; revision: number } | null>(null);
   return (
-    <div className="flex flex-col items-center">
+    <div className="forest-sudoku flex flex-col items-center">
       <div className="sudoku-tree-board">
         {cells.map((c, i) => {
           const fixed = k.given[i] !== null;
@@ -136,8 +137,8 @@ function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: R
           );
         })}
       </div>
-      <div className="mt-3 flex gap-2">
-        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}>{s}</Key>)}
+      <div className="forest-number-rack mt-3 flex gap-2">
+        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{/^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
       </div>
       <CheckButton disabled={cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
     </div>
