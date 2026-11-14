@@ -9,3 +9,4 @@
 - [x] Prefetch the next puzzle's picture while the current one is being solved.
 - [x] Reveal incoming pictures with a feathered watercolor wash; verify phone layout, next-puzzle transitions and reduced motion.
 - [x] Replace soft gradient backgrounds with real surfaces; color comes from painted objects
+- [x] Replace flat patterns with six real places (tree, river, workshop, picnic, market, temple); pieces made of each place (bark chips, pebbles, patches, tags, tablets)
