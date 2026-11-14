@@ -20,4 +20,5 @@
 - ForestObjects owns reusable wooden controls and layered SVG engraving; Renderer alone validates answers. Why: visual depth must not change puzzle correctness.
 - Forest Sudoku uses isolated wooden number pieces and round upper-corner controls, scoped to spatial play, so reference proportions do not alter other puzzles.
 - Forest Sudoku sizes its board and bark rack from the available stage height instead of shrinking the whole interface; isolated wooden artwork keeps scene edges aligned and touch targets usable.
+- Forest Sudoku places cached story art in StoryIllustrationFrame below compact shared controls, with an overlapping dynamic title; height-aware board sizing reserves the hint, answer check, feedback and root navigation so decoration yields before touch targets.
 - SceneMechanics renders manipulatable visual clues from public task/visual data only; Renderer alone checks generator-owned answers, keeping physical play aids independent of correctness.

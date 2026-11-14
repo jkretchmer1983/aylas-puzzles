@@ -977,83 +977,68 @@ html, body { overflow-x: clip; }
 .forest-game-scene .puzzle-navigation .wooden-action { min-width: 0; min-height: 52px; font-size: 12px; padding-inline: 14px; }
 .forest-game-scene .forest-hint-plaque { padding: 22px 12% !important; font-family: var(--font-forest); }
 .puzzle-screen.forest-game-scene .puzzle-hint > .forest-hint-plaque { position: absolute; bottom: 48px; margin: 0; width: 100%; }
-.forest-spatial { padding-inline: max(18px, 8%); }
-.forest-spatial .world-backdrop { background-size: 100% 100%; }
-.forest-spatial .scene-banner { top: 12px; right: 43%; width: 38px; height: 32px; border-width: 3px; }
-.forest-spatial .puzzle-header { min-height: 44px; margin: 0; }
-.forest-spatial .pill { font-size: 11px; padding-inline: 16px; }
-.forest-spatial .puzzle-stage { container-type: size; }
-.forest-spatial .puzzle-stage-content { height: 100%; }
-.forest-spatial .puzzle-world,
-.forest-spatial .world-content,
-.forest-spatial .world-content > div { height: 100%; }
-.forest-spatial .forest-sudoku { height: 100%; gap: 0; }
-.forest-spatial .sudoku-tree-board {
-  flex: 0 0 auto; width: min(100%, 460px, calc(100cqh - 154px));
-  padding: 3.8%; gap: 1.3%;
-  mask-image: linear-gradient(to right, transparent, var(--foreground) 1%, var(--foreground) 99%, transparent), linear-gradient(to bottom, transparent, var(--foreground) 1%, var(--foreground) 99%, transparent);
-  mask-composite: intersect;
+/* Latest reference composition: art above the carving, controls on the roots. */
+.forest-spatial {
+  --board-limit: 66%;
+  width: 100%; max-width: 820px; padding: max(8px, env(safe-area-inset-top)) 3% max(18px, env(safe-area-inset-bottom));
+  gap: 0;
 }
+.forest-spatial .world-backdrop { background-size: cover; }
+.forest-spatial .puzzle-header.forest-reference-header { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: start; min-height: 66px; height: 8dvh; max-height: 94px; margin: 0; }
+.forest-header-left { display: flex; min-width: 0; gap: 6px; align-items: center; }
+.forest-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.forest-spatial .puzzle-header .forest-round-control { width: 44px; height: 44px; min-height: 44px; padding: 10px; border: 0; border-radius: 50%; background: url('./assets/forest/round-control.png') center / 100% 100%; color: var(--forest-ink); filter: drop-shadow(var(--forest-contact)); margin: 0; }
+.forest-spatial .forest-round-control svg { width: 24px; height: 24px; stroke-width: 3; }
+.forest-spatial .forest-age-control, .forest-spatial .forest-score { background: url('./assets/forest/nav-gold.png') center / 100% 100%; color: var(--forest-ink); border: 0; border-radius: 0; font: 800 14px/1.1 var(--font-sans); min-height: 44px; padding: 9px 16px; text-decoration: none; filter: drop-shadow(var(--forest-contact)); white-space: nowrap; }
+.forest-spatial .forest-score { min-height: 29px; padding: 6px 13px; font-size: 13px; }
+.forest-settings { position: relative; }
+.forest-settings summary { list-style: none; cursor: pointer; }
+.forest-settings summary::-webkit-details-marker { display: none; }
+.forest-settings-menu { position: absolute; right: 0; top: 48px; width: 190px; padding: 12px; background: var(--forest-label); border: 3px solid var(--forest-cut); border-radius: 8px; box-shadow: var(--forest-contact); z-index: 20; display: grid; gap: 8px; }
+.story-illustration-frame { position: relative; width: 100%; height: min(19dvh, 220px); flex: 0 0 auto; margin: 0 0 5px; }
+.story-window-content { position: absolute; inset: 13% 5% 11%; overflow: hidden; border-radius: 12% / 28%; background: var(--forest-floor); }
+.story-window-art { position: absolute; inset: 0; }
+.story-window-art .puzzle-drawing { width: 100%; height: 100%; position: absolute; inset: 0; }
+.story-window-art .scene-img { object-fit: cover; object-position: center 42%; }
+.story-window-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; filter: drop-shadow(var(--forest-contact)); }
+.story-title-plaque { position: absolute; left: 6%; bottom: 10%; width: 55%; min-height: 45px; padding: 9px 5%; background: url('./assets/forest/nav-gold.png') center / 100% 100%; filter: drop-shadow(var(--forest-contact)); }
+.story-title-plaque h1 { font: 700 16px/1.1 var(--font-forest); margin: 0; text-align: center; color: var(--forest-ink); overflow-wrap: anywhere; text-wrap: balance; }
+.forest-spatial .puzzle-task { width: 86% !important; min-height: 60px; margin: 0 auto 4px; padding: 12px 6% !important; background-image: url('./assets/forest/nav-gold.png') !important; font: 800 15px/1.22 var(--font-sans); }
+.forest-spatial .puzzle-stage { container-type: size; flex: 1; min-height: 0; }
+.forest-spatial .puzzle-stage-content, .forest-spatial .puzzle-world, .forest-spatial .world-content, .forest-spatial .world-content > div { height: 100%; }
+.forest-spatial .world-content > div { gap: 0; }
+.forest-spatial .forest-sudoku { height: 100%; gap: 0; justify-content: center; }
+.forest-spatial .sudoku-tree-board { flex: 0 0 auto; width: min(var(--board-limit), 500px, calc(100cqh - 119px)); padding: 3%; gap: 1.3%; mask-image: none; }
 .forest-spatial .puzzle-world .pz-sudoku { border-radius: 15%; min-height: 44px; }
-.forest-spatial .forest-number-rack { width: min(98%, 430px); gap: 12px; height: 94px; flex: 0 0 auto; margin-top: 10px; }
-.forest-spatial .puzzle-world .forest-number-tile {
-  background-image: url('./assets/forest/number-piece.png') !important;
-  height: 94px; min-height: 44px; aspect-ratio: auto; padding: 10px 8px 20px;
-  clip-path: none;
-  filter: drop-shadow(var(--forest-contact));
-}
-.forest-game-scene .forest-numeral { font-family: var(--font-forest); font-weight: 500; }
-.forest-spatial .forest-sudoku > div:last-child { margin-top: 6px; }
-.forest-spatial .pz-check { min-height: 44px; padding: 12px 26px; }
-.forest-spatial .puzzle-hint { flex: 0 0 44px; margin-top: 2px; }
-.forest-spatial .puzzle-feedback { flex: 0 0 30px; }
+.forest-spatial .puzzle-world .pz-sudoku-sel { outline: 3px solid var(--forest-glow); outline-offset: -3px; box-shadow: inset 0 0 12px var(--forest-glow), 0 0 8px var(--forest-glow) !important; }
+.forest-spatial .forest-number-rack { width: 58%; max-width: 440px; gap: 8px; height: 68px; flex: 0 0 auto; margin-top: 5px; }
+.forest-spatial .puzzle-world .forest-number-tile { background-image: url('./assets/forest/number-piece.png') !important; height: 68px; min-height: 44px; aspect-ratio: auto; padding: 6px 3px 12px; clip-path: none; filter: drop-shadow(var(--forest-contact)); }
+.forest-spatial .forest-numeral { font-family: var(--font-forest); width: 88%; height: 88%; }
+.forest-spatial .forest-sudoku > div:last-child { margin-top: 2px; }
+.forest-spatial .pz-check { min-height: 44px; height: 44px; font: 800 13px/1.1 var(--font-sans); background-image: url('./assets/forest/nav-gold.png') !important; padding: 8px 20px; }
+.forest-spatial .puzzle-hint { flex: 0 0 44px; margin: 4px 0 0; }
+.puzzle-screen.forest-spatial .puzzle-hint > .wooden-action { background-image: url('./assets/forest/nav-gold.png') !important; width: max(35%, 150px); min-width: 0; min-height: 44px; padding: 8px 15px; font: 800 14px/1.1 var(--font-sans); }
+.forest-spatial .forest-reference-hint svg { width: 24px; height: 24px; fill: var(--forest-glow); stroke: var(--forest-ink); }
+.forest-spatial .puzzle-feedback { flex: 0 0 28px; min-height: 28px; }
+.forest-spatial .world-ledge { padding: 0; width: 100%; }
+.forest-spatial .puzzle-navigation { grid-template-columns: 29fr 29fr 36fr; gap: 5px; max-width: none; width: 100%; }
+.forest-spatial .puzzle-navigation .wooden-action { background-image: url('./assets/forest/nav-gold.png') !important; background-size: 100% 100%; min-height: 58px; height: 58px; padding: 9px 10px; font: 800 15px/1.05 var(--font-sans); gap: 4px; overflow-wrap: normal; text-shadow: none; }
+.forest-spatial .puzzle-navigation .wooden-action-primary { background-image: url('./assets/forest/nav-green.png') !important; color: var(--forest-label) !important; }
+.forest-spatial .puzzle-navigation svg { width: 20px; height: 20px; stroke-width: 3; }
+.forest-spatial .puzzle-navigation span { min-width: 0; }
 @media (min-width: 640px) {
-  .forest-spatial { padding-inline: 11%; }
-  .forest-spatial .wooden-title-sign { min-height: 124px; padding-top: 32px; }
-  .forest-spatial .wooden-title-sign h1 { font-size: 30px; }
-  .forest-spatial .puzzle-task { min-height: 96px; font-size: 19px; padding-top: 24px !important; }
-  .forest-spatial .forest-number-rack { height: 112px; }
-  .forest-spatial .puzzle-world .forest-number-tile { height: 112px; }
-  .forest-spatial .sudoku-tree-board { width: min(100%, 460px, calc(100cqh - 172px)); }
-  .forest-spatial .puzzle-navigation .wooden-action { font-size: 15px; min-height: 58px; }
+ .forest-spatial .puzzle-task { font-size: 20px; min-height: 76px; }
+ .story-title-plaque h1 { font-size: 23px; }
+ .forest-spatial .forest-number-rack, .forest-spatial .puzzle-world .forest-number-tile { height: 94px; }
+ .forest-spatial .sudoku-tree-board { width: min(66%, 500px, calc(100cqh - 146px)); }
+ .forest-spatial .puzzle-navigation .wooden-action { height: 64px; font-size: 20px; }
+ .forest-spatial .forest-age-control { font-size: 18px; }
 }
-@media (max-height: 740px) {
-  .forest-spatial .wooden-title-sign { min-height: 64px; padding: 16px 14% 12px; }
-  .forest-spatial .wooden-title-sign h1 { font-size: 18px; }
-  .forest-spatial .puzzle-task { min-height: 60px; font-size: 13px; padding: 14px 10% 12px !important; }
-  .forest-spatial .forest-number-rack, .forest-spatial .puzzle-world .forest-number-tile { height: 76px; }
-  .forest-spatial .sudoku-tree-board { width: min(100%, calc(100cqh - 132px)); }
-  .forest-spatial .puzzle-navigation .wooden-action { min-height: 44px; padding-block: 10px; }
-  .forest-spatial .puzzle-feedback { flex-basis: 24px; min-height: 24px; }
-}
-
-/* Reference-sized round controls sit on the outer bark, not across the title. */
-.forest-spatial .puzzle-header { position: relative; min-height: 54px; }
-.forest-spatial .puzzle-header .forest-round-control {
-  width: 48px; height: 48px; min-width: 48px; min-height: 48px;
-  padding: 12px; border-radius: 50%;
-  background-image: url('./assets/forest/round-control.png') !important;
-  background-size: 100% 100%; background-repeat: no-repeat;
-  filter: drop-shadow(var(--forest-contact));
-}
-.forest-spatial .puzzle-header > .forest-round-control { margin-left: -20px; }
-.forest-spatial .puzzle-header > div { margin-right: -20px; }
-.forest-spatial .forest-round-control svg { width: 25px; height: 25px; stroke-width: 3; }
-.forest-spatial .scene-banner { top: 18px; }
-.forest-spatial .puzzle-navigation { gap: 10px; }
-.forest-spatial .puzzle-navigation .wooden-action { padding: 12px 10px; font-size: 11px; }
-.forest-spatial .puzzle-hint .wooden-action { width: 168px; min-height: 44px; }
-@media (min-width: 640px) and (min-height: 741px) {
-  .forest-spatial .puzzle-header { min-height: 64px; }
-  .forest-spatial .puzzle-header .forest-round-control { width: 58px; height: 58px; padding: 15px; }
-  .forest-spatial .puzzle-header > .forest-round-control { margin-left: -36px; }
-  .forest-spatial .puzzle-header > div { margin-right: -36px; }
-  .forest-spatial .puzzle-navigation .wooden-action { font-size: 14px; }
-}
-@media (min-width: 640px) and (max-height: 850px) {
-  .forest-spatial .wooden-title-sign { min-height: 78px; padding: 20px 14% 14px; }
-  .forest-spatial .wooden-title-sign h1 { font-size: 23px; }
-  .forest-spatial .puzzle-task { min-height: 64px; padding: 16px 10% 12px !important; font-size: 15px; }
-  .forest-spatial .forest-number-rack, .forest-spatial .puzzle-world .forest-number-tile { height: 76px; }
-  .forest-spatial .sudoku-tree-board { width: min(100%, 460px, calc(100cqh - 132px)); }
+@media (max-height: 760px) {
+ .forest-spatial .puzzle-header.forest-reference-header { min-height: 62px; }
+ .story-illustration-frame { height: 12dvh; }
+ .forest-spatial .puzzle-task { min-height: 52px; font-size: 14px; }
+ .forest-spatial .forest-number-rack, .forest-spatial .puzzle-world .forest-number-tile { height: 58px; }
+ .forest-spatial .sudoku-tree-board { width: min(66%, max(202px, calc(100cqh - 109px))); }
+ .forest-spatial .puzzle-navigation .wooden-action { height: 52px; min-height: 52px; font-size: 14px; }
 }

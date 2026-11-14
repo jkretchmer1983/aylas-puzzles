@@ -12,8 +12,10 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
-import { ArrowLeft, RotateCcw, Puzzle } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Puzzle } from "lucide-react";
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
+import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
+import { Button } from "@/components/ui/button";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -173,6 +175,14 @@ function Play() {
   if (!tpl) return null;
   const hue = (TEMPLATES.indexOf(tpl) * 47) % 360;
   const celebrating = result?.ok;
+  const spatial = spec.template === "sudoku";
+  const title = shown?.key === key ? shown.title : spec.title;
+  const illustration = <>
+    <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
+    {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
+      <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
+    </div>}
+  </>;
 
   return (
     <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
@@ -188,32 +198,43 @@ function Play() {
           <div className="quest-loader-track" aria-hidden="true"><span /></div>
         </div>
       </div>
-      <div className={cn("scene-banner", celebrating && "scene-party")} aria-hidden="true">
-        <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
-        {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
-          <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
-        </div>}
-      </div>
-      <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
+      {!spatial && <div className={cn("scene-banner", celebrating && "scene-party")} aria-hidden="true">{illustration}</div>}
+      {spatial ? <header className="puzzle-header forest-reference-header">
+        <div className="forest-header-left">
+          <Button asChild variant="game" size="game" className="forest-round-control"><Link to="/" search={{ pick: 1 }} aria-label="Back to age selection"><ArrowLeft /></Link></Button>
+          <Button asChild variant="game" size="game" className="forest-age-control"><Link to="/" search={{ pick: 1 }}>{BANDS[band]?.label}<ChevronDown /></Link></Button>
+        </div>
+        <div className="forest-header-right">
+          <details className="forest-settings">
+            <Button asChild variant="game" size="game" className="forest-round-control"><summary aria-label="Game settings"><Settings /></summary></Button>
+            <div className="forest-settings-menu">
+              <Button asChild variant="game"><Link to="/" search={{ pick: 1 }}>Choose age range</Link></Button>
+              <WoodenActionButton onClick={replay}>New numbers</WoodenActionButton>
+            </div>
+          </details>
+          <span className="forest-score" aria-label={`${progress.solved} solved, ${progress.streak} streak`}>⭐ {progress.solved} · 🔥 {progress.streak}</span>
+        </div>
+      </header> : <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className={cn("pill", spec.template === "sudoku" && "forest-round-control")} aria-label={`Choose age range, ${BANDS[band]?.label}`} title="Choose age range">{spec.template === "sudoku" ? <ArrowLeft aria-hidden="true" /> : `← ${BANDS[band]?.label}`}</Link>
         <div className="flex items-center gap-2">
           {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>}
         </div>
-      </header>
+      </header>}
+      {spatial && <StoryIllustrationFrame title={title}><div className={cn("story-window-art", celebrating && "scene-party")}>{illustration}</div></StoryIllustrationFrame>}
 
       <section className="puzzle-sheet">
-        <div className={cn("scene", celebrating && "scene-party")}>
+        {!spatial && <div className={cn("scene", celebrating && "scene-party")}>
           <div className="scene-text">
             <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
           </div>
-        </div>
+        </div>}
         <p className="puzzle-task">{spec.task}</p>
         <PuzzleStage spatial={spec.template === "sudoku"}>
           <PuzzleBody key={key} spec={spec} report={report} />
         </PuzzleStage>
         <div className="puzzle-hint text-center">
           {hint && <p className="forest-hint-plaque">{spec.hint}</p>}
-          <WoodenActionButton onClick={() => setHint((v) => !v)}>{hint ? "Close hint" : "Need a hint?"}</WoodenActionButton>
+          <WoodenActionButton className={cn(spatial && "forest-reference-hint", hint && "hint-open")} onClick={() => setHint((v) => !v)}>{spatial && <Lightbulb aria-hidden="true" />}{hint ? "Close hint" : "Need a hint?"}</WoodenActionButton>
         </div>
       </section>
 
@@ -227,9 +248,9 @@ function Play() {
 
       <div className="world-ledge">
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
-        <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>← Previous</WoodenActionButton>
-        <WoodenActionButton onClick={replay}>New numbers</WoodenActionButton>
-        <WoodenActionButton primary onClick={goNext}>Next puzzle →</WoodenActionButton>
+        <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>{spatial ? <><ArrowLeft aria-hidden="true" /><span>Previous</span></> : "← Previous"}</WoodenActionButton>
+        <WoodenActionButton onClick={replay}>{spatial ? <><RotateCcw aria-hidden="true" /><span>New numbers</span></> : "New numbers"}</WoodenActionButton>
+        <WoodenActionButton primary onClick={goNext}>{spatial ? <><span>Next puzzle</span><ArrowRight aria-hidden="true" /></> : "Next puzzle →"}</WoodenActionButton>
       </nav>
       </div>
     </main>
