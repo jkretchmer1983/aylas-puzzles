@@ -38,6 +38,25 @@ export const Route = createFileRoute("/play")({
   component: Play,
 });
 
+
+/** Fit the reference composition with one uniform scale; never stretch its artwork. */
+function ForestViewport({ children }: { children: ReactNode }) {
+  const viewport = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const element = viewport.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      setScale(Math.min(width / 393, height / 852));
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={viewport} className="forest-viewport" style={{ ["--forest-scale" as string]: scale }}>{children}</div>;
+}
+
 function PuzzleStage({ children, spatial }: { children: ReactNode; spatial: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
@@ -184,7 +203,7 @@ function Play() {
     </div>}
   </>;
 
-  return (
+  const game = (
     <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
@@ -255,4 +274,5 @@ function Play() {
       </div>
     </main>
   );
+  return spatial ? <ForestViewport>{game}</ForestViewport> : game;
 }
