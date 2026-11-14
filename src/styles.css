@@ -1227,3 +1227,21 @@ html, body { overflow-x: clip; }
   }
   .forest-spatial .puzzle-navigation svg { width: 16px; height: 16px; }
 }
+
+/* Keep the reference's compact title and typography at every preview width.
+   Percentage padding previously grew with the whole scene, not the plaque. */
+.forest-spatial .story-title-plaque {
+  width: min(66%, 252px);
+  padding: 10px 40px 8px;
+}
+.forest-spatial .story-title-plaque h1 {
+  font: 700 16px/1.1 var(--font-forest);
+  letter-spacing: 0;
+}
+.forest-spatial .puzzle-task {
+  min-height: 54px;
+  padding: 9px max(7%, calc((100% - 290px) / 2)) !important;
+  font: 800 13px/1.25 var(--font-sans);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
