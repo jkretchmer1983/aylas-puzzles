@@ -185,7 +185,7 @@ function Play() {
   </>;
 
   return (
-    <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
+    <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} />
@@ -250,7 +250,7 @@ function Play() {
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
         <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>{spatial ? <><ArrowLeft aria-hidden="true" /><span>Previous</span></> : "← Previous"}</WoodenActionButton>
         <WoodenActionButton onClick={replay}>{spatial ? <><RotateCcw aria-hidden="true" /><span>New numbers</span></> : "New numbers"}</WoodenActionButton>
-        <WoodenActionButton primary onClick={goNext}>{spatial ? <><span>Next puzzle</span><ArrowRight aria-hidden="true" /></> : "Next puzzle →"}</WoodenActionButton>
+        <WoodenActionButton primary={!spatial || !!celebrating} onClick={goNext}>{spatial ? <><span>Next puzzle</span><ArrowRight aria-hidden="true" /></> : "Next puzzle →"}</WoodenActionButton>
       </nav>
       </div>
     </main>
