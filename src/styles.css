@@ -1147,3 +1147,52 @@ html, body { overflow-x: clip; }
   padding: 3% 12% 2%; background: center / 100% 100% no-repeat;
   filter: drop-shadow(0 3px 3px #24140a8c);
 }
+
+/* Gameplay clarity: immutable clues are recessed and visibly darker than editable slots. */
+.forest-spatial .puzzle-world .pz-sudoku-fixed {
+  opacity: 1 !important;
+  background: rgba(73, 37, 13, .34) !important;
+  box-shadow: inset 0 2px 9px rgba(36, 17, 5, .42) !important;
+  cursor: default;
+}
+.forest-spatial .puzzle-world .pz-sudoku-fixed .forest-numeral,
+.forest-spatial .puzzle-world .pz-sudoku-fixed svg {
+  filter: contrast(1.18) drop-shadow(0 1px 1px #e8a95d66);
+}
+/* The check plaque remains legible before completion, then becomes the next obvious action. */
+.forest-spatial .pz-check-wrap {
+  width: min(75%, 280px); min-height: 52px; margin: 0 auto !important;
+  display: flex; align-items: center; justify-content: center;
+}
+.forest-spatial .pz-check-wrap .pz-check {
+  width: 100%; height: 52px; min-height: 52px;
+  padding: 10px 12px; font-size: clamp(15px, 3.9vw, 19px);
+  opacity: 1 !important;
+  filter: none; outline: none; box-shadow: none !important;
+}
+.forest-spatial .pz-check-wrap .pz-check:disabled {
+  opacity: .86 !important; color: #53351b !important;
+  cursor: not-allowed;
+}
+.forest-spatial .pz-check-ready .pz-check:not(:disabled) {
+  background-image: var(--forest-green-art) !important;
+  color: #fff8db !important;
+  filter: drop-shadow(0 0 8px #ffdc6b) !important;
+  outline: 2px solid #fff3b2; outline-offset: -6px;
+}
+.forest-spatial .forest-sudoku > div:last-child { flex-basis: 54px; }
+/* A softer selected-cell ring retains visibility without obscuring painted edges. */
+.forest-spatial .puzzle-world .pz-sudoku-sel {
+  outline: 2px solid #ffe29b !important;
+  outline-offset: -3px;
+  box-shadow: inset 0 0 8px #f9d76c85, 0 0 4px #ffd87e8a !important;
+}
+/* Keep the navigation labels readable on narrow phones. */
+@media (max-width: 430px) {
+  .forest-spatial .puzzle-navigation { grid-template-columns: 30fr 30fr 40fr; gap: 3px; }
+  .forest-spatial .puzzle-navigation .wooden-action {
+    font-size: 13px; padding-inline: 4px; gap: 2px;
+    white-space: nowrap;
+  }
+  .forest-spatial .puzzle-navigation svg { width: 16px; height: 16px; }
+}
