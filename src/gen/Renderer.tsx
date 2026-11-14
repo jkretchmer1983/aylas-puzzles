@@ -16,9 +16,9 @@ function Key({ children, onClick, className, disabled }: { children: React.React
   );
 }
 
-function CheckButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+function CheckButton({ onClick, disabled, ready = false }: { onClick: () => void; disabled?: boolean; ready?: boolean }) {
   return (
-    <div className="mt-4 flex justify-center">
+    <div className={cn("mt-4 flex justify-center pz-check-wrap", ready && "pz-check-ready")}>
       <Button variant="game" size="game" disabled={disabled} onClick={onClick} className="pz-check">Check my answer ✓</Button>
     </div>
   );
@@ -140,7 +140,7 @@ function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: R
       <div className="forest-number-rack mt-3 flex gap-2">
         {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{/^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
       </div>
-      <CheckButton disabled={cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
+      <CheckButton disabled={cells.includes(null)} ready={!cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
     </div>
   );
 }
