@@ -249,7 +249,7 @@ function Play() {
       <div className="world-ledge">
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
         <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>{spatial ? <><ArrowLeft aria-hidden="true" /><span>Previous</span></> : "← Previous"}</WoodenActionButton>
-        <WoodenActionButton onClick={replay}>{spatial ? <><RotateCcw aria-hidden="true" /><span>New numbers</span></> : "New numbers"}</WoodenActionButton>
+        <WoodenActionButton onClick={replay}>{spatial ? <><RotateCcw aria-hidden="true" /><span>New</span></> : "New numbers"}</WoodenActionButton>
         <WoodenActionButton primary={!spatial || !!celebrating} onClick={goNext}>{spatial ? <><span>Next puzzle</span><ArrowRight aria-hidden="true" /></> : "Next puzzle →"}</WoodenActionButton>
       </nav>
       </div>
