@@ -18,3 +18,4 @@
 - [x] Match forest Sudoku button proportions and placement to the main reference; verify phone and iPad touch use.
 - [x] Correct Sudoku composition to the latest reference: cinematic story window, larger board, chunky root navigation, phone/iPad comparison.
 - [x] Fix the tiny Sudoku board in the shorter, wide preview; verify square cells, usable targets and wooden navigation at the reported size.
+- [x] Asset-pack Pass 1: clean prototype sprites, use supplied forest environment, correct proportions, and show phone screenshot for approval.
