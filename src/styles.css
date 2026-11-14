@@ -1174,11 +1174,42 @@ html, body { overflow-x: clip; }
   opacity: .86 !important; color: #53351b !important;
   cursor: not-allowed;
 }
-.forest-spatial .pz-check-ready .pz-check:not(:disabled) {
-  background-image: var(--forest-green-art) !important;
+/* One plaque silhouette in every state. Tint and glow only its alpha artwork,
+   leaving the label crisp and avoiding a rectangular CSS outline/shadow. */
+.forest-spatial .pz-check-wrap .pz-check {
+  position: relative; isolation: isolate; overflow: visible;
+  background: transparent !important; border: 0;
+  filter: none !important; outline: none; box-shadow: none !important;
+}
+.forest-spatial .pz-check-wrap .pz-check::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--forest-instruction-art) center / 100% 100% no-repeat;
+}
+.forest-spatial.is-solving .pz-check-ready .pz-check:not(:disabled) {
   color: #fff8db !important;
-  filter: drop-shadow(0 0 8px #ffdc6b) !important;
-  outline: 2px solid #fff3b2; outline-offset: -6px;
+}
+.forest-spatial.is-solving .pz-check-ready .pz-check:not(:disabled)::before {
+  animation: forest-check-pulse 1.8s ease-in-out infinite;
+}
+@keyframes forest-check-pulse {
+  0%, 100% {
+    filter: hue-rotate(65deg) saturate(1.65) brightness(.82)
+      drop-shadow(0 0 3px #79e66c) drop-shadow(0 0 5px #65cf6570);
+  }
+  50% {
+    filter: hue-rotate(65deg) saturate(1.65) brightness(.82)
+      drop-shadow(0 0 6px #a2ff81) drop-shadow(0 0 10px #65cf65b0);
+  }
+}
+.forest-spatial .pz-check-wrap .pz-check:focus-visible::before {
+  filter: drop-shadow(0 0 3px #fff7ba) drop-shadow(0 0 6px #fff7ba);
+}
+@media (prefers-reduced-motion: reduce) {
+  .forest-spatial.is-solving .pz-check-ready .pz-check:not(:disabled)::before {
+    animation: none;
+    filter: hue-rotate(65deg) saturate(1.65) brightness(.82)
+      drop-shadow(0 0 5px #79e66c);
+  }
 }
 .forest-spatial .forest-sudoku > div:last-child { flex-basis: 54px; }
 /* A softer selected-cell ring retains visibility without obscuring painted edges. */
