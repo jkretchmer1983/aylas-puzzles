@@ -1473,7 +1473,7 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial .pz-check-wrap .pz-check::before { border-image:none !important;background:url('./assets/forest-game/surface-check.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action { border-image:none !important;background:url('./assets/forest-game/surface-nav.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { border-image:none !important;background:url('./assets/forest-game/surface-next.svg') center/100% 100% no-repeat !important; }
-.forest-viewport .forest-spatial .adventure-begin { border-image:none !important;background:url('./assets/forest-game/surface-begin.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .adventure-begin { border-image:none !important;background:url('./assets/forest-game/surface-begin.png') center/100% 100% no-repeat !important; }
 
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { background:none !important; }
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action:last-child:not(.wooden-action-primary) { background-image:url('./assets/forest-game/surface-next.svg') !important; }
@@ -1627,7 +1627,7 @@ html, body { overflow-x: clip; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { background-image:url('./assets/forest-game/surface-tablet-nav.svg') !important; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action:last-child:not(.wooden-action-primary) { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
-.forest-layout-portrait-wide.forest-viewport .forest-spatial .adventure-begin { background-image:url('./assets/forest-game/surface-tablet-begin.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .adventure-begin { background-image:url('./assets/forest-game/surface-tablet-begin.png') !important; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { background:none !important; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-age-control { width:180px; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-score { width:134px;height:34px;display:flex;align-items:center;justify-content:center;padding:0; }
@@ -1709,7 +1709,7 @@ html, body { overflow-x: clip; }
 .forest-layout-landscape.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { background-image:url('./assets/forest-game/surface-tablet-nav.svg') !important; }
 .forest-layout-landscape.forest-viewport .forest-spatial .puzzle-navigation .wooden-action:last-child:not(.wooden-action-primary) { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
 .forest-layout-landscape.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
-.forest-layout-landscape.forest-viewport .forest-spatial .adventure-begin { background-image:url('./assets/forest-game/surface-tablet-begin.svg') !important; }
+.forest-layout-landscape.forest-viewport .forest-spatial .adventure-begin { background-image:url('./assets/forest-game/surface-tablet-begin.png') !important; }
 .forest-layout-landscape.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { background:none !important; }
 .forest-layout-landscape.forest-viewport .forest-spatial .forest-age-control { width:180px; }
 .forest-layout-landscape.forest-viewport .forest-spatial .forest-score { width:134px;height:34px;display:flex;align-items:center;justify-content:center;padding:0; }
@@ -1754,3 +1754,11 @@ html, body { overflow-x: clip; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial.forest-six .forest-number-rack { gap:6px; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial.forest-six .puzzle-world .forest-number-rack .forest-number-tile { flex:0 0 56px;width:56px;height:56px;min-height:56px; }
 .forest-layout-landscape.forest-viewport .forest-spatial.forest-six .puzzle-world .forest-number-rack .forest-number-tile { flex:0 0 54px;width:54px;height:54px;min-height:54px; }
+
+/* Keep the story CTA on one stable composited layer in iPad WebKit.
+   Pre-rendered artwork avoids repeatedly rasterizing nested SVG image slices. */
+.forest-viewport .forest-spatial .adventure-begin {
+ filter:none;isolation:isolate;transform:translateZ(0);
+ -webkit-backface-visibility:hidden;backface-visibility:hidden;
+ transition:translate .14s ease,scale .14s ease;
+}
