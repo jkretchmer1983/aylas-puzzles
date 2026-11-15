@@ -1637,3 +1637,8 @@ html, body { overflow-x: clip; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-offline-illustration { object-position:center 30%; }
 
 .forest-viewport .forest-spatial .puzzle-task:focus { outline:none; }
+/* The tablet frame uses fixed-size corner slices: its image opening must use
+   the same fixed inset, rather than percentages of the wider illustration. */
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-window-content {
+  inset:17px 22px;border-radius:24px / 32px;
+}
