@@ -20,7 +20,6 @@ import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
 import expandedForest from "@/assets/forest-game/forest-carved-reference.jpg";
-import introForest from "@/assets/forest-game/forest-expanded.jpg";
 import offlineIllustration from "@/assets/forest-game/story-fallback-reference.jpg";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
@@ -46,7 +45,7 @@ export const Route = createFileRoute("/play")({
 
 
 /** Fit the reference composition with one uniform scale; never stretch its artwork. */
-function ForestViewport({ children, intro }: { children: ReactNode; intro: boolean }) {
+function ForestViewport({ children }: { children: ReactNode }) {
   const viewport = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -61,7 +60,7 @@ function ForestViewport({ children, intro }: { children: ReactNode; intro: boole
     return () => observer.disconnect();
   }, []);
   return <div ref={viewport} className="forest-viewport" style={{ ["--forest-scale" as string]: scale }}>
-    <img className="forest-viewport-scenery" src={intro ? introForest : expandedForest} alt="" aria-hidden="true" draggable={false} />
+    <img className="forest-viewport-scenery" src={expandedForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
     {children}
   </div>;
 }
@@ -318,5 +317,5 @@ function Play() {
       </div>
     </main>
   );
-  return spatial ? <ForestViewport intro={storyOpen}>{game}</ForestViewport> : game;
+  return spatial ? <ForestViewport>{game}</ForestViewport> : game;
 }
