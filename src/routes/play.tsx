@@ -12,11 +12,14 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
-import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Puzzle } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Puzzle, BookOpen } from "lucide-react";
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
 import { Button } from "@/components/ui/button";
-import expandedForest from "@/assets/forest-game/forest-expanded.jpg";
+import { VictoryRibbon } from "@/components/VictoryRibbon";
+import { ReadAloud } from "@/components/ReadAloud";
+import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
+import expandedForest from "@/assets/forest-game/forest-carving-scene.jpg";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -102,6 +105,7 @@ function Play() {
   const [hint, setHint] = useState(false);
   const [party, setParty] = useState(0);
   const trail = useRef<Search[]>([]);
+  const mainRef = useRef<HTMLElement>(null);
 
   const pickNext = useCallback((exclude?: string) => {
     return { band, t: drawTemplate(band, templatesFor(band).map((x) => x.id), exclude), s: newSeed() };
@@ -114,6 +118,23 @@ function Play() {
 
   const spec = t && s ? generate(t, band, s) : null;
   const key = `${band}-${t}-${s}`;
+  const [storyOpen, setStoryOpen] = useState(true);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const saved = readPuzzleSession(key);
+    setStarted(!!saved.started);
+    setStoryOpen(!saved.started);
+    setResult(saved.result === undefined ? null : { ok: saved.result, n: 1 });
+    setHint(false);
+    window.speechSynthesis?.cancel();
+  }, [key]);
+  const beginPuzzle = () => {
+    savePuzzleSession(key, { started: true });
+    setStarted(true);
+    setStoryOpen(false);
+    window.speechSynthesis?.cancel();
+  };
+  useEffect(() => { window.speechSynthesis?.cancel(); window.dispatchEvent(new Event("forest-speech-stop")); }, [storyOpen]);
   const [loading, setLoading] = useState(true);
   const [art, setArt] = useState<{ src: string; final: boolean } | null>(null);
   const [artSettled, setArtSettled] = useState(false);
@@ -139,6 +160,11 @@ function Play() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
   const loaderDone = !loading && artSettled && storySettled;
+  useEffect(() => {
+    if (!loaderDone || t !== "sudoku") return;
+    const target = mainRef.current?.querySelector<HTMLElement>(storyOpen ? '.story-title-plaque h1' : '.puzzle-task');
+    if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+  }, [loaderDone, storyOpen, t]);
   useEffect(() => {
     if (!spec || !storySettled || shown?.key === key) return;
     const e = ensureStory(key, storyInput(spec));
@@ -182,11 +208,13 @@ function Play() {
 
   const report = useCallback((ok: boolean) => {
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
-    if (ok) {
+    const wasSolved = readPuzzleSession(key).awarded === true;
+    if (t === "sudoku") savePuzzleSession(key, { result: ok, awarded: wasSolved || ok });
+    if (ok && !wasSolved) {
       setParty((p) => p + 1);
       update((p) => { const streak = p.streak + 1; return { ...p, solved: p.solved + 1, streak, best: Math.max(p.best, streak) }; });
-    } else update((p) => ({ ...p, streak: 0 }));
-  }, [update]);
+    } else if (!ok) update((p) => ({ ...p, streak: 0 }));
+  }, [update, key, t]);
 
   const reset = () => { setResult(null); setHint(false); };
   const goNext = () => { trail.current.push({ band, t, s }); reset(); nav({ search: nextRef.current ?? pickNext(t) }); };
@@ -199,6 +227,7 @@ function Play() {
   const hue = (TEMPLATES.indexOf(tpl) * 47) % 360;
   const celebrating = result?.ok;
   const spatial = spec.template === "sudoku";
+  const story = shown?.key === key ? shown.story : spec.story;
   const title = shown?.key === key ? shown.title : spec.title;
   const illustration = <>
     <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
@@ -208,7 +237,7 @@ function Play() {
   </>;
 
   const game = (
-    <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving")} style={{ ["--scene-hue" as string]: hue }}>
+    <main ref={mainRef} className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving", spatial && storyOpen && "adventure-open")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} />
@@ -243,7 +272,16 @@ function Play() {
           {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>}
         </div>
       </header>}
-      {spatial && <StoryIllustrationFrame title={title}><div className={cn("story-window-art", celebrating && "scene-party")}>{illustration}</div></StoryIllustrationFrame>}
+      {spatial && <StoryIllustrationFrame title={title}>
+        <div className={cn("story-window-art", celebrating && "scene-party")}>{illustration}</div>
+      </StoryIllustrationFrame>}
+      {spatial && !storyOpen && <button type="button" className="forest-story-hanger" onClick={() => setStoryOpen(true)} aria-label="Read this puzzle’s story"><BookOpen aria-hidden="true" /><span>Story</span></button>}
+      {spatial && storyOpen && <section className="forest-adventure" aria-label="Your adventure">
+        <p className="adventure-eyebrow">Your adventure</p>
+        <div className="adventure-story" tabIndex={0} aria-label="Puzzle story"><p>{story}</p></div>
+        <ReadAloud text={story} label="story">Read aloud</ReadAloud>
+        <WoodenActionButton className="adventure-begin" onClick={beginPuzzle}>{started ? 'Back to puzzle' : 'Let’s help!'}<ArrowRight aria-hidden="true" /></WoodenActionButton>
+      </section>}
 
       <section className="puzzle-sheet">
         {!spatial && <div className={cn("scene", celebrating && "scene-party")}>
@@ -251,9 +289,9 @@ function Play() {
             <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
           </div>
         </div>}
-        <p className="puzzle-task">{spec.task}</p>
+        <div className="puzzle-task"><span>{spec.task}</span>{spatial && <ReadAloud text={spec.task} />}</div>
         <PuzzleStage spatial={spec.template === "sudoku"}>
-          <PuzzleBody key={key} spec={spec} report={report} />
+          <PuzzleBody key={key} spec={spec} report={report} sessionKey={spatial ? key : undefined} />
         </PuzzleStage>
         <div className="puzzle-hint text-center">
           {hint && <p className="forest-hint-plaque">{spec.hint}</p>}
@@ -263,8 +301,8 @@ function Play() {
 
       <div className="puzzle-feedback" role="status" aria-live="polite">
         {result && (
-          <div key={result.n} className={cn("feedback", result.ok ? "animate-pop bg-success text-success-foreground" : "animate-shake bg-destructive text-destructive-foreground")}>
-            {result.ok ? "Correct! 🎉" : "Incorrect! Try again"}
+          <div key={result.n} className={cn("feedback", spatial ? (result.ok ? "forest-success-ribbon" : "forest-retry-banner") : (result.ok ? "animate-pop bg-success text-success-foreground" : "animate-shake bg-destructive text-destructive-foreground"))}>
+            {result.ok ? (spatial ? <VictoryRibbon /> : "Correct! 🎉") : (spatial ? "Not quite. Try again!" : "Incorrect! Try again")}
           </div>
         )}
       </div>

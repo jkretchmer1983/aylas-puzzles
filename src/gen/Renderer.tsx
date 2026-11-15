@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
@@ -130,9 +131,18 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
   );
 }
 
-function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
+function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
   const { storyWorld } = useContext(Presentation);
   const [cells, setCells] = useState<(number | null)[]>(k.given);
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    const saved = sessionKey ? readPuzzleSession(sessionKey).cells : undefined;
+    if (saved?.length === k.given.length) setCells(k.given.map((given, i) => given ?? saved[i] ?? null));
+    setRestored(true);
+    // The puzzle is keyed by instance; keep its generator values fixed across renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionKey]);
+  useEffect(() => { if (sessionKey && restored) savePuzzleSession(sessionKey, { cells }); }, [cells, sessionKey, restored]);
   const [sel, setSel] = useState<number | null>(k.given.findIndex((x) => x === null));
   const [carving, setCarving] = useState<{ cell: number; revision: number } | null>(null);
   return (
@@ -191,7 +201,7 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   );
 }
 
-export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = null, completed = false }: { spec: PuzzleSpec; report: Report; storyWorld?: boolean; checkTarget?: HTMLElement | null; completed?: boolean }) {
+export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = null, completed = false, sessionKey }: { sessionKey?: string; spec: PuzzleSpec; report: Report; storyWorld?: boolean; checkTarget?: HTMLElement | null; completed?: boolean }) {
   const k = spec.kind;
   return (
     <Presentation.Provider value={{ storyWorld, checkTarget, completed }}><PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
@@ -200,7 +210,7 @@ export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = nul
       {k.type === "choice" && <Choice k={k} report={report} />}
       {k.type === "number" && <NumberPad k={k} report={report} />}
       {k.type === "order" && <Order k={k} report={report} />}
-      {k.type === "sudoku" && <Sudoku k={k} report={report} />}
+      {k.type === "sudoku" && <Sudoku k={k} report={report} sessionKey={sessionKey} />}
       {k.type === "nim" && <Nim k={k} report={report} />}
     </div></PuzzleWorld></Presentation.Provider>
   );

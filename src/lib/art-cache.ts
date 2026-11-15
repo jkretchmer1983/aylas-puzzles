@@ -24,8 +24,11 @@ export function ensureArt(key: string, prompt: string, keepKey?: string): ArtEnt
   if (existing) return existing;
   const entry: ArtEntry = { src: null, final: false, settled: false, listeners: new Set() };
   cache.set(key, entry);
-  // Keep only the puzzle being played and the one coming next.
-  for (const k of cache.keys()) if (k !== key && k !== keepKey) cache.delete(k);
+  // Retain recent adventures so Previous/Story reuses the same illustration.
+  for (const k of cache.keys()) {
+    if (cache.size <= 24) break;
+    if (k !== key && k !== keepKey) cache.delete(k);
+  }
 
   if (typeof navigator !== "undefined" && !navigator.onLine) {
     entry.settled = true;
