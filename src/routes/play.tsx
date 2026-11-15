@@ -21,6 +21,7 @@ import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
 import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
 import { fitForestLayout } from "@/lib/forest-layout";
+import landscapeForest from "@/assets/forest-game/forest-landscape.jpg";
 import tabletForest from "@/assets/forest-game/forest-tablet-portrait.jpg";
 import expandedForest from "@/assets/forest-game/forest-carved-reference.jpg";
 import offlineIllustration from "@/assets/forest-game/story-fallback-reference.jpg";
@@ -63,7 +64,7 @@ function ForestViewport({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, []);
   return <div ref={viewport} className={`forest-viewport forest-layout-${layout.mode}`} style={{ ["--forest-scale" as string]: layout.scale }}>
-    <img key={layout.mode} className="forest-viewport-scenery" src={layout.mode === "phone" ? expandedForest : tabletForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
+    <img key={layout.mode} className="forest-viewport-scenery" src={layout.mode === "phone" ? expandedForest : layout.mode === "landscape" ? landscapeForest : tabletForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
     {children}
   </div>;
 }

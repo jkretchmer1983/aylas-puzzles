@@ -11,6 +11,12 @@ describe('forest responsive composition',()=>{
   expect(layout.height*layout.scale).toBeLessThanOrEqual(height);
   expect(layout.width*layout.scale).toBeGreaterThan(width*.9);
  });
+ it.each([[1180,820],[1024,768],[1366,1024],[852,393],[900,600]])('uses two columns in landscape at %s by %s', (width,height)=>{
+  const layout=fitForestLayout(width,height);
+  expect(layout.mode).toBe('landscape');
+  expect(layout.width*layout.scale).toBeLessThanOrEqual(width);
+  expect(layout.height*layout.scale).toBeLessThanOrEqual(height);
+ });
  it('returns to the phone composition in a narrow tablet split view',()=>{
   expect(fitForestLayout(375,1024).mode).toBe('phone');
  });
