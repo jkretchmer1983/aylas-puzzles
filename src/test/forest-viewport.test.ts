@@ -1,11 +1,11 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { watchForestViewport } from '@/lib/forest-viewport';
 afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();});
-it('remeasures after orientation/visual viewport events and removes listeners on unmount',()=>{
+it('ignores stale iOS visual viewport dimensions after orientation/visual viewport events and removes listeners on unmount',()=>{
  vi.useFakeTimers();
  let width=393,height=852;
  const visual=new EventTarget();
- Object.defineProperties(visual,{width:{get:()=>width},height:{get:()=>height},scale:{value:1}});
+ Object.defineProperties(visual,{width:{value:393},height:{value:852},scale:{value:1}});
  vi.stubGlobal('visualViewport',visual);
  const disconnect=vi.fn();
  vi.stubGlobal('ResizeObserver',class { observe(){} disconnect=disconnect; });
@@ -17,6 +17,8 @@ it('remeasures after orientation/visual viewport events and removes listeners on
  width=852;height=393;
  window.dispatchEvent(new Event('orientationchange'));
  expect(fit).toHaveBeenLastCalledWith(852,393);
+ expect(element.style.width).toBe('');
+ expect(element.style.height).toBe('');
  width=1180;height=820;visual.dispatchEvent(new Event('resize'));
  expect(fit).toHaveBeenLastCalledWith(1180,820);
  stop();const calls=fit.mock.calls.length;
