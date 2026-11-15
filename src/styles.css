@@ -1578,3 +1578,7 @@ html, body { overflow-x: clip; }
   -webkit-mask:url('./assets/forest-game/story-plaque-mask.svg') center/100% 100% no-repeat;
   mask:url('./assets/forest-game/story-plaque-mask.svg') center/100% 100% no-repeat;
 }
+/* Programmatic heading focus announces the story without outlining its artwork. */
+.forest-viewport .forest-spatial .story-title-plaque h1:focus {
+  outline:none;
+}
