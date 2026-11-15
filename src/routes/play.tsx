@@ -12,10 +12,11 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
-import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Puzzle, BookOpen, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, BookOpen, Volume2, VolumeX } from "lucide-react";
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
 import { Button } from "@/components/ui/button";
+import { QuestLoader } from "@/components/QuestLoader";
 import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
@@ -280,6 +281,7 @@ function Play() {
     {art && <div key={`${key}-art`} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
       <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
     </div>}
+    {spatial && <QuestLoader done={loaderDone} inline />}
   </>;
 
   const game = (
@@ -291,15 +293,7 @@ function Play() {
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} forest={spatial} />
-      <div className={cn("quest-loader", loaderDone && "quest-loader-done")} role="status" aria-label="Loading next puzzle" aria-hidden={loaderDone}>
-        <img className="quest-loader-surface" src={worldFor(spec.template).image} alt="" draggable={false} />
-        <div className="quest-loader-content">
-          <div className="quest-loader-emblem" aria-hidden="true"><Puzzle strokeWidth={1.5} /></div>
-          <p className="quest-loader-text">Your next puzzle</p>
-          <p className="quest-loader-detail">A little wonder is on its way.</p>
-          <div className="quest-loader-track" aria-hidden="true"><span /></div>
-        </div>
-      </div>
+      {!spatial && <QuestLoader done={loaderDone} surface={worldFor(spec.template).image} />}
       {!spatial && <div className={cn("scene-banner", celebrating && "scene-party")} aria-hidden="true">{illustration}</div>}
       {spatial ? <header className="puzzle-header forest-reference-header">
         <div className="forest-header-left">
@@ -331,10 +325,10 @@ function Play() {
         <p className="adventure-eyebrow">Your adventure</p>
         <div className="adventure-story" tabIndex={0} aria-label="Puzzle story"><p>{story}</p></div>
         <ReadAloud text={story} label="story">Read aloud</ReadAloud>
-        <WoodenActionButton className="adventure-begin" onClick={beginPuzzle}>{started ? 'Back to puzzle' : 'Let’s help!'}<ArrowRight aria-hidden="true" /></WoodenActionButton>
+        <WoodenActionButton className="adventure-begin" disabled={!loaderDone} onClick={beginPuzzle}>{started ? 'Back to puzzle' : 'Let’s help!'}<ArrowRight aria-hidden="true" /></WoodenActionButton>
       </section>}
 
-      <section className="puzzle-sheet" inert={spatial && (storyOpen || transitioning) ? true : undefined}>
+      <section className="puzzle-sheet" inert={spatial && (storyOpen || transitioning || !loaderDone) ? true : undefined}>
         {!spatial && <div className={cn("scene", celebrating && "scene-party")}>
           <div className="scene-text">
             <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
@@ -358,7 +352,7 @@ function Play() {
         )}
       </div>
 
-      <div className="world-ledge" inert={spatial && (storyOpen || transitioning) ? true : undefined}>
+      <div className="world-ledge" inert={spatial && (storyOpen || transitioning || !loaderDone) ? true : undefined}>
       <nav aria-label="Puzzle navigation" className="puzzle-navigation">
         <WoodenActionButton disabled={!trail.current.length} onClick={goPrev}>{spatial ? <><ArrowLeft aria-hidden="true" /><span>Previous</span></> : "← Previous"}</WoodenActionButton>
         <WoodenActionButton onClick={replay}>{spatial ? <><RotateCcw aria-hidden="true" /><span>New</span></> : "New numbers"}</WoodenActionButton>
