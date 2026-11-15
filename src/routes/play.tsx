@@ -20,6 +20,8 @@ import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
 import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
+import { fitForestLayout } from "@/lib/forest-layout";
+import tabletForest from "@/assets/forest-game/forest-tablet-portrait.jpg";
 import expandedForest from "@/assets/forest-game/forest-carved-reference.jpg";
 import offlineIllustration from "@/assets/forest-game/story-fallback-reference.jpg";
 
@@ -48,20 +50,20 @@ export const Route = createFileRoute("/play")({
 /** Fit the reference composition with one uniform scale; never stretch its artwork. */
 function ForestViewport({ children }: { children: ReactNode }) {
   const viewport = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
+  const [layout, setLayout] = useState(() => fitForestLayout(393, 852));
   useEffect(() => {
     const element = viewport.current;
     if (!element) return;
     const observer = new ResizeObserver(([entry]) => {
       if (!entry) return;
       const { width, height } = entry.contentRect;
-      setScale(Math.min(width / 393, height / 852));
+      setLayout(fitForestLayout(width, height));
     });
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  return <div ref={viewport} className="forest-viewport" style={{ ["--forest-scale" as string]: scale }}>
-    <img className="forest-viewport-scenery" src={expandedForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
+  return <div ref={viewport} className={`forest-viewport forest-layout-${layout.mode}`} style={{ ["--forest-scale" as string]: layout.scale }}>
+    <img key={layout.mode} className="forest-viewport-scenery" src={layout.mode === "phone" ? expandedForest : tabletForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
     {children}
   </div>;
 }

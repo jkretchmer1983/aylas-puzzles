@@ -1584,3 +1584,56 @@ html, body { overflow-x: clip; }
 }
 /* The frame's upper branch has a fixed painted thickness in both story states. */
 .forest-viewport .forest-spatial .story-window-content { top:10px; }
+
+/* Portrait tablet / wide-phone composition. One painted scene and one coordinate
+   space keep the hollow targets, carved digits and artwork registered. */
+.forest-layout-portrait-wide > .puzzle-screen.forest-spatial { width:768px;height:1100px; }
+.forest-layout-portrait-wide.forest-viewport .forest-viewport-scenery { width:calc(921.6px * var(--forest-scale));height:calc(1228.8px * var(--forest-scale));top:calc(50% + 12px * var(--forest-scale));object-fit:contain; }
+.forest-layout-portrait-wide.forest-viewport { background:#68411f; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial > .puzzle-header { left:42px;right:42px;top:18px;height:70px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-age-control { min-height:52px;font-size:20px;padding-inline:25px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-round-control { width:54px;height:54px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-score { font-size:18px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) > .story-illustration-frame { left:44px;top:72px;width:680px;height:270px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-title-plaque { width:430px;height:153px;bottom:-22px;padding:37px 80px 30px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-title-plaque h1 { font-size:32px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-story-hanger { top:105px;right:62px;width:115px;height:60px;font-size:18px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-task { left:118px;top:366px;width:532px !important;height:58px;font-size:18px;line-height:1.22;padding:8px 21px !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-task > .forest-read-aloud { width:44px;height:44px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .sudoku-tree-board { left:210.010px;top:428.770px;width:429.401px;height:388.667px;grid-template-columns:12fr 117fr 3fr 116fr 22fr 112fr 4fr 108fr 12fr;grid-template-rows:13fr 106fr 4fr 102fr 14fr 108fr 4fr 101fr 6fr; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .forest-number-rack { left:100px;top:437px;width:84px;height:376px;flex-direction:column;gap:13px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-number-rack .forest-number-tile { flex:1;min-height:0;width:84px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .pz-check-wrap { left:199px;top:842px;width:370px;max-width:370px;height:62px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .pz-check-wrap .pz-check { width:100%;height:62px;font-size:23px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-hint { top:829px;right:122px;width:105px;height:84px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-hint > .forest-reference-hint { width:105px;min-height:61px;font-size:16px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-hint::before { left:54px;top:47px;height:39px;width:11px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-feedback { top:923px;left:180px;width:408px;height:60px;min-height:60px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) > .world-ledge { left:72px;right:72px;bottom:10px;height:58px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation { gap:12px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { font-size:20px;height:58px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial.adventure-open > .story-illustration-frame { top:94px;left:44px;width:680px;height:415px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial.adventure-open .story-title-plaque { width:460px;height:164px;bottom:-21px;padding:39px 86px 32px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .adventure-eyebrow { top:79px;width:768px;font-size:15px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-adventure .adventure-story { top:480px;left:99px;width:570px;height:370px;max-height:370px;font-size:22px;padding:40px 46px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-adventure > .forest-read-aloud { top:870px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .adventure-begin { top:960px;width:300px; }
+
+/* Tablet surfaces keep the original rounded end caps at their natural scale. */
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-task { background-image:url('./assets/forest-game/surface-tablet-task.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .pz-check-wrap .pz-check::before { background-image:url('./assets/forest-game/surface-tablet-check.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-age-control { background-image:url('./assets/forest-game/surface-tablet-age.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-score { background-image:url('./assets/forest-game/surface-tablet-score.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { background-image:url('./assets/forest-game/surface-tablet-nav.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action:last-child:not(.wooden-action-primary) { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { background-image:url('./assets/forest-game/surface-tablet-next.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .adventure-begin { background-image:url('./assets/forest-game/surface-tablet-begin.svg') !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { background:none !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-age-control { width:180px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-score { width:134px;height:34px;display:flex;align-items:center;justify-content:center;padding:0; }
+
+.forest-layout-portrait-wide.forest-viewport .forest-spatial:not(.adventure-open) .forest-number-rack { display:flex; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .puzzle-world .forest-number-rack .forest-number-tile { flex:0 0 84px;height:84px;min-height:84px;width:84px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-offline-illustration { object-position:center 30%; }
+
+.forest-viewport .forest-spatial .puzzle-task:focus { outline:none; }
