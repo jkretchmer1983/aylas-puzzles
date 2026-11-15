@@ -1582,3 +1582,5 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial .story-title-plaque h1:focus {
   outline:none;
 }
+/* The frame's upper branch has a fixed painted thickness in both story states. */
+.forest-viewport .forest-spatial .story-window-content { top:10px; }
