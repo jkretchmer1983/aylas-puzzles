@@ -47,16 +47,16 @@ describe('Sudoku check emphasis', () => {
     k.given.forEach((given, i) => {
       if (given !== null) return;
       fireEvent.click(screen.getByLabelText(`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}, empty`));
-      fireEvent.click(screen.getByRole('button', { name: k.symbols[0], exact: true }));
+      fireEvent.click(screen.getByRole('button', { name: k.symbols[0] }));
     });
     const check = screen.getByRole('button', { name: 'Check my answer ✓' });
     expect(check.parentElement).toHaveClass('pz-check-ready');
     fireEvent.click(check);
     expect(report).toHaveBeenCalledWith(false);
     expect(check.parentElement).not.toHaveClass('pz-check-ready');
-    fireEvent.click(screen.getByRole('button', { name: k.symbols[0], exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: k.symbols[0] }));
     expect(check.parentElement).not.toHaveClass('pz-check-ready');
-    fireEvent.click(screen.getByRole('button', { name: k.symbols[1], exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: k.symbols[1] }));
     expect(check.parentElement).toHaveClass('pz-check-ready');
   });
 });

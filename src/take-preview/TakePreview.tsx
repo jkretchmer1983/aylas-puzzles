@@ -52,7 +52,8 @@ export function TakePreview() {
     if (storyOpen && dialog && !dialog.open) dialog.showModal();
     if (!storyOpen && dialog?.open) dialog.close();
   }, [storyOpen]);
-  const adventure = session.adventures[session.index]!;
+  const adventure = session.adventures[session.index] ?? initial().adventures[0];
+  if (!adventure) throw new Error('Missing Taking Away adventure');
   const spec = generate('take', 1, adventure.boardSeed);
   const storySpec = generate('take', 1, adventure.storySeed);
   const stopSpeech = () => { window.speechSynthesis?.cancel(); utterance.current = null; setSpeaking(false); };

@@ -9,6 +9,6 @@ Interactions: hold 350 ms or move 9 px to lift; 74 px stable vertical finger off
 
 Verification: production build and 53 tests pass, including all 46 existing tests plus seven new generator/mapping, answer ownership, release/undo, counting, finger-offset hit-testing, and rotation tests. Browser-reviewed at phone portrait 393×852, phone landscape 852×393, wider portrait, and tablet compositions; tap-release, live dragging, incorrect/correct feedback, previous restoration, and state continuity checked. Live browser checks use mouse/touch emulation; physical iPhone feel and speech output need device review.
 
-Existing strict TypeScript check issues remain in the base branch's Sudoku session optional properties and test query options; no new type errors were introduced. This prototype deliberately uses generator fallback story text and simple layered artwork. Full generated story/illustration integration, intro transition, older age grouped quantities, and final airfield art follow interaction review.
+Strict TypeScript check also passes. To unblock the hosted draft, optional session types now explicitly permit undefined and test role queries omit the unsupported exact option; puzzle behavior is unchanged. This prototype deliberately uses generator fallback story text and simple layered artwork. Full generated story/illustration integration, intro transition, older age grouped quantities, and final airfield art follow interaction review.
 
 No main edits, merges, publishing, or edits to the shared Sudoku branch.

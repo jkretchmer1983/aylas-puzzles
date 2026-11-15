@@ -140,7 +140,7 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
   );
 }
 
-function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
+function Sudoku({ k, report, sessionKey }: { sessionKey?: string | undefined; k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
   const { storyWorld } = useContext(Presentation);
   const size = k.symbols.length;
   const [cells, setCells] = useState<(number | null)[]>(k.given);
@@ -214,7 +214,7 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   );
 }
 
-export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = null, completed = false, sessionKey }: { sessionKey?: string; spec: PuzzleSpec; report: Report; storyWorld?: boolean; checkTarget?: HTMLElement | null; completed?: boolean }) {
+export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = null, completed = false, sessionKey }: { sessionKey?: string | undefined; spec: PuzzleSpec; report: Report; storyWorld?: boolean; checkTarget?: HTMLElement | null; completed?: boolean }) {
   const k = spec.kind;
   return (
     <Presentation.Provider value={{ storyWorld, checkTarget, completed }}><PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">

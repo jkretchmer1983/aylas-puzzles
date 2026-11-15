@@ -7,7 +7,9 @@ export function takeClues(spec: Pick<PuzzleSpec, 'template' | 'task'>) {
   if (!match) throw new Error('Unsupported Taking Away task; keep the original renderer');
   const total = Number(match[1]), removed = Number(match[3]);
   if (total < 1 || removed < 1 || removed >= total) throw new Error('Invalid public task');
-  return { total, removed, object: match[2]!, balloon: match[2] === '🎈' };
+  const object = match[2];
+  if (!object) throw new Error('Missing Taking Away object');
+  return { total, removed, object, balloon: object === '🎈' };
 }
 export type PlayState = {
   selected: number[]; released: number[]; batches: number[][];
