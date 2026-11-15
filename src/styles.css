@@ -1462,3 +1462,22 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial.adventure-open .adventure-story { position:absolute;top:420px;left:20px;width:353px;height:230px;flex:none;background-size:cover; }
 .forest-viewport .forest-spatial.adventure-open .forest-adventure > .forest-read-aloud { position:absolute;top:670px; }
 .forest-viewport .forest-spatial.adventure-open .adventure-begin { position:absolute;top:724px; }
+
+/* Single SVG surfaces overlap grain joins so fractional scaling cannot expose seams. */
+.forest-viewport .forest-spatial .puzzle-task { border-image:none !important;background:url('./assets/forest-game/surface-task.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .forest-age-control { border-image:none !important;background:url('./assets/forest-game/surface-age.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .forest-score { border-image:none !important;background:url('./assets/forest-game/surface-score.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .forest-reference-hint { border-image:none !important;background:url('./assets/forest-game/surface-hint.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .forest-story-hanger { border-image:none !important;background:url('./assets/forest-game/surface-story.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .forest-retry-banner { border-image:none !important;background:url('./assets/forest-game/surface-check.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .pz-check-wrap .pz-check::before { border-image:none !important;background:url('./assets/forest-game/surface-check.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { border-image:none !important;background:url('./assets/forest-game/surface-nav.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { border-image:none !important;background:url('./assets/forest-game/surface-next.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .forest-spatial .adventure-begin { border-image:none !important;background:url('./assets/forest-game/surface-begin.svg') center/100% 100% no-repeat !important; }
+
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { background:none !important; }
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action:last-child:not(.wooden-action-primary) { background-image:url('./assets/forest-game/surface-next.svg') !important; }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-task { display:flex;align-items:center;gap:5px;padding:5px 15px !important; }
+.forest-viewport .forest-spatial .puzzle-task > span { min-width:0; }
+.forest-viewport .forest-spatial .puzzle-task > .forest-read-aloud { width:38px;height:38px; }
+.forest-viewport .forest-spatial .puzzle-hint::before { display:none; }

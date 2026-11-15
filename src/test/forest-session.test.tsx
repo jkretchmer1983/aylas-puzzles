@@ -35,3 +35,28 @@ describe('read aloud', () => {
     expect(screen.getByRole('button')).toBeDisabled();
   });
 });
+
+describe('Sudoku check emphasis', () => {
+  it('drops ready emphasis after a wrong check and restores it only for a changed answer', async () => {
+    const { PuzzleBody } = await import('@/gen/Renderer');
+    const { generate } = await import('@/gen/templates');
+    const spec = generate('sudoku', 4, 12345);
+    if (spec.kind.type !== 'sudoku') throw new Error('Expected Sudoku');
+    const k = spec.kind, report = vi.fn();
+    render(<PuzzleBody spec={spec} report={report} />);
+    k.given.forEach((given, i) => {
+      if (given !== null) return;
+      fireEvent.click(screen.getByLabelText(`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}, empty`));
+      fireEvent.click(screen.getByRole('button', { name: k.symbols[0], exact: true }));
+    });
+    const check = screen.getByRole('button', { name: 'Check my answer ✓' });
+    expect(check.parentElement).toHaveClass('pz-check-ready');
+    fireEvent.click(check);
+    expect(report).toHaveBeenCalledWith(false);
+    expect(check.parentElement).not.toHaveClass('pz-check-ready');
+    fireEvent.click(screen.getByRole('button', { name: k.symbols[0], exact: true }));
+    expect(check.parentElement).not.toHaveClass('pz-check-ready');
+    fireEvent.click(screen.getByRole('button', { name: k.symbols[1], exact: true }));
+    expect(check.parentElement).toHaveClass('pz-check-ready');
+  });
+});

@@ -135,8 +135,11 @@ function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kin
   const { storyWorld } = useContext(Presentation);
   const [cells, setCells] = useState<(number | null)[]>(k.given);
   const [restored, setRestored] = useState(false);
+  const [checked, setChecked] = useState(false);
   useEffect(() => {
-    const saved = sessionKey ? readPuzzleSession(sessionKey).cells : undefined;
+    const session = sessionKey ? readPuzzleSession(sessionKey) : undefined;
+    const saved = session?.cells;
+    setChecked(session?.result !== undefined);
     if (saved?.length === k.given.length) setCells(k.given.map((given, i) => given ?? saved[i] ?? null));
     setRestored(true);
     // The puzzle is keyed by instance; keep its generator values fixed across renders.
@@ -158,9 +161,9 @@ function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kin
         })}
       </div>
       <div className="forest-number-rack mt-3 flex gap-2">
-        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{storyWorld ? <span aria-hidden="true">{s}</span> : /^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
+        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; if (cells[sel] !== i) setChecked(false); setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{storyWorld ? <span aria-hidden="true">{s}</span> : /^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
       </div>
-      <CheckButton disabled={cells.includes(null)} ready={!cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
+      <CheckButton disabled={cells.includes(null)} ready={!cells.includes(null) && !checked} onClick={() => { setChecked(true); report(cells.every((c, i) => c === k.solution[i])); }} />
     </div>
   );
 }
