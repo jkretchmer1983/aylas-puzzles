@@ -1651,3 +1651,17 @@ html, body { overflow-x: clip; }
 /* Use tablet-sized branches, with the matching image opening under their lip. */
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .story-illustration-frame::after { border-image-width:72px !important;border-image-slice:200 !important; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .story-window-content { inset:34px 48px;border-radius:36px / 48px; }
+
+/* The frame is a real overlay, never a pseudo-element competing with live art.
+   Eight SVG slices share one image request; corners keep their proportions. */
+.forest-viewport .forest-spatial .story-illustration-frame::after { display:none !important; }
+.forest-viewport .forest-spatial .story-branch-overlay {
+  position:absolute;inset:0;z-index:2;pointer-events:none;display:grid;
+  grid-template-columns:34px minmax(0,1fr) 34px;grid-template-rows:34px minmax(0,1fr) 34px;
+  filter:drop-shadow(0 2px 2px #48280d66);
+}
+.forest-viewport .forest-spatial .story-branch-overlay > svg { display:block;width:100%;height:100%;overflow:hidden; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-branch-overlay {
+  grid-template-columns:72px minmax(0,1fr) 72px;grid-template-rows:72px minmax(0,1fr) 72px;
+}
+.forest-viewport .forest-spatial .story-window-content { isolation:isolate;overflow:hidden; }
