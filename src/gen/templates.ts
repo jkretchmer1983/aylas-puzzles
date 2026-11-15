@@ -107,7 +107,7 @@ export const TEMPLATES: Template[] = [
     const solution = Array.from({ length: 16 }, (_, i) => digit[base[bands[Math.floor(i / 4)]! * 4 + colOrder[i % 4]!]!]!);
     const hide = new Set(r.shuffle([...Array(16).keys()]).slice(0, [0, 0, 4, 6, 8, 9, 10][b]!));
     const symbols = b <= 3 ? r.shuffle(r.pick([FRUITS, ANIMALS])).slice(0, 4) : ["1", "2", "3", "4"];
-    return { template: "sudoku", title: "Mini sudoku", story: "The treasure grid lost some of its pieces.", task: "Fill every square. Each row, column and 2×2 box needs one of each.", hint: "Find a row with only one empty square first.", theme: "a magic treasure grid", scene: [...symbols.slice(0, 2), "🗝️"], kind: { type: "sudoku", symbols, given: solution.map((v, i) => (hide.has(i) ? null : v)), solution } };
+    return { template: "sudoku", title: "The Missing Treasure Tiles", story: "The treasure grid lost some of its pieces.", task: "Fill every square. Each row, column and 2×2 box needs one of each.", hint: "Find a row with only one empty square first.", theme: "a magic treasure grid", scene: [...symbols.slice(0, 2), "🗝️"], kind: { type: "sudoku", symbols, given: solution.map((v, i) => (hide.has(i) ? null : v)), solution } };
   } },
   { id: "lineup", name: "Who's where?", icon: "🕵️", min: 2, max: 6, make: (r, b) => {
     const n = b < 4 ? 3 : b < 6 ? 4 : 5;

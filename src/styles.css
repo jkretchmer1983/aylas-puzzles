@@ -1363,3 +1363,52 @@ html, body { overflow-x: clip; }
 }
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary { position:relative; isolation:isolate; background:none !important; outline:none; filter:none; box-shadow:none; color:#fff7d8 !important; }
 .forest-viewport .forest-spatial .puzzle-navigation .wooden-action-primary::before { content:''; position:absolute; inset:0; z-index:-1; background:var(--forest-gold-art) center/100% 100%; filter:hue-rotate(65deg) saturate(1.4) brightness(.8) drop-shadow(0 0 4px #8cb94888); pointer-events:none; }
+
+/* Render-fidelity pass: all coordinates share the registered 393 × 852 canvas.
+   The 16 transparent targets match the hollows painted in forest-carved-reference. */
+@font-face { font-family:'Forest Nunito';font-style:normal;font-weight:800;font-display:swap;src:url('./assets/fonts/nunito-800.ttf') format('truetype'); }
+@font-face { font-family:'Forest Nunito';font-style:normal;font-weight:900;font-display:swap;src:url('./assets/fonts/nunito-900.ttf') format('truetype'); }
+@font-face { font-family:'Forest Lora';font-style:normal;font-weight:700;font-display:swap;src:url('./assets/fonts/lora-700.ttf') format('truetype'); }
+.forest-viewport .forest-spatial { --font-sans:'Forest Nunito',sans-serif; --font-forest:'Forest Lora',Georgia,serif; }
+.forest-viewport .forest-spatial:not(.adventure-open) > .puzzle-header { position:absolute;left:16px;right:16px;top:12px;height:60px; }
+.forest-viewport .forest-spatial .forest-age-control { font:900 16px/1 var(--font-sans);min-height:44px;padding-inline:18px; }
+.forest-viewport .forest-spatial .forest-header-left { gap:8px; }
+.forest-viewport .forest-spatial .forest-score { font:900 14px/1 var(--font-sans);padding:6px 14px; }
+.forest-viewport .forest-spatial:not(.adventure-open) > .story-illustration-frame { position:absolute;left:5px;top:65px;width:383px;height:196px;margin:0; }
+.forest-viewport .forest-spatial .story-window-content { inset:9% 6% 10%;border-radius:14% / 28%; }
+.forest-viewport .forest-spatial .story-window-border { filter:drop-shadow(0 2px 2px #48280d66); }
+.forest-offline-illustration { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center; }
+.forest-viewport .forest-spatial .story-title-plaque { left:50%;transform:translateX(-50%);bottom:-15px;width:300px;height:107px;aspect-ratio:auto;padding:24px 57px 20px;background-size:contain;filter:drop-shadow(0 3px 2px #3f200b77); }
+.forest-viewport .forest-spatial .story-title-plaque h1 { font:700 22px/.98 var(--font-forest);letter-spacing:-.6px;overflow-wrap:normal;text-wrap:balance;color:#3b210e; }
+.forest-viewport .forest-spatial .forest-story-hanger { top:96px;right:18px;width:92px;height:48px;font:900 15px var(--font-sans); }
+.forest-viewport .forest-spatial:not(.adventure-open) > .puzzle-sheet { position:static; }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-task { position:absolute;top:270px;left:30px;width:333px !important;height:51px;min-height:51px;padding:6px 9px 6px 18px !important;margin:0;font:900 14px/1.18 var(--font-sans); }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-stage { position:absolute;inset:0;container-type:normal;pointer-events:none; }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-stage-content { transform:none !important; }
+.forest-viewport .forest-spatial:not(.adventure-open) .forest-sudoku { display:contents; }
+.forest-viewport .forest-spatial:not(.adventure-open) .sudoku-tree-board { position:absolute;left:67.75px;top:323.5px;width:257.5px;height:256.25px;pointer-events:auto;padding:0;gap:0;background:none !important;box-shadow:none !important;grid-template-columns:6fr 45fr 2fr 43fr 16fr 42fr 2fr 43fr 7fr;grid-template-rows:8fr 40fr 3fr 44fr 18fr 40fr 3fr 43fr 6fr; }
+.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(4n+1){grid-column:2}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(4n+2){grid-column:4}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(4n+3){grid-column:6}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(4n+4){grid-column:8}
+.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(-n+4){grid-row:2}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(n+5):nth-child(-n+8){grid-row:4}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(n+9):nth-child(-n+12){grid-row:6}.forest-viewport .forest-spatial .sudoku-tree-board > :nth-child(n+13){grid-row:8}
+.forest-viewport .forest-spatial .puzzle-world .pz-sudoku { width:100%;height:100%;background:none !important;box-shadow:none !important;border:0 !important;border-radius:13%; }
+.forest-viewport .forest-spatial .puzzle-world .pz-sudoku-fixed { background:#572a0e30 !important;box-shadow:inset 0 1px 5px #50230835 !important; }
+.forest-viewport .forest-spatial .puzzle-world .pz-sudoku-sel { outline:2px solid #ffeb80 !important;outline-offset:-2px;box-shadow:inset 0 0 6px #ffdd4377,0 0 5px #ffda4f88 !important; }
+.forest-viewport .forest-spatial .pz-sudoku .forest-numeral { width:92%;height:92%;font-family:var(--font-forest); }
+.forest-viewport .forest-spatial:not(.adventure-open) .forest-number-rack { position:absolute;left:65px;top:593px;width:263px;height:60px;margin:0;gap:5px;pointer-events:auto; }
+.forest-viewport .forest-spatial:not(.adventure-open) .pz-check-wrap { position:absolute;left:56.5px;top:669px;width:280px;height:52px;pointer-events:auto; }
+.forest-viewport .forest-spatial .pz-check-wrap .pz-check { font:900 18px/1 var(--font-sans);padding-right:27px; }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-hint { position:absolute;top:664px;bottom:auto;right:16px;pointer-events:auto; }
+.forest-viewport .forest-spatial .puzzle-hint > .forest-reference-hint { width:78px;min-height:47px;font:900 12px/1.05 var(--font-sans); }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-feedback { position:absolute;top:726px;left:10px;width:373px;height:58px;min-height:58px; }
+.forest-viewport .forest-spatial:not(.adventure-open) > .world-ledge { position:absolute;left:10px;right:10px;bottom:8px;height:58px; }
+.forest-viewport .forest-spatial .puzzle-navigation .wooden-action { font:900 15px/1 var(--font-sans);height:58px; }
+.forest-viewport .forest-spatial.adventure-open .story-title-plaque { height:118px;width:330px;bottom:-15px;padding:26px 64px 23px; }
+.forest-viewport .forest-spatial.adventure-open .story-title-plaque h1 { font-size:24px; }
+.forest-viewport-scenery { width:calc(1800px * var(--forest-scale,1));height:calc(1200px * var(--forest-scale,1));top:calc(50% + 10px * var(--forest-scale,1)); }
+.forest-viewport .forest-spatial:not(.adventure-open) .sudoku-tree-board { left:75.796875px;top:339.90625px;width:241.40625px;height:240.234375px; }
+.forest-viewport .forest-spatial:not(.adventure-open) > .world-ledge { width:auto; }
+.forest-viewport .forest-spatial .story-title-plaque h1 { font-size:23px;line-height:1;-webkit-text-stroke:.35px currentColor; }
+.forest-viewport .forest-spatial .forest-story-hanger { background:url('./assets/forest-game/adventure-plaque.jpg') center/110% 118%;border-radius:7px; }
+.forest-viewport .forest-spatial:not(.adventure-open) .puzzle-hint { width:84px;right:13px;top:660px; }
+.forest-viewport .forest-spatial .puzzle-hint > .forest-reference-hint { width:84px;min-height:49px;font-size:13px; }
+.forest-viewport .forest-spatial .puzzle-world .forest-number-tile { background-image:url('./assets/forest-game/number-tile-reference.webp') !important;background-size:116% 116% !important;background-position:center !important;filter:drop-shadow(0 3px 2px #3a1e0c88);padding:3px 3px 13px; }
+.forest-viewport .forest-spatial .pz-check-wrap .pz-check:disabled { opacity:1 !important;color:#44250f !important; }

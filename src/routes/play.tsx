@@ -19,7 +19,9 @@ import { Button } from "@/components/ui/button";
 import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
-import expandedForest from "@/assets/forest-game/forest-carving-scene.jpg";
+import expandedForest from "@/assets/forest-game/forest-carved-reference.jpg";
+import introForest from "@/assets/forest-game/forest-expanded.jpg";
+import offlineIllustration from "@/assets/forest-game/story-fallback-reference.jpg";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 
@@ -44,7 +46,7 @@ export const Route = createFileRoute("/play")({
 
 
 /** Fit the reference composition with one uniform scale; never stretch its artwork. */
-function ForestViewport({ children }: { children: ReactNode }) {
+function ForestViewport({ children, intro }: { children: ReactNode; intro: boolean }) {
   const viewport = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -59,7 +61,7 @@ function ForestViewport({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, []);
   return <div ref={viewport} className="forest-viewport" style={{ ["--forest-scale" as string]: scale }}>
-    <img className="forest-viewport-scenery" src={expandedForest} alt="" aria-hidden="true" draggable={false} />
+    <img className="forest-viewport-scenery" src={intro ? introForest : expandedForest} alt="" aria-hidden="true" draggable={false} />
     {children}
   </div>;
 }
@@ -230,7 +232,7 @@ function Play() {
   const story = shown?.key === key ? shown.story : spec.story;
   const title = shown?.key === key ? shown.title : spec.title;
   const illustration = <>
-    <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />
+    {spatial ? <img className="forest-offline-illustration" src={offlineIllustration} alt="A young explorer, a monkey and a bird discovering treasure tiles in the forest" /> : <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />}
     {art && <div key={key} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
       <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
     </div>}
@@ -316,5 +318,5 @@ function Play() {
       </div>
     </main>
   );
-  return spatial ? <ForestViewport>{game}</ForestViewport> : game;
+  return spatial ? <ForestViewport intro={storyOpen}>{game}</ForestViewport> : game;
 }
