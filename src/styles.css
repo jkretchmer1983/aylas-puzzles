@@ -1571,3 +1571,10 @@ html, body { overflow-x: clip; }
  .forest-spatial .scene-watercolor-reveal { opacity:1;-webkit-mask-image:none;mask-image:none; }
  .forest-viewport .forest-spatial .carved-fresh .engraving-cut-path { animation:none !important;stroke-dashoffset:0 !important; }
 }
+/* The source painting includes an opaque studio backdrop outside the wood.
+   Match a vector silhouette to the frame; tree scenery shows through outside it. */
+.forest-viewport .forest-spatial .forest-adventure .adventure-story {
+  background-size:100% 100%;background-color:transparent;border-radius:0;
+  -webkit-mask:url('./assets/forest-game/story-plaque-mask.svg') center/100% 100% no-repeat;
+  mask:url('./assets/forest-game/story-plaque-mask.svg') center/100% 100% no-repeat;
+}
