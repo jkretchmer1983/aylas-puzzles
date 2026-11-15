@@ -1467,7 +1467,7 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial .puzzle-task { border-image:none !important;background:url('./assets/forest-game/surface-task.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .forest-age-control { border-image:none !important;background:url('./assets/forest-game/surface-age.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .forest-score { border-image:none !important;background:url('./assets/forest-game/surface-score.svg') center/100% 100% no-repeat !important; }
-.forest-viewport .forest-spatial .forest-reference-hint { border-image:none !important;background:url('./assets/forest-game/surface-hint.svg') center/100% 100% no-repeat !important; }
+.forest-viewport .puzzle-screen.forest-spatial .puzzle-hint > .forest-reference-hint { border-image:none !important;background:url('./assets/forest-game/surface-hint.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .forest-story-hanger { border-image:none !important;background:url('./assets/forest-game/surface-story.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .forest-retry-banner { border-image:none !important;background:url('./assets/forest-game/surface-check.svg') center/100% 100% no-repeat !important; }
 .forest-viewport .forest-spatial .pz-check-wrap .pz-check::before { border-image:none !important;background:url('./assets/forest-game/surface-check.svg') center/100% 100% no-repeat !important; }
@@ -1480,4 +1480,9 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial:not(.adventure-open) .puzzle-task { display:flex;align-items:center;gap:5px;padding:5px 15px !important; }
 .forest-viewport .forest-spatial .puzzle-task > span { min-width:0; }
 .forest-viewport .forest-spatial .puzzle-task > .forest-read-aloud { width:38px;height:38px; }
-.forest-viewport .forest-spatial .puzzle-hint::before { display:none; }
+.forest-viewport .forest-spatial .puzzle-hint { isolation:isolate; }
+.forest-viewport .forest-spatial .puzzle-hint::before {
+  display:block;content:'';position:absolute;top:35px;bottom:auto;left:43px;width:9px;height:37px;
+  background:linear-gradient(90deg,#704017,#c18b4a 45%,#865222);border-radius:1px 1px 3px 3px;
+  box-shadow:2px 2px 3px #281b1480;transform:rotate(-5deg);z-index:-1;pointer-events:none;
+}
