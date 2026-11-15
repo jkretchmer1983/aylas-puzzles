@@ -1,5 +1,5 @@
 /** Browser-session presentation state; generated answers remain owned by Renderer. */
-export type PuzzleSession = { started?: boolean; cells?: (number | null)[]; result?: boolean; awarded?: boolean };
+export type PuzzleSession = { started?: boolean; boardSeed?: number; cells?: (number | null)[]; result?: boolean; awarded?: boolean };
 const memory = new Map<string, PuzzleSession>();
 export function readPuzzleSession(key: string): PuzzleSession {
   if (typeof window === 'undefined') return {};

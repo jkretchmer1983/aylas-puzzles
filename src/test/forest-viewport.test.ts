@@ -1,0 +1,25 @@
+import { afterEach, expect, it, vi } from 'vitest';
+import { watchForestViewport } from '@/lib/forest-viewport';
+afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();});
+it('remeasures after orientation/visual viewport events and removes listeners on unmount',()=>{
+ vi.useFakeTimers();
+ let width=393,height=852;
+ const visual=new EventTarget();
+ Object.defineProperties(visual,{width:{get:()=>width},height:{get:()=>height},scale:{value:1}});
+ vi.stubGlobal('visualViewport',visual);
+ const disconnect=vi.fn();
+ vi.stubGlobal('ResizeObserver',class { observe(){} disconnect=disconnect; });
+ const element=document.createElement('div');
+ Object.defineProperties(element,{clientWidth:{get:()=>width},clientHeight:{get:()=>height}});
+ const fit=vi.fn();
+ const stop=watchForestViewport(element,fit);
+ expect(fit).toHaveBeenLastCalledWith(393,852);
+ width=852;height=393;
+ window.dispatchEvent(new Event('orientationchange'));
+ expect(fit).toHaveBeenLastCalledWith(852,393);
+ width=1180;height=820;visual.dispatchEvent(new Event('resize'));
+ expect(fit).toHaveBeenLastCalledWith(1180,820);
+ stop();const calls=fit.mock.calls.length;
+ vi.runAllTimers();window.dispatchEvent(new Event('resize'));visual.dispatchEvent(new Event('resize'));
+ expect(fit).toHaveBeenCalledTimes(calls);expect(disconnect).toHaveBeenCalled();
+});

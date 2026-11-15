@@ -20,6 +20,7 @@ import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
 import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
+import { watchForestViewport } from "@/lib/forest-viewport";
 import { fitForestLayout } from "@/lib/forest-layout";
 import landscapeForest from "@/assets/forest-game/forest-landscape.jpg";
 import tabletForest from "@/assets/forest-game/forest-tablet-portrait.jpg";
@@ -55,13 +56,7 @@ function ForestViewport({ children }: { children: ReactNode }) {
   useEffect(() => {
     const element = viewport.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (!entry) return;
-      const { width, height } = entry.contentRect;
-      setLayout(fitForestLayout(width, height));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
+    return watchForestViewport(element, (width, height) => setLayout(fitForestLayout(width, height)));
   }, []);
   return <div ref={viewport} className={`forest-viewport forest-layout-${layout.mode}`} style={{ ["--forest-scale" as string]: layout.scale }}>
     <img key={layout.mode} className="forest-viewport-scenery" src={layout.mode === "phone" ? expandedForest : layout.mode === "landscape" ? landscapeForest : tabletForest} fetchPriority="high" decoding="sync" alt="" aria-hidden="true" draggable={false} />
@@ -118,11 +113,16 @@ function Play() {
 
   // Fill in a puzzle when the address has none.
   useEffect(() => {
-    if (!t || !s || !templatesFor(band).some((x) => x.id === t)) nav({ search: pickNext(), replace: true });
+    if (!t || !templatesFor(band).some((x) => x.id === t)) nav({ search: pickNext(), replace:true });
+    else if (!s) nav({search:{band, t, s:newSeed()}, replace:true});
   }, [t, s, band, nav, pickNext]);
 
   const spec = t && s ? generate(t, band, s) : null;
   const key = `${band}-${t}-${s}`;
+  const [board, setBoard] = useState<{key:string; seed:number} | null>(null);
+  const boardSeed = board?.key === key ? board.seed : s;
+  const boardSessionKey = `${key}:board:${boardSeed}`;
+  const boardSpec = spec && t === "sudoku" && boardSeed !== undefined ? { ...spec, kind:generate("sudoku", band, boardSeed).kind } : spec;
   const [storyOpen, setStoryOpen] = useState(true);
   const [started, setStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -143,6 +143,11 @@ function Play() {
     if (transitionTimer.current) clearTimeout(transitionTimer.current);
     setTransitioning(false);
     const saved = readPuzzleSession(key);
+    if (t === "sudoku") {
+      const seed = saved.boardSeed ?? newSeed();
+      setBoard({key, seed});
+      savePuzzleSession(key, {boardSeed:seed});
+    }
     setStarted(!!saved.started);
     setStoryOpen(!saved.started);
     setResult(saved.result === undefined ? null : { ok: saved.result, n: 1 });
@@ -235,18 +240,32 @@ function Play() {
   const report = useCallback((ok: boolean) => {
     if (t === "sudoku") playForestSound(ok ? "correct" : "retry");
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
-    const wasSolved = readPuzzleSession(key).awarded === true;
-    if (t === "sudoku") savePuzzleSession(key, { result: ok, awarded: wasSolved || ok });
+    const wasSolved = readPuzzleSession(boardSessionKey).awarded === true;
+    if (t === "sudoku") {
+      savePuzzleSession(key, {result:ok});
+      savePuzzleSession(boardSessionKey, {result:ok, awarded:wasSolved || ok});
+    }
     if (ok && !wasSolved) {
       setParty((p) => p + 1);
       update((p) => { const streak = p.streak + 1; return { ...p, solved: p.solved + 1, streak, best: Math.max(p.best, streak) }; });
     } else if (!ok) update((p) => ({ ...p, streak: 0 }));
-  }, [update, key, t]);
+  }, [update, key, t, boardSessionKey]);
 
   const reset = () => { setResult(null); setHint(false); };
   const goNext = () => { trail.current.push({ band, t, s }); reset(); nav({ search: nextRef.current ?? pickNext(t) }); };
   const goPrev = () => { const prev = trail.current.pop(); if (prev) { reset(); nav({ search: prev }); } };
-  const replay = () => { reset(); nav({ search: { band, t, s: newSeed() }, replace: true }); };
+  const replay = () => {
+    reset();
+    if (t === "sudoku") {
+      let seed = newSeed();
+      while (JSON.stringify(generate("sudoku", band, seed).kind) === JSON.stringify(boardSpec?.kind)) seed = (seed + 1) % 2 ** 31;
+      savePuzzleSession(key, {boardSeed:seed, result:undefined, started:true});
+      setBoard({key, seed});
+      setStarted(true); setStoryOpen(false);
+      return;
+    }
+    nav({ search: { band, t, s:newSeed() }, replace:true });
+  };
 
   if (!spec) return <main className={cn("puzzle-screen", `tier-${tierFor(band)}`)} />;
   const tpl = TEMPLATES.find((x) => x.id === spec.template);
@@ -323,7 +342,7 @@ function Play() {
         </div>}
         <div className="puzzle-task"><span>{spec.task}</span>{spatial && <ReadAloud text={spec.task} />}</div>
         <PuzzleStage spatial={spec.template === "sudoku"}>
-          <PuzzleBody key={key} spec={spec} report={report} sessionKey={spatial ? key : undefined} />
+          <PuzzleBody key={spatial ? boardSessionKey : key} spec={boardSpec ?? spec} report={report} sessionKey={spatial ? boardSessionKey : undefined} />
         </PuzzleStage>
         <div className="puzzle-hint text-center">
           {hint && <p className="forest-hint-plaque">{spec.hint}</p>}
