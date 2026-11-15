@@ -133,6 +133,7 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
 
 function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
   const { storyWorld } = useContext(Presentation);
+  const size = k.symbols.length;
   const [cells, setCells] = useState<(number | null)[]>(k.given);
   const [restored, setRestored] = useState(false);
   const [checked, setChecked] = useState(false);
@@ -150,11 +151,11 @@ function Sudoku({ k, report, sessionKey }: { sessionKey?: string; k: Extract<Kin
   const [carving, setCarving] = useState<{ cell: number; revision: number } | null>(null);
   return (
     <div className="forest-sudoku flex flex-col items-center">
-      <div className="sudoku-tree-board">
+      <div className={cn("sudoku-tree-board",size===6 && "sudoku-board-six")}>
         {cells.map((c, i) => {
           const fixed = k.given[i] !== null;
           return (
-            <Button variant="game" size="game" key={i} aria-label={`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel")}>
+            <Button variant="game" size="game" key={i} style={size===6 ? {gridRow:Math.floor(i/6)+1,gridColumn:i%6+1,marginBottom:Math.floor(i/6)%2===1&&i<30?4:0,marginRight:i%6===2?4:0} : undefined} aria-label={`Row ${Math.floor(i / size) + 1}, column ${i % size + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel")}>
               {c !== null && (storyWorld ? <span key={carving?.cell === i ? carving.revision : `fixed-${c}`} className={!fixed ? "placed-piece" : ""}>{k.symbols[c]}</span> : <CarvedMark key={carving?.cell === i ? carving.revision : `fixed-${c}`} value={k.symbols[c] ?? ""} fresh={!fixed && carving?.cell === i} />)}
             </Button>
           );

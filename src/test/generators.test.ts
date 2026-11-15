@@ -21,9 +21,10 @@ describe("puzzle generators", () => {
       if (k.type === "order") expect([...k.items].sort()).toEqual([...k.answer].sort());
       if (k.type === "nim") expect(k.stones % (k.maxTake + 1)).not.toBe(0);
       if (k.type === "sudoku") {
-        for (let i = 0; i < 4; i++) {
-          expect(new Set(k.solution.slice(i * 4, i * 4 + 4)).size).toBe(4);
-          expect(new Set([0, 1, 2, 3].map((r) => k.solution[r * 4 + i])).size).toBe(4);
+        for (let i = 0; i < k.symbols.length; i++) {
+          const n=k.symbols.length;
+          expect(new Set(k.solution.slice(i*n,i*n+n)).size).toBe(n);
+          expect(new Set(Array.from({length:n},(_,r)=>k.solution[r*n+i])).size).toBe(n);
         }
       }
     }

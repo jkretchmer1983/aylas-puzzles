@@ -83,7 +83,7 @@ describe("Story Worlds preserves puzzle truth", () => {
     const k = spec.kind;
     render(<PuzzleBody spec={spec} report={report} storyWorld />);
     k.given.forEach((v, i) => {
-      const name = `Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${v === null ? ", empty" : `, ${k.symbols[v]}`}`;
+      const name = `Row ${Math.floor(i / k.symbols.length) + 1}, column ${i % k.symbols.length + 1}${v === null ? ", empty" : `, ${k.symbols[v]}`}`;
       const cell = screen.getByRole("button", { name });
       if (v !== null) expect(cell).toBeDisabled();
       else { fireEvent.click(cell); fireEvent.click(screen.getByRole("button", { name: k.symbols[k.solution[i] ?? 0] })); }

@@ -1735,3 +1735,22 @@ html, body { overflow-x: clip; }
 .forest-viewport .forest-spatial .quest-loader-inline .quest-loader-detail { margin-top:4px;font-size:13px;color:#75552d; }
 .forest-viewport .forest-spatial .quest-loader-inline .quest-loader-track { margin-top:12px;width:140px;background:#a7804740; }
 .forest-viewport .forest-spatial .quest-loader-inline .quest-loader-track span { background:#71933c; }
+.sudoku-board-six { grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));width:min(95vw,440px); }
+/* Older children: six by six, with the same tree footprint and carved digits. */
+.forest-viewport .forest-spatial.forest-six .sudoku-board-six {
+ grid-template-columns:repeat(6,minmax(0,1fr)) !important;grid-template-rows:repeat(6,minmax(0,1fr)) !important;
+ padding:7px;gap:2px;border-radius:5%;
+ background:#e99a31 url('./assets/forest-game/forest-tablet-portrait.jpg') 40% 8% / 271.5% 362% !important;
+ box-shadow:inset 0 4px 9px #71340899,0 1px 2px #ffcd76 !important;
+}
+.forest-viewport .forest-spatial.forest-six .puzzle-world .sudoku-board-six .pz-sudoku {
+ min-width:0;min-height:0;width:auto;height:auto;padding:0;border-radius:15%;
+ background:linear-gradient(145deg,#f6b44a77,#e3932a77) !important;
+ box-shadow:inset 2px 4px 5px #6a300c99,inset -1px -1px 2px #ffce73 !important;
+}
+.forest-viewport .forest-spatial.forest-six .puzzle-world .sudoku-board-six .pz-sudoku-fixed { background:linear-gradient(145deg,#8e521b99,#b7742699) !important; }
+.forest-viewport .forest-spatial.forest-six .forest-number-rack { display:flex !important;flex-wrap:nowrap;align-items:center;justify-content:center;gap:3px; }
+.forest-viewport .forest-spatial.forest-six .puzzle-world .forest-number-rack .forest-number-tile { flex:1 1 0;width:40px;height:44px;min-height:0;padding-bottom:7px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial.forest-six .forest-number-rack { gap:6px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial.forest-six .puzzle-world .forest-number-rack .forest-number-tile { flex:0 0 56px;width:56px;height:56px;min-height:56px; }
+.forest-layout-landscape.forest-viewport .forest-spatial.forest-six .puzzle-world .forest-number-rack .forest-number-tile { flex:0 0 54px;width:54px;height:54px;min-height:54px; }

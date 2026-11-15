@@ -122,7 +122,7 @@ function Play() {
   const key = `${band}-${t}-${s}`;
   const [board, setBoard] = useState<{key:string; seed:number} | null>(null);
   const boardSeed = board?.key === key ? board.seed : s;
-  const boardSessionKey = `${key}:board:${boardSeed}`;
+  const boardSessionKey = `${key}:board:${boardSeed}:${band>=5?6:4}`;
   const boardSpec = spec && t === "sudoku" && boardSeed !== undefined ? { ...spec, kind:generate("sudoku", band, boardSeed).kind } : spec;
   const [storyOpen, setStoryOpen] = useState(true);
   const [started, setStarted] = useState(false);
@@ -143,11 +143,12 @@ function Play() {
   useEffect(() => {
     if (transitionTimer.current) clearTimeout(transitionTimer.current);
     setTransitioning(false);
-    const saved = readPuzzleSession(key);
+    const saved = {...readPuzzleSession(key)};
+    if (t === "sudoku" && band >= 5 && saved.boardSize !== 6) saved.result = undefined;
     if (t === "sudoku") {
       const seed = saved.boardSeed ?? newSeed();
       setBoard({key, seed});
-      savePuzzleSession(key, {boardSeed:seed});
+      savePuzzleSession(key, {boardSeed:seed, boardSize:band>=5?6:4, result:saved.result});
     }
     setStarted(!!saved.started);
     setStoryOpen(!saved.started);
@@ -289,7 +290,7 @@ function Play() {
       const control = (event.target as HTMLElement).closest('button,a,summary');
       if (!control || control.hasAttribute('disabled') || control.closest('.forest-read-aloud') || control.closest('.forest-sound-toggle') || control.closest('.pz-check') || control.closest('.adventure-begin')) return;
       playForestSound(control.classList.contains('forest-number-tile') ? 'carve' : 'tap');
-    } : undefined} className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving", spatial && storyOpen && "adventure-open", spatial && transitioning && "adventure-transition", spatial && loaderDone && "forest-motion-ready")} style={{ ["--scene-hue" as string]: hue }}>
+    } : undefined} className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", spec.kind.type === "sudoku" && spec.kind.symbols.length === 6 && "forest-six", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving", spatial && storyOpen && "adventure-open", spatial && transitioning && "adventure-transition", spatial && loaderDone && "forest-motion-ready")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} forest={spatial} />

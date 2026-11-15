@@ -1,3 +1,4 @@
+import { makeSixSudoku } from "./sudoku-six";
 import { makeRng, type Rng } from "./rng";
 import type { Band, PuzzleSpec, ShapeName } from "./types";
 
@@ -99,6 +100,7 @@ export const TEMPLATES: Template[] = [
     return { template: "sequence", title: "The stepping-stone trail", story: "Each stone on the river has a number. One is missing!", task: `${seq.join(", ")}, … What number comes next?`, hint: "How much does it change each step?", theme: "numbered stepping stones across a river", scene: ["🪨", "🌊", "🐸"], kind: { type: "number", answer } };
   } },
   { id: "sudoku", name: "Mini sudoku", icon: "🔲", min: 2, max: 6, make: (r, b) => {
+    if(b >= 5) return {template:"sudoku",title:"The Missing Treasure Tiles",story:"The treasure grid lost some of its pieces.",task:"Fill every square. Each row, column and 2×3 box needs one of each.",hint:"Look for a row, column or box with just one missing number.",theme:"a magic treasure grid",scene:["🗝️"],kind:makeSixSudoku(r,b===5?18:22)};
     const base = [0, 1, 2, 3, 2, 3, 0, 1, 1, 0, 3, 2, 3, 2, 1, 0];
     const digit = r.shuffle([0, 1, 2, 3]);
     const rowOrder = [...(r.next() < 0.5 ? [0, 1] : [1, 0]), ...(r.next() < 0.5 ? [2, 3] : [3, 2])];
