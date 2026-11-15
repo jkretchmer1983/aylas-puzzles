@@ -1,4 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 import wood from "@/assets/tree-workshop.jpg";
 import { cn } from "@/lib/utils";
@@ -58,6 +60,7 @@ function Start() {
             </button>
           ))}
         </div>
+        <Button asChild variant="game" size="game" className="story-world-entry"><Link to="/story-world" search={{}}><Sparkles />Try Story Worlds<ArrowRight /></Link></Button>
       </section>
     </main>
   );

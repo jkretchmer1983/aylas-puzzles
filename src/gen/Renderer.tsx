@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { BalanceClues, SceneClues } from "./SceneMechanics";
 import { EngravedNumber } from "./ForestObjects";
 
 type Report = (ok: boolean) => void;
+const Presentation = createContext<{ storyWorld: boolean; checkTarget: HTMLElement | null; completed: boolean }>({ storyWorld: false, checkTarget: null, completed: false });
 
 function Key({ children, onClick, className, disabled }: { children: React.ReactNode; onClick: () => void; className?: string; disabled?: boolean }) {
   return (
@@ -17,11 +19,14 @@ function Key({ children, onClick, className, disabled }: { children: React.React
 }
 
 function CheckButton({ onClick, disabled, ready = false }: { onClick: () => void; disabled?: boolean; ready?: boolean }) {
-  return (
+  const presentation = useContext(Presentation);
+  if (presentation.storyWorld && presentation.completed) return null;
+  const button = (
     <div className={cn("mt-4 flex justify-center pz-check-wrap", ready && "pz-check-ready")}>
       <Button variant="game" size="game" disabled={disabled} onClick={onClick} className="pz-check">Check my answer ✓</Button>
     </div>
   );
+  return presentation.storyWorld && presentation.checkTarget ? createPortal(button, presentation.checkTarget) : button;
 }
 
 /* ---------- visuals ---------- */
@@ -78,12 +83,16 @@ function CountingObjects({ rows }: { rows: string[][] }) {
 /* ---------- interactions ---------- */
 function Choice({ k, report }: { k: Extract<Kind, { type: "choice" }>; report: Report }) {
   const [picked, setPicked] = useState<number | null>(null);
+  const { storyWorld } = useContext(Presentation);
   return (
+    <>
     <div className={cn("grid gap-3", k.options.length === 2 ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4")}>
       {k.options.map((o, i) => (
-        <div className={cn("choice-socket", picked === i && "socket-filled")} key={i}><Key className={cn(k.bigOptions && "pz-key-big", picked === i && (i === k.answer ? "pz-key-right" : "pz-key-wrong"))} onClick={() => { setPicked(i); report(i === k.answer); }}><span className="choice-piece">{o}</span>{picked === i && <span className="scene-contact" aria-hidden="true"><i /><i /><i /></span>}</Key></div>
+        <div className={cn("choice-socket", picked === i && "socket-filled")} key={i}><Key className={cn(k.bigOptions && "pz-key-big", picked === i && (storyWorld ? "pz-key-selected" : i === k.answer ? "pz-key-right" : "pz-key-wrong"))} onClick={() => { setPicked(i); if (!storyWorld) report(i === k.answer); }}><span className="choice-piece">{o}</span>{picked === i && <span className="scene-contact" aria-hidden="true"><i /><i /><i /></span>}</Key></div>
       ))}
     </div>
+    {storyWorld && <CheckButton disabled={picked === null} ready={picked !== null} onClick={() => report(picked === k.answer)} />}
+    </>
   );
 }
 
@@ -122,6 +131,7 @@ function Order({ k, report }: { k: Extract<Kind, { type: "order" }>; report: Rep
 }
 
 function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: Report }) {
+  const { storyWorld } = useContext(Presentation);
   const [cells, setCells] = useState<(number | null)[]>(k.given);
   const [sel, setSel] = useState<number | null>(k.given.findIndex((x) => x === null));
   const [carving, setCarving] = useState<{ cell: number; revision: number } | null>(null);
@@ -132,13 +142,13 @@ function Sudoku({ k, report }: { k: Extract<Kind, { type: "sudoku" }>; report: R
           const fixed = k.given[i] !== null;
           return (
             <Button variant="game" size="game" key={i} aria-label={`Row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${c === null ? ", empty" : `, ${k.symbols[c]}`}`} aria-pressed={sel === i} disabled={fixed} onClick={() => setSel(i)} className={cn("pz-sudoku", fixed && "pz-sudoku-fixed", sel === i && "pz-sudoku-sel")}>
-              {c !== null && <CarvedMark key={carving?.cell === i ? carving.revision : `fixed-${c}`} value={k.symbols[c] ?? ""} fresh={!fixed && carving?.cell === i} />}
+              {c !== null && (storyWorld ? <span key={carving?.cell === i ? carving.revision : `fixed-${c}`} className={!fixed ? "placed-piece" : ""}>{k.symbols[c]}</span> : <CarvedMark key={carving?.cell === i ? carving.revision : `fixed-${c}`} value={k.symbols[c] ?? ""} fresh={!fixed && carving?.cell === i} />)}
             </Button>
           );
         })}
       </div>
       <div className="forest-number-rack mt-3 flex gap-2">
-        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{/^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
+        {k.symbols.map((s, i) => <Key key={i} className="pz-key-big forest-number-tile" disabled={sel === null || sel < 0} onClick={() => { if (sel === null || sel < 0) return; setCells(cells.map((c, j) => (j === sel ? i : c))); setCarving((old) => ({ cell: sel, revision: (old?.revision ?? 0) + 1 })); }}><span className="sr-only">{s}</span>{storyWorld ? <span aria-hidden="true">{s}</span> : /^\d+$/.test(s) ? <EngravedNumber value={s} /> : s}</Key>)}
       </div>
       <CheckButton disabled={cells.includes(null)} ready={!cells.includes(null)} onClick={() => report(cells.every((c, i) => c === k.solution[i]))} />
     </div>
@@ -181,10 +191,10 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   );
 }
 
-export function PuzzleBody({ spec, report }: { spec: PuzzleSpec; report: Report }) {
+export function PuzzleBody({ spec, report, storyWorld = false, checkTarget = null, completed = false }: { spec: PuzzleSpec; report: Report; storyWorld?: boolean; checkTarget?: HTMLElement | null; completed?: boolean }) {
   const k = spec.kind;
   return (
-    <PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
+    <Presentation.Provider value={{ storyWorld, checkTarget, completed }}><PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
       <SceneClues spec={spec} />
       {spec.visual && spec.template !== "share" && <PuzzleVisual v={spec.visual} template={spec.template} />}
       {k.type === "choice" && <Choice k={k} report={report} />}
@@ -192,6 +202,6 @@ export function PuzzleBody({ spec, report }: { spec: PuzzleSpec; report: Report 
       {k.type === "order" && <Order k={k} report={report} />}
       {k.type === "sudoku" && <Sudoku k={k} report={report} />}
       {k.type === "nim" && <Nim k={k} report={report} />}
-    </div></PuzzleWorld>
+    </div></PuzzleWorld></Presentation.Provider>
   );
 }

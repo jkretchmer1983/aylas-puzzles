@@ -1,4 +1,7 @@
 # Puzzle pictures
+- [ ] Build isolated Story Worlds alternative and age-selection entry; retain tree play.
+- [ ] Freeze Story Worlds stories before full-screen art; add isolated caches and bounded offline/failure fallback.
+- [ ] Validate all types, age tiers, phone/tablet layouts, solving/navigation and regression tests.
 - [x] Refine materials toward the uploaded dimensional, polished game reference rather than hyperreal photography.
 - [x] Add tactile, puzzle-specific play surfaces and dimensional game pieces while preserving storyline art and Apple navigation.
 - [x] Animate placing and carving answers; verify touch, answers and phone fit.
