@@ -8,6 +8,15 @@ import { CarvedMark, PuzzleWorld } from "./PuzzleWorld";
 import { BalanceClues, SceneClues } from "./SceneMechanics";
 import { EngravedNumber } from "./ForestObjects";
 
+import { BalloonInteraction, type BalloonInteractionProps } from "../take-preview/BalloonInteraction";
+
+/** Isolated review route: the scene receives public clues; Renderer keeps validation. */
+export function TakePreviewPuzzle(props: Omit<BalloonInteractionProps, 'onCheck'>) {
+  const kind = props.spec.kind;
+  if (props.spec.template !== 'take' || kind.type !== 'number') return null;
+  return <BalloonInteraction {...props} onCheck={value => value !== '' && Number(value) === kind.answer} />;
+}
+
 type Report = (ok: boolean) => void;
 const Presentation = createContext<{ storyWorld: boolean; checkTarget: HTMLElement | null; completed: boolean }>({ storyWorld: false, checkTarget: null, completed: false });
 
