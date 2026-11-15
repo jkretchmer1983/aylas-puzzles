@@ -1486,3 +1486,88 @@ html, body { overflow-x: clip; }
   background:linear-gradient(90deg,#704017,#c18b4a 45%,#865222);border-radius:1px 1px 3px 3px;
   box-shadow:2px 2px 3px #281b1480;transform:rotate(-5deg);z-index:-1;pointer-events:none;
 }
+
+/* Phase 2: the foreground keeps its registered geometry throughout motion. */
+.forest-viewport .forest-spatial > .puzzle-header { position:absolute;left:16px;right:16px;top:12px;height:60px; }
+.forest-viewport .forest-spatial > .story-illustration-frame {
+  position:absolute;left:5px;width:383px;top:59px;height:207px;margin:0;
+  transition:top 1.2s cubic-bezier(.22,.75,.18,1),height 1.2s cubic-bezier(.22,.75,.18,1);
+  will-change:height,top;
+}
+.forest-viewport .forest-spatial.adventure-open > .story-illustration-frame { top:88px;height:325px;margin:0; }
+.forest-viewport .forest-spatial .story-window-border { display:none; }
+.forest-viewport .forest-spatial .story-illustration-frame::after {
+  content:'';position:absolute;inset:0;pointer-events:none;border:1px solid transparent;
+  border-image:url('./assets/forest-game/frame-reference.webp') 200 / 34px stretch;
+}
+.forest-viewport .forest-spatial .story-window-content { transition:border-radius 1.2s ease; background:#ead7a4; }
+.forest-viewport .forest-spatial .story-title-plaque {
+  transition:width 1.2s cubic-bezier(.22,.75,.18,1),height 1.2s cubic-bezier(.22,.75,.18,1),padding 1.2s ease;
+}
+.forest-viewport .forest-spatial .forest-adventure { position:static; }
+.forest-viewport .forest-spatial .adventure-eyebrow { position:absolute;top:78px;left:0;width:393px;z-index:3;text-align:center; }
+.forest-viewport .forest-spatial .adventure-story { position:absolute;top:420px;left:20px;width:353px;height:230px;flex:none;background-size:cover; }
+.forest-viewport .forest-spatial .forest-adventure > .forest-read-aloud { position:absolute;top:670px; }
+.forest-viewport .forest-spatial .adventure-begin { position:absolute;top:724px; }
+.forest-spatial.adventure-transition .forest-adventure { pointer-events:none; }
+.forest-spatial.adventure-transition .adventure-story { animation:story-fold-away .65s ease-in both;transform-origin:top center; }
+.forest-spatial.adventure-transition .adventure-eyebrow,
+.forest-spatial.adventure-transition .adventure-begin,
+.forest-spatial.adventure-transition .forest-adventure > .forest-read-aloud { animation:story-leave .35s ease-in both; }
+.forest-spatial.adventure-transition .puzzle-task,
+.forest-spatial.adventure-transition .forest-number-rack,
+.forest-spatial.adventure-transition .pz-check-wrap,
+.forest-spatial.adventure-transition .puzzle-hint,
+.forest-spatial.adventure-transition .world-ledge { animation:forest-controls-arrive 1.2s ease-out both; }
+.forest-spatial.adventure-transition .sudoku-tree-board { animation:forest-board-arrive 1.2s ease both; }
+.forest-growing-vines { position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible; }
+.forest-growing-vines path { fill:none;stroke:#729b27;stroke-width:4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:0; }
+.forest-spatial.adventure-transition .forest-growing-vines path { animation:forest-vine-grow 1.2s ease-out both; }
+.forest-spatial.adventure-transition .forest-growing-vines path+path { animation-delay:.09s;stroke:#c9a84c;stroke-width:2; }
+.forest-spatial.forest-motion-ready .forest-story-hanger { transform-origin:50% -20px;animation:story-sign-drop 1.65s cubic-bezier(.2,.75,.2,1) both; }
+.forest-spatial.adventure-transition .forest-story-hanger { animation-delay:.55s;pointer-events:none; }
+.forest-spatial .forest-story-hanger:hover { filter:brightness(1.05) drop-shadow(0 4px 3px #42230d77); }
+.forest-spatial .wooden-action,.forest-spatial .forest-number-tile,.forest-spatial .forest-round-control,
+.forest-spatial .forest-age-control,.forest-spatial .pz-check,.forest-spatial .forest-read-aloud {
+  transition:translate .14s ease,scale .14s ease,filter .2s ease;touch-action:manipulation;
+}
+.forest-spatial button:active:not(:disabled),.forest-spatial a.game-control:active { translate:0 2px;scale:.975; }
+.forest-spatial .pz-check:active:not(:disabled) { transform:none; }
+.forest-spatial .pz-sudoku:active:not(:disabled) { scale:1;translate:0 0; }
+.forest-spatial .forest-number-tile:active:not(:disabled) { translate:0 4px;filter:brightness(.95); }
+.forest-spatial .puzzle-hint:has(.hint-open) { animation:hint-nod .45s ease-out;transform-origin:50% 72px; }
+.forest-spatial .forest-hint-plaque { animation:hint-unfold .35s ease-out both;transform-origin:bottom right; }
+.forest-spatial .forest-sound-toggle { display:flex;align-items:center;gap:8px;padding:10px 12px;border:0;border-radius:10px;background:#f6dba3;color:#493012;font:800 14px var(--font-sans); }
+.forest-spatial .forest-sound-toggle svg { width:20px;height:20px; }
+/* A moving mask cuts the complete engraved glyph; existing entries stay still. */
+.forest-spatial .carved-fresh .engraving-cut-path { stroke-dasharray:1;animation:forest-carve .62s linear both !important; }
+.forest-spatial .carved-fresh .carving-dust { display:block; }
+.forest-spatial .carved-fresh .carving-dust i { background:#e9b568;box-shadow:0 1px 0 #754015;animation:forest-shavings .65s ease-out both !important; }
+.forest-spatial .carved-fresh .carving-dust i:nth-child(2) { animation-delay:.09s !important; }
+.forest-spatial .carved-fresh .carving-dust i:nth-child(3) { animation-delay:.18s !important; }
+.forest-spatial .carved-fresh .carving-dust i:nth-child(4) { animation-delay:.27s !important; }
+.forest-spatial .carved-fresh .carving-dust i:nth-child(5) { animation-delay:.36s !important; }
+.forest-spatial .forest-fallback-wash.scene-watercolor-reveal { animation:brush-paint 2.2s ease-in-out both; }
+.forest-spatial .scene-watercolor-reveal { animation-duration:2.2s; }
+.forest-spatial .forest-success-ribbon { animation:ribbon-unfurl .65s cubic-bezier(.2,.7,.3,1) both; }
+.forest-spatial .victory-ribbon { transform-origin:50% 50%;animation:ribbon-wave 2.8s .65s ease-in-out infinite; }
+.forest-spatial .forest-retry-banner { animation:forest-retry .4s ease-out; }
+@keyframes forest-carve { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
+@keyframes forest-shavings { 0% { opacity:0;transform:translate(0,-12px); } 16% { opacity:1; } 100% { opacity:0;transform:translate(var(--dust-x),27px) rotate(160deg); } }
+@keyframes story-fold-away { to { transform:translateY(-30px) scaleY(.05);opacity:0; } }
+@keyframes story-leave { to { transform:translateY(-12px);opacity:0; } }
+@keyframes forest-controls-arrive { 0%,50% { opacity:0;translate:0 18px; } 100% { opacity:1;translate:0 0; } }
+@keyframes forest-board-arrive { 0%,45% { opacity:0; } 100% { opacity:1; } }
+@keyframes forest-vine-grow { 0% { stroke-dashoffset:1;opacity:0; } 20% { opacity:1; } 85% { stroke-dashoffset:0;opacity:1; } 100% { stroke-dashoffset:0;opacity:0; } }
+@keyframes story-sign-drop { 0% { translate:0 -150px;rotate:-10deg; } 52% { translate:0 4px;rotate:9deg; } 72% { translate:0 -2px;rotate:-3deg; } 88% { translate:0 0;rotate:6deg; } 100% { translate:0 0;rotate:4deg; } }
+@keyframes hint-nod { 40% { rotate:4deg; } 75% { rotate:-2deg; } }
+@keyframes hint-unfold { from { opacity:0;scale:.9;translate:0 8px; } to { opacity:1;scale:1;translate:0 0; } }
+@keyframes ribbon-unfurl { 0% { clip-path:inset(0 48%);scale:.95 1; } 70% { clip-path:inset(0 0);scale:1.025 1; } 100% { clip-path:inset(0 0);scale:1; } }
+@keyframes ribbon-wave { 0%,100% { transform:perspective(500px) rotateY(-5deg) skewY(-1deg) translateY(0); } 50% { transform:perspective(500px) rotateY(5deg) skewY(1deg) translateY(-2px); } }
+@keyframes forest-retry { 25% { translate:-4px 0; } 65% { translate:3px 0; } }
+@media (prefers-reduced-motion:reduce) {
+ .forest-viewport .forest-spatial *, .forest-viewport .forest-spatial *::before,.forest-viewport .forest-spatial *::after { animation:none !important;transition:none !important; }
+ .forest-spatial .forest-growing-vines,.forest-spatial .carving-dust { display:none !important; }
+ .forest-spatial .scene-watercolor-reveal { opacity:1;-webkit-mask-image:none;mask-image:none; }
+ .forest-viewport .forest-spatial .carved-fresh .engraving-cut-path { animation:none !important;stroke-dashoffset:0 !important; }
+}

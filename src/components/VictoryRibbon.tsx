@@ -1,4 +1,4 @@
-/** Static phase-one cloth artwork. Motion will be added in phase two. */
+/** Cloth silhouette unfurls and waves; neutral stars, leaves and confetti frame it. */
 export function VictoryRibbon() {
   return <svg className="victory-ribbon" viewBox="0 0 340 74" role="img" aria-label="Correct!">
     <defs>

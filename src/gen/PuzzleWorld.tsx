@@ -73,7 +73,7 @@ export function PuzzleWorld({ template, children }: { template: string; children
 export function CarvedMark({ value, fresh }: { value: string; fresh: boolean }) {
   const numeric = /^\d+$/.test(value);
   return <span className={fresh ? "carved-mark carved-fresh" : "carved-mark"}>
-    {numeric ? <EngravedNumber value={value} /> : <span className="carved-symbol">{value}</span>}
+    {numeric ? <EngravedNumber value={value} fresh={fresh} /> : <span className="carved-symbol">{value}</span>}
     {fresh && <span className="carving-dust" aria-hidden="true"><i /><i /><i /><i /><i /></span>}
   </span>;
 }
