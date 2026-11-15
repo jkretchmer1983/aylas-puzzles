@@ -1642,3 +1642,12 @@ html, body { overflow-x: clip; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .story-window-content {
   inset:17px 22px;border-radius:24px / 32px;
 }
+/* Keep the painted branches above both watercolor and image-motion layers. */
+.forest-viewport .forest-spatial .story-illustration-frame { isolation:isolate; }
+.forest-viewport .forest-spatial .story-window-content { z-index:0; }
+.forest-viewport .forest-spatial .story-illustration-frame::after { z-index:2; }
+.forest-viewport .forest-spatial .forest-growing-vines { z-index:3; }
+.forest-viewport .forest-spatial .story-title-plaque { z-index:4; }
+/* Use tablet-sized branches, with the matching image opening under their lip. */
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-illustration-frame::after { border-image-width:72px !important;border-image-slice:200 !important; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-window-content { inset:34px 48px;border-radius:36px / 48px; }
