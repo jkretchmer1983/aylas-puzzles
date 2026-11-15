@@ -16,6 +16,7 @@ import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Boo
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
 import { Button } from "@/components/ui/button";
+import { ScorePlaceholder } from "@/components/ScorePlaceholder";
 import { QuestLoader } from "@/components/QuestLoader";
 import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
@@ -101,7 +102,7 @@ function Confetti({ burst, forest = false }: { burst: number; forest?: boolean }
 function Play() {
   const { band, t, s } = Route.useSearch();
   const nav = useNavigate({ from: "/play" });
-  const [progress, update] = useProgress();
+  const [, update] = useProgress();
   const [result, setResult] = useState<{ ok: boolean; n: number } | null>(null);
   const [hint, setHint] = useState(false);
   const [party, setParty] = useState(0);
@@ -310,12 +311,12 @@ function Play() {
               <button type="button" className="forest-sound-toggle" aria-pressed={soundEnabled} onClick={toggleSound}>{soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}Sound effects {soundEnabled ? 'on' : 'off'}</button>
             </div>
           </details>
-          <span className="forest-score" aria-label={`${progress.solved} solved, ${progress.streak} streak`}>⭐ {progress.solved} · 🔥 {progress.streak}</span>
+          <ScorePlaceholder />
         </div>
       </header> : <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className={cn("pill", spec.template === "sudoku" && "forest-round-control")} aria-label={`Choose age range, ${BANDS[band]?.label}`} title="Choose age range">{spec.template === "sudoku" ? <ArrowLeft aria-hidden="true" /> : `← ${BANDS[band]?.label}`}</Link>
         <div className="flex items-center gap-2">
-          {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <span className="pill">⭐ {progress.solved} · 🔥 {progress.streak}</span>}
+          {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <ScorePlaceholder className="pill" />}
         </div>
       </header>}
       {spatial && <StoryIllustrationFrame title={title}>

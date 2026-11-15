@@ -1762,3 +1762,16 @@ html, body { overflow-x: clip; }
  -webkit-backface-visibility:hidden;backface-visibility:hidden;
  transition:translate .14s ease,scale .14s ease;
 }
+
+/* Prototype score display; the real scoring model will replace this later. */
+.score-placeholder { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px; }
+.score-placeholder-label { font:900 8px/1 var(--font-sans);letter-spacing:1px;text-transform:uppercase; }
+.score-placeholder-track { display:block;width:86px;height:9px;overflow:hidden;border-radius:999px;background:#75441555;box-shadow:inset 0 1px 3px #48270766,0 1px 0 #fff3b999; }
+.score-placeholder-fill { display:block;width:42%;height:100%;border-radius:inherit;background:linear-gradient(#b4d95c,#659631);box-shadow:inset 0 1px 1px #efffb899; }
+.forest-viewport .forest-spatial .forest-score.score-placeholder { display:flex;width:114px;height:31px;padding:4px 12px;min-height:0;gap:3px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .forest-score.score-placeholder,
+.forest-layout-landscape.forest-viewport .forest-spatial .forest-score.score-placeholder { width:134px;height:34px;padding:4px 14px; }
+.forest-layout-portrait-wide .score-placeholder-track,.forest-layout-landscape .score-placeholder-track { width:100px;height:10px; }
+.forest-layout-portrait-wide .score-placeholder-label,.forest-layout-landscape .score-placeholder-label { font-size:9px; }
+/* Keep provider editing chrome out of the child-facing preview. */
+#lovable-badge { display:none !important;visibility:hidden !important;pointer-events:none !important; }
