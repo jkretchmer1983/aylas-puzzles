@@ -1775,3 +1775,17 @@ html, body { overflow-x: clip; }
 .forest-layout-portrait-wide .score-placeholder-label,.forest-layout-landscape .score-placeholder-label { font-size:9px; }
 /* Keep provider editing chrome out of the child-facing preview. */
 #lovable-badge { display:none !important;visibility:hidden !important;pointer-events:none !important; }
+
+/* Clip to the actual transparent opening in the painted branch artwork.
+   Match the frame's nine-slice geometry so its corners never reveal art outside
+   the branches as the story window changes size. The 4px source overlap hides
+   antialiasing seams underneath the wood. */
+.forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:34px; }
+.forest-layout-portrait-wide.forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:72px; }
+.forest-layout-landscape.forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:64px; }
+@supports (-webkit-mask-box-image: url('')) {
+ .forest-viewport .forest-spatial .story-illustration-frame > .story-window-content {
+  inset:0;border-radius:0;
+  -webkit-mask-box-image:url('./assets/forest-game/frame-opening-mask.svg') 200 fill / var(--frame-corner) / 0 stretch;
+ }
+}
