@@ -1778,14 +1778,18 @@ html, body { overflow-x: clip; }
 
 /* Clip to the actual transparent opening in the painted branch artwork.
    Match the frame's nine-slice geometry so its corners never reveal art outside
-   the branches as the story window changes size. The 4px source overlap hides
-   antialiasing seams underneath the wood. */
+   the branches as the story window changes size. The mask includes the painted silhouette so the illustration continues
+   underneath the entire branch, including enclosed corner pockets. */
 .forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:34px; }
 .forest-layout-portrait-wide.forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:72px; }
 .forest-layout-landscape.forest-viewport .forest-spatial .story-illustration-frame { --frame-corner:64px; }
-@supports (-webkit-mask-box-image: url('')) {
- .forest-viewport .forest-spatial .story-illustration-frame > .story-window-content {
-  inset:0;border-radius:0;
-  -webkit-mask-box-image:url('./assets/forest-game/frame-opening-mask.svg') 200 fill / var(--frame-corner) / 0 stretch;
- }
+/* Mask layers use exactly the same fixed-corner slices as the painted frame.
+   Raster alpha slices avoid browser-specific SVG border-image scaling. */
+.forest-viewport .forest-spatial .story-illustration-frame > .story-window-content {
+ inset:0;border-radius:0;
+ -webkit-mask-box-image:none;
+ mask-image:url('./assets/forest-game/frame-underlay-tl.png'),url('./assets/forest-game/frame-underlay-top.png'),url('./assets/forest-game/frame-underlay-tr.png'),url('./assets/forest-game/frame-underlay-left.png'),url('./assets/forest-game/frame-underlay-right.png'),url('./assets/forest-game/frame-underlay-bl.png'),url('./assets/forest-game/frame-underlay-bottom.png'),url('./assets/forest-game/frame-underlay-br.png'),linear-gradient(white,white);
+ mask-size:var(--frame-corner) var(--frame-corner),calc(100% - 2 * var(--frame-corner)) var(--frame-corner),var(--frame-corner) var(--frame-corner),var(--frame-corner) calc(100% - 2 * var(--frame-corner)),var(--frame-corner) calc(100% - 2 * var(--frame-corner)),var(--frame-corner) var(--frame-corner),calc(100% - 2 * var(--frame-corner)) var(--frame-corner),var(--frame-corner) var(--frame-corner),calc(100% - 2 * var(--frame-corner)) calc(100% - 2 * var(--frame-corner));
+ mask-position:left top,center top,right top,left center,right center,left bottom,center bottom,right bottom,center center;
+ mask-repeat:no-repeat;mask-mode:alpha;mask-composite:add;
 }
