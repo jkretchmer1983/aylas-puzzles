@@ -16,7 +16,7 @@ import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, Puz
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
 import { Button } from "@/components/ui/button";
-import expandedForest from "@/assets/forest-game/forest-expanded.png";
+import expandedForest from "@/assets/forest-game/forest-expanded.jpg";
 
 type Search = { band: number; t?: string | undefined; s?: number | undefined };
 

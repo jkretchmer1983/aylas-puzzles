@@ -981,7 +981,7 @@ html, body { overflow-x: clip; }
 .forest-spatial {
   --forest-environment: url('/__l5e/assets-v1/a8279454-6780-47ba-93cc-5444b979bd42/forest-forest_background.png');
   --forest-board-art: url('/__l5e/assets-v1/8f8b317b-7f55-4784-8b3a-edecb35433f2/forest-sudoku_board_blank.png');
-  --forest-tile-art: url('/__l5e/assets-v1/94e8dbe0-21a2-4296-ace0-2d9b15b36354/number_tile_1_clean.png');
+  --forest-tile-art: url('/__l5e/assets-v1/ac821c9a-df54-451f-a84e-50da498e9eec/number_tile_1_contact.png');
   --forest-instruction-art: url('/__l5e/assets-v1/9fc2db95-732a-485a-aadd-f738cf2f2151/instruction_plaque_clean.png');
   --forest-gold-art: url('/__l5e/assets-v1/447e6c30-28bd-4958-add1-536fc79a3120/previous_button_clean.png');
   --forest-green-art: url('/__l5e/assets-v1/491dd877-d6e4-4e92-b52c-8b451b288604/next_puzzle_button_clean.png');

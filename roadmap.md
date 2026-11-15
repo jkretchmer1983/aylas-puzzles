@@ -21,3 +21,4 @@
 - [x] Asset-pack Pass 1: clean prototype sprites, use supplied forest environment, correct proportions, and show phone screenshot for approval.
 - [x] Forest Sudoku cleanup: remove pale edge seams, separate full-leaf title plaque, align cells to carved recesses
 - [x] Extend forest scenery around the unchanged proportional Sudoku composition; validate phone, wide portrait, tablet and landscape.
+- [x] Repair forest scenery seams beside the tree and remove pale fringe under number tiles.
