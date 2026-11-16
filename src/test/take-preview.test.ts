@@ -69,3 +69,18 @@ it('accepts the displayed balloon beside and below the banner while excluding th
   expect(inReleaseZone(balloonCenter({x:365,y:304},scene),zone,0)).toBe(true);
   expect(inReleaseZone({x:160,y:360},zone,0)).toBe(false);
 });
+
+import { layoutFleet } from '../take-preview/model';
+describe('layoutFleet', () => {
+  const hit = (a: {left:number;top:number;right:number;bottom:number}, b: typeof a) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+  const boxes = (l: ReturnType<typeof layoutFleet>) => l.slots.map(s => ({ left: s.x - Math.max(l.body,48)/2, right: s.x + Math.max(l.body,48)/2, top: s.y, bottom: s.y + l.body * 2.12 }));
+  it('keeps eight portrait balloons low, separate and clear of the suitcase and girl', () => {
+    const suitcase = { left: 72, top: 598, right: 748, bottom: 896 }, girl = { left: 0, top: 425, right: 221, bottom: 738 };
+    const l = layoutFleet({ count: 8, width: 820, height: 1000, skyTop: 148, obstacles: [suitcase, girl], body: 72, portrait: true });
+    const b = boxes(l);
+    expect(b).toHaveLength(8);
+    b.forEach((x, i) => { expect(hit(x, suitcase)).toBe(false); expect(hit(x, girl)).toBe(false); b.slice(i + 1).forEach(y => expect(hit({ ...x, bottom: x.top + Math.max(l.body*1.3,62) }, { ...y, bottom: y.top + Math.max(l.body*1.3,62) })).toBe(false)); });
+    expect(Math.min(...b.map(x => x.top))).toBeGreaterThan(148 + 140);
+  });
+});
+

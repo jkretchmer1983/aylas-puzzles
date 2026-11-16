@@ -228,3 +228,16 @@
   .take-preview .take-airfield{right:53%}
   .take-preview .take-feedback.is-incorrect{left:51%;right:1%;bottom:calc(70px + 48vw * 803 / 1958);height:30px}
 }
+.take-preview .take-airfield .take-balloon-grid.is-placed .take-balloon-slot:nth-child(n){left:var(--px)!important;top:var(--py)!important}
+
+/* Released balloons have scene-relative, collision-spaced sky destinations.
+   The meadow layout never controls their resting position or animation. */
+.take-preview .take-flight{left:var(--to-x);top:var(--to-y);animation:none;transform:translate(-50%,-50%) scale(.44);opacity:.92}
+.take-preview .take-flight.is-new{animation:take-release 2.2s cubic-bezier(.2,.5,.35,1) both}
+.take-preview .take-flight .take-balloon-art{animation:take-sky-sway 7s ease-in-out var(--drift-delay,0s) infinite}
+@keyframes take-sky-sway{0%,100%{transform:translate(-2px,-2px) rotate(-2deg)}50%{transform:translate(2px,2px) rotate(2deg)}}
+@media(orientation:landscape){.take-preview .take-landscape{background-image:url('/take-airfield/landscape-open-sky.webp');background-position:center 60%;transform:none}}
+@media(orientation:landscape) and (min-height:600px){.take-preview .take-landscape{transform:scale(1.5);transform-origin:center bottom;background-position:center bottom}}
+/* A wider portrait must reveal sky as well as foreground; the old 1.3x zoom
+   cropped the blue sky down to a sliver behind the top navigation. */
+@media(orientation:portrait){.take-preview .take-landscape{transform:scale(1.05);transform-origin:center bottom}}

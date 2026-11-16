@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CornerUpLeft, Hand, HelpCircle, RotateCcw, Undo2 } from 'lucide-react';
-import { balloonCenter, inReleaseZone, skyReleaseBounds, playReducer, takeClues, type PlayAction, type PlayState, type Point } from './model';
+import { balloonCenter, inReleaseZone, layoutFleet, layoutSky, paintedY, type FleetLayout, type Rect, skyReleaseBounds, playReducer, takeClues, type PlayAction, type PlayState, type Point } from './model';
 import type { PuzzleSpec } from '../gen/types';
 
 export type BalloonInteractionProps = {
@@ -26,7 +26,8 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const [flights, setFlights] = useState<Moving[]>([]);
   const [celebrationFlights, setCelebrationFlights] = useState<Moving[]>([]);
   const [returns, setReturns] = useState<Moving[]>([]);
-  const [meadowLift,setMeadowLift]=useState(0);
+  const [fleet,setFleet]=useState<FleetLayout|null>(null);
+  const [skySlots,setSkySlots]=useState<Point[]>([]);
   const [launchHost,setLaunchHost]=useState<Element|null>(null);
   const [launchStyle,setLaunchStyle]=useState<CSSProperties>();
   const [notice, setNotice] = useState('Hold a balloon to lift it · or tap to select');
@@ -58,7 +59,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     cancelGesture();setReturns([]);
     setCelebrationFlights(Array.from({length:clues.total},(_,id)=>{
       const released=latest.current.play.released.includes(id);
-      const p=released?{x:48+(id%4)*12,y:8+(id%3)*12}:home(id);
+      const p=released?(skySlots[id]??{x:50,y:0}):home(id);
       return {id,...p,endX:p.x+(id%2?18:-18),endY:-90,revision:Date.now()};
     }));
     const timer=setTimeout(()=>setCelebrated(true),reduced?0:2800);
@@ -72,17 +73,35 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     const align=()=>{
       const r=root.getBoundingClientRect(),b=banner.getBoundingClientRect();
       setLaunchStyle({left:12,top:b.bottom+6-r.top,width:r.width-24,height:44});
-      const grid=field.querySelector('.take-balloon-grid'),suitcase=root.querySelector('.take-console');
-      if(!grid||!suitcase)return;
-      const c=suitcase.getBoundingClientRect(),unshift=field.getBoundingClientRect().top-grid.getBoundingClientRect().top;
-      const bottoms=Array.from(grid.querySelectorAll('.take-balloon-slot')).flatMap(slot=>{
-        const s=slot.getBoundingClientRect(),anchor=slot.querySelector('.take-anchor');
-        return anchor&&s.right>c.left-16&&s.left<c.right+16?[anchor.getBoundingClientRect().bottom+unshift]:[];
-      });
-      const clearance=Math.max(80,Math.min(110,r.height*.105));
-      setMeadowLift(bottoms.length?Math.max(0,Math.ceil(Math.max(...bottoms)-c.top+clearance)):0);
+      const grid=field.querySelector('.take-balloon-grid');
+      if(!grid)return;
+      // Field offset from layout boxes, not animated transforms.
+      let fx=0,fy=0;for(let el:HTMLElement|null=field;el&&el!==root;el=el.offsetParent as HTMLElement|null){fx+=el.offsetLeft;fy+=el.offsetTop}
+      const probe=document.createElement('div');probe.className='take-balloon-slot';probe.style.visibility='hidden';grid.appendChild(probe);
+      const body=probe.offsetWidth;probe.remove();
+      if(!body||!r.width)return;
+      const box=(sel:string,pad:number):Rect[]=>Array.from(root.querySelectorAll(sel)).map(e=>e.getBoundingClientRect()).filter(q=>q.width&&q.height).map(q=>({left:q.left-r.left-pad,top:q.top-r.top-pad,right:q.right-r.left+pad,bottom:q.bottom-r.top+pad}));
+      const portrait=r.height>=r.width,sky=b.bottom-r.top;
+      const painting=root.querySelector('.take-landscape')!;
+      const image=painting.getBoundingClientRect(),position=parseFloat(getComputedStyle(painting).backgroundPositionY)/100||0;
+      const source=portrait?{width:1024,height:1536,grass:900,sky:630}:{width:1672,height:941,grass:560,sky:440};
+      const foreground=paintedY(image,source.grass,position,source.width,source.height)-r.top;
+      const paintedSky=paintedY(image,source.sky,position,source.width,source.height)-r.top;
+      const c=root.querySelector('.take-console')!.getBoundingClientRect();
+      const end=portrait||r.height>=600?c.top-r.top-22:r.height-58;
+      const start=Math.min(end-90,Math.max(sky+24,foreground+8));
+      const ground={top:start+(end-start)*.1,bottom:start+(end-start)*.9};
+      const skySize=Math.max(18,body*.44);
+      const safeSky=layoutSky(clues.total,{left:8,top:4,right:r.width-8,bottom:Math.max(64,paintedSky-8)},[...box('.take-task',6),...box('.take-topbar>a,.take-progress,.take-topbar>button',4)],props.sessionKey,skySize);
+      setSkySlots(safeSky.map(p=>({x:(p.x-fx)/(field.offsetWidth||r.width)*100,y:(p.y-fy)/(field.offsetHeight||r.height)*100})));
+      const obstacles=[...box('.take-console',portrait?18:14),...box('.take-explorer',8),...box('.take-windsock-rig',6),...box('.take-navigation',6),...box('.take-books',6),
+        // Landscape: tent, easel and crates are painted along the left edge.
+        ...(portrait?[]:[{left:0,top:sky,right:r.width*.15,bottom:r.height}])];
+      const placement={count:clues.total,width:r.width,height:r.height,skyTop:sky,obstacles,body,portrait,ground,seed:props.sessionKey};
+      const next=layoutFleet(placement);
+      setFleet({body:next.body,slots:next.slots.map(q=>({x:q.x-fx,y:q.y+next.body*.95-fy}))});
     };
-    align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);const suitcase=root.querySelector('.take-console');if(suitcase)observer.observe(suitcase);field.querySelectorAll('.take-anchor').forEach(anchor=>observer.observe(anchor));
+    align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);observer.observe(root);const suitcase=root.querySelector('.take-console');if(suitcase)observer.observe(suitcase);
     // Scene entrances move the field and case independently; measure again once
     // their framing motion settles instead of retaining an in-flight clearance.
     const settled=setTimeout(align,1400);
@@ -126,7 +145,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     if(latest.current.play.result===true)return;
     const available=[...new Set(ids)].filter(id=>!latest.current.play.released.includes(id));if(!available.length)return;
     const r=stage.current?.getBoundingClientRect();
-    const next=available.map(id=>{const p=at?.id===id&&r?{x:at.left/r.width*100,y:at.top/r.height*100}:home(id);return {id,...p,endX:48+(id%4)*12,endY:8+(id%3)*12,revision:Date.now()}});
+    const next=available.map(id=>{const p=at?.id===id&&r?{x:at.left/r.width*100,y:at.top/r.height*100}:home(id);return {id,...p,endX:skySlots[id]?.x??50,endY:skySlots[id]?.y??0,revision:Date.now()}});
     setReturns(old=>old.filter(f=>!available.includes(f.id)));
     setFlights(old=>[...old.filter(f=>!available.includes(f.id)),...next]);
     dispatch({type:'release',ids:available,total:clues.total});props.onReleaseSound?.();
@@ -154,7 +173,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     cancelGesture();const id=play.released.at(-1);if(id===undefined)return;
     setFlights(old=>old.filter(f=>f.id!==id));setRecalled([id]);dispatch({type:'undo'});
     // Source touch target returns immediately; the image follows a short recall path.
-    schedule(()=>returnToAnchor(id,{x:48+(id%4)*12,y:8+(id%3)*12}),0);
+    schedule(()=>returnToAnchor(id,skySlots[id]??{x:50,y:0}),0);
     setNotice('One balloon recalled to its original anchor.');props.onAnnounce('Last balloon recalled. Your answer is unchanged.');
   }
   const ready=Boolean(play.answer)&&play.result===null;
@@ -171,12 +190,12 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>
       {props.started!==false&&(launchHost?createPortal(launchButton,launchHost):launchButton)}
       <div className="take-launch-task">Take away {clues.removed}{clues.balloon?' balloons':` ${clues.object}`}</div>
-      <div className="take-balloon-grid" aria-label="Tethered balloons" style={{transform:`translateY(-${meadowLift}px)`}}>
+      <div className={`take-balloon-grid ${fleet?'is-placed':''}`} aria-label="Tethered balloons">
       {Array.from({length:count},(_,id)=>{
         const released=play.released.includes(id),selected=play.selected.includes(id),marked=play.marked.includes(id);
         const returning=returns.some(f=>f.id===id);
         const col=id%cols,row=Math.floor(id/cols),left=12+(col+.5)/cols*78,top=rows===1?81:61+row*31;
-        return <div className="take-balloon-slot" key={id} style={{left:`${left}%`,top:`${top}%`,'--bob-delay':`${id*-.63}s`,'--assemble-delay':`${id*45}ms`,'--meadow-jitter':`${[0,-2,1,-1,2,-1,0,1][id%8]}%`,'--base-left':`${left}%`,'--slot-i':id,'--slot-row':row,'--total':count} as CSSProperties}>
+        return <div className="take-balloon-slot" key={id} style={{left:`${left}%`,top:`${top}%`,'--bob-delay':`${id*-.63}s`,'--assemble-delay':`${id*45}ms`,'--meadow-jitter':`${[0,-2,1,-1,2,-1,0,1][id%8]}%`,'--base-left':`${left}%`,'--slot-i':id,'--slot-row':row,'--total':count,...(fleet?.slots[id]?{'--px':`${fleet.slots[id]!.x}px`,'--py':`${fleet.slots[id]!.y}px`,'--body':`${fleet.body}px`}:{})} as CSSProperties}>
           <img className="take-anchor" src={`${art}anchor.webp`} alt="" draggable={false}/>
           {!released&&<>
             <svg className="take-tether" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 2 Q26 34 30 66" fill="none" stroke="#ead2a2" strokeWidth="1.8">{!reduced&&<animate attributeName="d" values="M30 2 Q26 34 30 66;M30 2 Q34 34 30 66;M30 2 Q26 34 30 66" dur="4.8s" begin={`${id*-.4}s`} repeatCount="indefinite"/>}</path></svg>
@@ -187,9 +206,10 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
         </div>;
       })}
       </div>
-      <div className="take-released-fleet" aria-hidden="true">{play.released.map((id,index)=>{
-        const f=flights.find(f=>f.id===id)||{id,x:50,y:60,endX:48+(id%4)*12,endY:8+(id%3)*12,revision:0};
-        return <div key={`${id}-${f.revision}`} className={`take-flight ${f.revision?'is-new':''}`} style={{...moveStyle(f),'--formation-x':`${38+index*9}%`,'--formation-y':`${8+Math.abs(index-(play.released.length-1)/2)*7}%`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>;
+      <div className="take-released-fleet" aria-hidden="true">{play.released.map(id=>{
+        const destination=skySlots[id]??{x:50,y:0};
+        const f=flights.find(f=>f.id===id)||{id,...destination,endX:destination.x,endY:destination.y,revision:0};
+        return <div key={`${id}-${f.revision}`} data-sky-id={id} className={`take-flight ${f.revision?'is-new':''}`} style={{...moveStyle({...f,endX:destination.x,endY:destination.y}),'--drift-delay':`${id*-.83}s`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>;
       })}</div>
       {play.result===true&&!reduced&&<div className="take-celebration-fleet" aria-hidden="true">{celebrationFlights.map(f=><div key={f.id} className={`take-celebration-flight ${play.released.includes(f.id)?'was-released':''}`} style={{...moveStyle(f),'--departure-delay':`${f.id*45}ms`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>)}</div>}
       {returns.map(f=><div key={`${f.id}-${f.revision}`} className="take-return" style={moveStyle(f)} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/></div>)}
@@ -211,3 +231,4 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
 }
 function Balloon({object}:{object:string|null}) {return <span className="take-balloon-art" aria-hidden="true"><img src={`${art}balloon.webp`} alt="" draggable={false}/>{object&&<span className="take-parcel">{object}</span>}</span>}
 function LooseString({reduced}:{reduced:boolean}) {return <svg className="take-loose-string" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 0 C48 12 14 32 32 45 S20 60 24 68" fill="none" stroke="#f0d6a3" strokeWidth="1.8">{!reduced&&<animate attributeName="d" values="M30 0 C31 12 29 32 30 45 S29 60 30 68;M30 0 C48 12 14 32 32 45 S20 60 24 68;M30 0 C14 12 45 32 24 45 S35 60 30 68" dur=".8s" repeatCount="indefinite"/>}</path></svg>}
+
