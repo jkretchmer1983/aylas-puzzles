@@ -1,0 +1,444 @@
+.pattern-screen {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #eee0c7;
+  color: #38291e;
+  padding: 12px clamp(12px, 3vw, 42px);
+  font-family: system-ui, sans-serif;
+  gap: 8px;
+  overflow: hidden;
+}
+.pattern-screen button,
+.pattern-screen a {
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 10px;
+  border: 2px solid #9c7956;
+  background: #fff4db;
+  padding: 8px 14px;
+  color: inherit;
+  font-weight: 650;
+}
+.pattern-screen button:disabled {
+  opacity: 0.55;
+}
+.pattern-screen button:focus-visible,
+.pattern-screen a:focus-visible {
+  outline: 4px solid #226694;
+  outline-offset: 3px;
+}
+.pattern-header,
+.pattern-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pattern-header h1 {
+  font:
+    700 clamp(18px, 3vw, 28px) Georgia,
+    serif;
+  margin: 0 auto;
+}
+.pattern-header progress {
+  width: 70px;
+  accent-color: #66784c;
+}
+.pattern-task {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.pattern-task h2 {
+  font-size: clamp(18px, 2.5vw, 26px);
+  margin: 0;
+}
+.pattern-screen main {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.pattern-nav {
+  justify-content: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pattern-nav .primary {
+  background: #496541;
+  color: white;
+}
+.pattern-story {
+  background: #fff7e7;
+  padding: 14px;
+  border-radius: 12px;
+  max-height: 25dvh;
+  overflow: auto;
+}
+.pattern-story p {
+  margin: 0;
+}
+.pattern-loom {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  justify-content: center;
+  gap: 8px;
+}
+.loom-direction {
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+}
+.loom-direction span {
+  display: block;
+  font-weight: 400;
+}
+.loom-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
+  gap: 12px;
+  align-items: center;
+}
+.loom-frame {
+  position: relative;
+  min-width: 0;
+  border: 14px solid #9c6135;
+  border-radius: 14px;
+  padding: 54px 0;
+  background: #d6bc8a;
+  box-shadow:
+    inset 0 4px 10px #60402555,
+    0 7px 0 #6b422b;
+}
+.loom-warp {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 13px,
+    #f8ebc8 14px 17px,
+    transparent 18px 25px
+  );
+}
+.loom-rail {
+  position: relative;
+  overflow-x: auto;
+  scrollbar-color: #a45744 #eee1c7;
+  scroll-padding: 20px;
+  padding: 10px 0 20px;
+  overscroll-behavior-x: contain;
+}
+.loom-cloth {
+  margin: 0;
+  list-style: none;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  gap: 12px;
+  padding: 22px 16px;
+  background: repeating-linear-gradient(0deg, #bb6855 0 5px, #ce806c 5px 8px, #c5725b 8px 12px);
+  border-block: 15px solid #526b82;
+  box-shadow: 0 8px 12px #58382966;
+}
+.loom-cloth li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.loom-cloth small {
+  font-size: 14px;
+  color: #fff8e7;
+  font-weight: 750;
+}
+.loom-patch {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #fff1d7;
+  border: 3px dashed #b97b62;
+  border-radius: 12px;
+  box-shadow: 0 5px 4px #553b2b40;
+  font-size: 42px;
+  color: #38291e;
+}
+.pattern-screen .loom-pocket {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 3px dashed #883a2e;
+  background: #f6e1bb;
+  padding: 0;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+}
+.loom-pocket > span:not(.loom-patch) {
+  font-size: 24px;
+}
+.loom-pocket .loom-patch {
+  width: 76px;
+  height: 76px;
+}
+.loom-over {
+  background: #cbd8b6 !important;
+  box-shadow: 0 0 0 7px #72895e99;
+}
+.loom-pegs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.pattern-screen .loom-peg {
+  position: relative;
+  border: 0;
+  padding: 12px 0 0;
+  background: none;
+  touch-action: none;
+}
+.loom-peg:before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: 0;
+  width: 25px;
+  height: 12px;
+  background: #91552e;
+  border-radius: 50%;
+  box-shadow: 0 3px 3px #54351e;
+}
+.loom-peg .loom-patch {
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
+}
+.loom-picked .loom-patch {
+  transform: translateY(-8px) rotate(-3deg);
+  outline: 4px solid #537b96;
+}
+.loom-vacant .loom-patch {
+  opacity: 0.18;
+}
+.loom-beater,
+.loom-roller {
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  height: 19px;
+  background: #b97d48;
+  border: 3px solid #8a512d;
+  border-radius: 10px;
+  pointer-events: none;
+}
+.loom-beater {
+  top: 10px;
+}
+.loom-roller {
+  bottom: 4px;
+  height: 26px;
+}
+.loom-help {
+  text-align: center;
+  font-size: 14px;
+  margin: 5px 0;
+}
+.loom-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.pattern-screen .loom-check {
+  width: 220px;
+  border-radius: 32% / 40%;
+  background: #b77c44;
+  border: 5px solid #8f5932;
+  box-shadow: 0 5px 0 #69432b;
+  font-size: 24px;
+}
+.loom-check:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #69432b;
+}
+.pattern-screen .loom-check-ready {
+  background: #c2ce83;
+  animation: loom-pulse 2s ease-in-out infinite;
+}
+.loom-feedback {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-weight: 700;
+  padding: 8px;
+  border-radius: 12px;
+}
+.loom-feedback.wrong {
+  background: #ae3e32;
+  color: white;
+}
+.loom-feedback.correct {
+  background: #d2dfbd;
+  color: #284625;
+}
+.loom-carry {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  box-shadow: 0 15px 18px #30201455;
+}
+.loom-return {
+  transition:
+    left 0.23s,
+    top 0.23s,
+    transform 0.23s;
+  transform: translate(-50%, -50%);
+}
+.loom-placed {
+  animation: loom-settle 0.25s ease-out;
+}
+.loom-stitches {
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border: 3px dashed transparent;
+  border-radius: 12px;
+}
+.loom-solved .loom-stitches {
+  border-color: #46613c;
+}
+.loom-weaving .loom-beater {
+  animation: loom-beat 0.6s ease-in-out;
+}
+.loom-solved .loom-cloth {
+  transform: translateY(18px);
+}
+.loom-weaving .loom-cloth {
+  animation: loom-feed 1.1s ease-in-out;
+}
+.loom-weaving .loom-stitches {
+  animation: loom-stitch 0.7s ease-out;
+}
+.loom-cancel {
+  align-self: center;
+}
+@keyframes loom-pulse {
+  50% {
+    box-shadow:
+      0 5px 0 #69432b,
+      0 0 0 5px #74814a44;
+  }
+}
+@keyframes loom-settle {
+  from {
+    transform: translateY(-10px) rotate(-4deg);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes loom-beat {
+  50% {
+    transform: translateY(55px);
+  }
+}
+@keyframes loom-feed {
+  from { transform: translateY(0); }
+  50% {
+    transform: translateY(22px);
+  }
+  to {
+    transform: translateY(18px);
+  }
+}
+@keyframes loom-stitch {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@media (min-width: 700px) {
+  .loom-workspace {
+    grid-template-columns: minmax(0, 1fr) 120px;
+    gap: 28px;
+  }
+  .loom-patch {
+    width: 100px;
+    height: 100px;
+    font-size: 54px;
+  }
+  .pattern-screen .loom-pocket {
+    width: 106px;
+    height: 106px;
+  }
+  .loom-pocket .loom-patch {
+    width: 100px;
+    height: 100px;
+  }
+  .loom-frame {
+    padding: 75px 0;
+  }
+  .loom-pegs {
+    gap: 24px;
+  }
+  .loom-direction {
+    font-size: 17px;
+  }
+  .loom-peg:before {
+    left: 38px;
+  }
+  .pattern-loom {
+    gap: 14px;
+  }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .loom-frame {
+    padding: 25px 0;
+  }
+  .loom-pegs {
+    flex-direction: row;
+    gap: 10px;
+  }
+  .loom-workspace {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+  .loom-patch {
+    width: 64px;
+    height: 64px;
+    font-size: 34px;
+  }
+  .pattern-screen .loom-pocket {
+    width: 70px;
+    height: 70px;
+  }
+  .loom-pocket .loom-patch {
+    width: 64px;
+    height: 64px;
+  }
+  .loom-help {
+    margin: 0;
+  }
+  .loom-cloth {
+    padding-block: 12px;
+  }
+  .pattern-header h1 {
+    font-size: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pattern-screen *,
+  .pattern-screen *:before {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

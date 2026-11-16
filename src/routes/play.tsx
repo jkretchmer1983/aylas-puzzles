@@ -1,3 +1,4 @@
+import { PatternPrototype } from "@/gen/pattern/PatternPrototype";
 import { WorldBackdrop, worldFor } from "@/gen/PuzzleWorld";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
@@ -79,6 +80,7 @@ function Play() {
   const [hint, setHint] = useState(false);
   const [party, setParty] = useState(0);
   const trail = useRef<Search[]>([]);
+  const patternStory = useRef<string | null>(null);
 
   const pickNext = useCallback((exclude?: string) => {
     return { band, t: drawTemplate(band, templatesFor(band).map((x) => x.id), exclude), s: newSeed() };
@@ -166,9 +168,9 @@ function Play() {
   }, [update]);
 
   const reset = () => { setResult(null); setHint(false); };
-  const goNext = () => { trail.current.push({ band, t, s }); reset(); nav({ search: nextRef.current ?? pickNext(t) }); };
-  const goPrev = () => { const prev = trail.current.pop(); if (prev) { reset(); nav({ search: prev }); } };
-  const replay = () => { reset(); nav({ search: { band, t, s: newSeed() }, replace: true }); };
+  const goNext = () => { patternStory.current = null; trail.current.push({ band, t, s }); reset(); nav({ search: nextRef.current ?? pickNext(t) }); };
+  const goPrev = () => { patternStory.current = null; const prev = trail.current.pop(); if (prev) { reset(); nav({ search: prev }); } };
+  const replay = () => { if (spec?.template === "pattern") patternStory.current = shown?.story ?? spec.story; reset(); nav({ search: { band, t, s: newSeed() }, replace: true }); };
 
   if (!spec) return <main className={cn("puzzle-screen", `tier-${tierFor(band)}`)} />;
   const tpl = TEMPLATES.find((x) => x.id === spec.template);
@@ -183,6 +185,8 @@ function Play() {
       <img src={art.src} alt="" onLoad={() => setImageReady(true)} className={cn("scene-img", art.final ? "scene-art-final" : "scene-art-preview")} />
     </div>}
   </>;
+
+  if (spec.template === "pattern") return <PatternPrototype spec={spec} puzzleKey={key} band={band} story={patternStory.current ?? (shown?.key === key ? shown.story : spec.story)} report={report} previous={goPrev} next={goNext} fresh={replay} hasPrevious={!!trail.current.length} />;
 
   return (
     <main className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating")} style={{ ["--scene-hue" as string]: hue }}>
