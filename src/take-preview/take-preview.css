@@ -248,3 +248,13 @@
 @media(orientation:portrait) and (max-width:479px){
   .take-preview .take-console{width:82%;left:58%}
 }
+/* Leave visible sky on both sides of the hanging instruction canvas. */
+@media(orientation:portrait){.take-preview .take-task{top:96px}}
+@media(orientation:landscape) and (min-height:600px){
+  .take-preview .take-task{top:64px}
+  .take-preview .take-landscape{transform:scale(1.3)}
+}
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-task{top:42px}
+  .take-preview .take-landscape{background-position:center 50%}
+}

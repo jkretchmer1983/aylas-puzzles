@@ -17,6 +17,21 @@ describe('balloon sky and painted meadow registration',()=>{
   }
   expect(layoutSky(8,bounds,obstacles,'new',32)).not.toEqual(layoutSky(8,bounds,obstacles,'old',32));
  });
+ it('mixes above/below destinations from the first two releases, stable through append/Undo',()=>{
+  const banner={left:170,top:90,right:650,bottom:210};
+  const bounds={left:8,top:4,right:812,bottom:340};
+  const obstacles=[banner,{left:12,top:8,right:155,bottom:60},{left:680,top:8,right:810,bottom:60}];
+  for(let seed=0;seed<40;seed++){
+   const points=layoutSky(8,bounds,obstacles,String(seed),32,banner);
+   for(let i=0;i<8;i+=2){
+    const pair=points.slice(i,i+2);
+    expect(pair.some(p=>p.y+21<banner.top)).toBe(true);
+    expect(pair.some(p=>p.y-21>banner.bottom)).toBe(true);
+   }
+   expect(points.slice(0,3)).toEqual(layoutSky(3,bounds,obstacles,String(seed),32,banner));
+   expect(points.every(p=>p.y+16<bounds.bottom)).toBe(true);
+  }
+ });
  it('places anchor footprints within the chosen central grass band, with stable varied heights',()=>{
   const input={count:8,width:820,height:1180,skyTop:150,obstacles:[{left:0,top:680,right:205,bottom:1000},{left:90,top:800,right:730,bottom:1100}],body:72,portrait:true,ground:{top:540,bottom:770},seed:'test-seed'};
   const l=layoutFleet(input);expect(l.slots).toHaveLength(8);

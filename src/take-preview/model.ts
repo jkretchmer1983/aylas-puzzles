@@ -82,7 +82,7 @@ export function layoutFleet(input: FleetInput): FleetLayout {
   for (const scale of [1, .9, .8, .7, .62, .55]) {
     const body = Math.round(input.body * scale);
     const touchW = Math.max(body, 48), touchH = Math.max(body * 1.3, 62);
-    const foot = body * 2.12, dx = touchW + Math.max(4, body * .1), dy = touchH + 8;
+    const foot = body * (input.ground?1.92:2.12), dx = touchW + Math.max(4, body * .1), dy = touchH + 8;
     const travel = portrait ? Math.max(90, input.height * .14) : Math.max(56, input.height * .1);
     for (const maxRows of [2, 3, 4]) {
       const minTop = input.ground ? input.ground.top-foot : skyTop + travel;
@@ -160,7 +160,7 @@ function unit(seed:string, id:number):number {
   n^=n>>>16;n=Math.imul(n,0x7feb352d);n^=n>>>15;return(n>>>0)/4294967296;
 }
 /** Stable, separated destinations: adding/removing a release never reshuffles others. */
-export function layoutSky(count:number, bounds:Rect, obstacles:Rect[], seed:string, size:number):Point[] {
+export function layoutSky(count:number, bounds:Rect, obstacles:Rect[], seed:string, size:number, banner?:Rect):Point[] {
   const half=size/2+5,candidates:Point[]=[];
   for(let row=0;row<18;row++)for(let col=0;col<32;col++){
     const i=row*32+col;
@@ -171,7 +171,11 @@ export function layoutSky(count:number, bounds:Rect, obstacles:Rect[], seed:stri
   const points:Point[]=[];
   for(let id=0;id<count;id++){
     let best=candidates[0]??{x:(bounds.left+bounds.right)/2,y:bounds.top+half},score=-Infinity;
-    for(const p of candidates){
+    const above=id%2===(unit(seed,-1)>.5?0:1);
+    const preferred=banner?candidates.filter(p=>above?p.y+half<banner.top:p.y-half>banner.bottom):[];
+    const spacious=preferred.filter(p=>points.every(q=>Math.hypot(p.x-q.x,p.y-q.y)>size*1.15));
+    const pool=spacious.length?spacious:candidates;
+    for(const p of pool){
       const distance=points.length?Math.min(...points.map(q=>Math.hypot(p.x-q.x,p.y-q.y))):size*3;
       const value=distance+unit(seed,Math.round(p.x*17+p.y*31)+id*997)*size*.7;
       if(value>score){score=value;best=p;}

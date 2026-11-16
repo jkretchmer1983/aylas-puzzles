@@ -59,7 +59,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     cancelGesture();setReturns([]);
     setCelebrationFlights(Array.from({length:clues.total},(_,id)=>{
       const released=latest.current.play.released.includes(id);
-      const p=released?(skySlots[id]??{x:50,y:0}):home(id);
+      const p=released?(skySlots[latest.current.play.released.indexOf(id)]??{x:50,y:0}):home(id);
       return {id,...p,endX:p.x+(id%2?18:-18),endY:-90,revision:Date.now()};
     }));
     const timer=setTimeout(()=>setCelebrated(true),reduced?0:2800);
@@ -89,10 +89,10 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
       const paintedSky=paintedY(image,source.sky,position,source.width,source.height)-r.top;
       const c=root.querySelector('.take-console')!.getBoundingClientRect();
       const end=portrait||r.height>=600?c.top-r.top-22:r.height-58;
-      const start=Math.min(end-90,Math.max(sky+24,foreground+8));
+      const start=Math.min(end-(!portrait&&r.height<600?90:4),Math.max(sky+24,foreground+8));
       const ground={top:start+(end-start)*.1,bottom:start+(end-start)*.9};
       const skySize=Math.max(18,body*.44);
-      const safeSky=layoutSky(clues.total,{left:8,top:4,right:r.width-8,bottom:Math.max(64,paintedSky-8)},[...box('.take-task',6),...box('.take-topbar>a,.take-progress,.take-topbar>button',4)],props.sessionKey,skySize);
+      const safeSky=layoutSky(clues.total,{left:8,top:4,right:r.width-8,bottom:Math.max(64,paintedSky-8)},[...box('.take-task',6),...box('.take-topbar>a,.take-progress,.take-topbar>button',4),...box('.take-windsock-rig',6)],props.sessionKey,skySize,box('.take-task',6)[0]);
       setSkySlots(safeSky.map(p=>({x:(p.x-fx)/(field.offsetWidth||r.width)*100,y:(p.y-fy)/(field.offsetHeight||r.height)*100})));
       const obstacles=[...box('.take-console',portrait?18:14),...box('.take-explorer',8),...box('.take-windsock-rig',6),...box('.take-navigation',6),...box('.take-books',6),
         // Landscape: tent, easel and crates are painted along the left edge.
@@ -145,7 +145,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     if(latest.current.play.result===true)return;
     const available=[...new Set(ids)].filter(id=>!latest.current.play.released.includes(id));if(!available.length)return;
     const r=stage.current?.getBoundingClientRect();
-    const next=available.map(id=>{const p=at?.id===id&&r?{x:at.left/r.width*100,y:at.top/r.height*100}:home(id);return {id,...p,endX:skySlots[id]?.x??50,endY:skySlots[id]?.y??0,revision:Date.now()}});
+    const next=available.map((id,index)=>{const destination=skySlots[latest.current.play.released.length+index];const p=at?.id===id&&r?{x:at.left/r.width*100,y:at.top/r.height*100}:home(id);return {id,...p,endX:destination?.x??50,endY:destination?.y??0,revision:Date.now()}});
     setReturns(old=>old.filter(f=>!available.includes(f.id)));
     setFlights(old=>[...old.filter(f=>!available.includes(f.id)),...next]);
     dispatch({type:'release',ids:available,total:clues.total});props.onReleaseSound?.();
@@ -173,7 +173,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     cancelGesture();const id=play.released.at(-1);if(id===undefined)return;
     setFlights(old=>old.filter(f=>f.id!==id));setRecalled([id]);dispatch({type:'undo'});
     // Source touch target returns immediately; the image follows a short recall path.
-    schedule(()=>returnToAnchor(id,skySlots[id]??{x:50,y:0}),0);
+    schedule(()=>returnToAnchor(id,skySlots[play.released.length-1]??{x:50,y:0}),0);
     setNotice('One balloon recalled to its original anchor.');props.onAnnounce('Last balloon recalled. Your answer is unchanged.');
   }
   const ready=Boolean(play.answer)&&play.result===null;
@@ -206,8 +206,8 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
         </div>;
       })}
       </div>
-      <div className="take-released-fleet" aria-hidden="true">{play.released.map(id=>{
-        const destination=skySlots[id]??{x:50,y:0};
+      <div className="take-released-fleet" aria-hidden="true">{play.released.map((id,index)=>{
+        const destination=skySlots[index]??{x:50,y:0};
         const f=flights.find(f=>f.id===id)||{id,...destination,endX:destination.x,endY:destination.y,revision:0};
         return <div key={`${id}-${f.revision}`} data-sky-id={id} className={`take-flight ${f.revision?'is-new':''}`} style={{...moveStyle({...f,endX:destination.x,endY:destination.y}),'--drift-delay':`${id*-.83}s`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>;
       })}</div>
