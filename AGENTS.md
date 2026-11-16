@@ -52,3 +52,14 @@ Acceptance: consecutive new instances of each adapter must show different eligib
 Implementation status at this policy update: existing shared story writer only returns title/story/imagePrompt and locks original names; per-instance manipulatives are not yet a completed shared feature. This policy is an implementation requirement, NOT a claim that current previews already support it. Do not mark complete until functional previews demonstrate it.
 
 <!-- DYNAMIC-CONTENT:END -->
+
+
+<!-- SCENE-RELEASE:BEGIN -->
+## Independent Scene Games public release
+- V1 scene-game public destination: https://aylas-puzzles-scene-games.lovable.app/ . Lovable project: f6472ef2-e352-4eea-bebd-b2ca3e651718 (Ayla’s Puzzles — Scene Games).
+- Source integration branch: release/scene-games in jkretchmer1983/aylas-puzzles, starting from the existing Sudoku scene baseline. Submit finished V1 game changes for review against this branch, not main. No automatic merge is authorized.
+- Keep original published app/project 0a7ba2f9-7210-4e52-9220-51a3c422ad05 and its public address intact. Do not deploy this new release to the original project.
+- The remixed Scene Games Lovable project is independent: original GitHub game branches do NOT automatically sync into it. After reviewing/integrating a game on release/scene-games, explicitly import the chosen version into the new project's draft, test build/gameplay/responsiveness and publish to its existing slug only when release is authorized. Do not claim a branch commit or preview automatically updated the public site.
+- Initial new site contains the copied baseline; loom and balloon review branches are not yet integrated. Add ready games incrementally, keeping unfinished prototypes out of public rotation.
+- V2 Logic Adventures Beta project c7960d92-dee8-4b06-b59c-5a53fe272e8c remains a distinct track; this V1 release direction does not authorize redirecting, overwriting or publishing that project.
+<!-- SCENE-RELEASE:END -->
