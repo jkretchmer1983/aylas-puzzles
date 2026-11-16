@@ -1,25 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, BookOpen, Settings, Volume2, X } from 'lucide-react';
 import { generate } from '../gen/templates';
-import { newSeed } from '../gen/rng';
+import { freshTakeSeed } from './numbers';
 import { TakePreviewPuzzle } from '../gen/Renderer';
-import { emptyPlay, type PlayState } from './model';
+import { emptyPlay, takeClues, type PlayState } from './model';
 import { ensureStory, subscribeStory } from '../lib/story-cache';
 import { releaseSound } from './audio';
 
 type Adventure = { storySeed: number; boardSeed: number; play: PlayState; started?: boolean; story?: {title:string;story:string} };
-type Session = { adventures: Adventure[]; index: number };
+type Session = { adventures: Adventure[]; index: number; recentBoardSeeds?: number[] };
 const storageKey = 'ayla-take-rendered-v2';
-function initialSeed() {
-  for (let seed = 1; seed < 10000; seed++) {
-    if (generate('take', 1, seed).task === 'There were 8 🎈. 3 were taken. How many are left?') return seed;
-  }
-  return 42;
+const numberHistoryKey = 'ayla-take-number-history-v1';
+function chooseSeed(recent: readonly number[] = [], object?: string) {
+  let history:number[]=[];
+  try { const saved=JSON.parse(localStorage.getItem(numberHistoryKey)||'[]');if(Array.isArray(saved))history=saved.filter(Number.isInteger).slice(-4); } catch { /* Optional storage. */ }
+  const seed=freshTakeSeed([...history,...recent],object);
+  try { localStorage.setItem(numberHistoryKey,JSON.stringify([...history,...recent,seed].slice(-4))); } catch { /* Optional storage. */ }
+  return seed;
 }
-const demoSeed = initialSeed();
-const initial = (): Session => ({ adventures: [{ storySeed: demoSeed, boardSeed: demoSeed, play: emptyPlay() }], index: 0 });
+const initial = (seed:number): Session => ({ adventures: [{ storySeed: seed, boardSeed: seed, play: emptyPlay() }], index: 0, recentBoardSeeds:[seed] });
 export function TakePreview() {
-  const [session, setSession] = useState<Session>(initial);
+  const [session, setSession] = useState<Session>(()=>initial(0));
   const [loaded, setLoaded] = useState(false);
   const [muted, setMuted] = useState(false);
   const [softSound,setSoftSound]=useState(false);
@@ -35,12 +36,14 @@ export function TakePreview() {
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const storyDialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
+    let restored=false;
     try {
       const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
-      if (saved?.adventures?.length && Number.isInteger(saved.index) && saved.index >= 0 && saved.index < saved.adventures.length && saved.adventures.every((a: Adventure) => Number.isInteger(a.storySeed) && Number.isInteger(a.boardSeed) && Array.isArray(a.play?.released) && Array.isArray(a.play?.selected) && Array.isArray(a.play?.batches) && Array.isArray(a.play?.marked) && typeof a.play?.answer === 'string')) setSession(saved);
+      if (saved?.adventures?.length && Number.isInteger(saved.index) && saved.index >= 0 && saved.index < saved.adventures.length && saved.adventures.every((a: Adventure) => Number.isInteger(a.storySeed) && Number.isInteger(a.boardSeed) && Array.isArray(a.play?.released) && Array.isArray(a.play?.selected) && Array.isArray(a.play?.batches) && Array.isArray(a.play?.marked) && typeof a.play?.answer === 'string')) {setSession(saved);restored=true;}
       setMuted(localStorage.getItem('ayla-take-muted') === 'true');
       setSoftSound(localStorage.getItem('ayla-take-soft-sound') === 'true');
     } catch { /* Offline/private mode can still play. */ }
+    if(!restored)setSession(initial(chooseSeed()));
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     setReduced(media.matches);
     const change = () => setReduced(media.matches);
@@ -58,11 +61,12 @@ export function TakePreview() {
     if (storyOpen && dialog && !dialog.open) dialog.showModal();
     if (!storyOpen && dialog?.open) dialog.close();
   }, [storyOpen]);
-  const adventure = session.adventures[session.index] ?? initial().adventures[0];
+  const adventure = session.adventures[session.index];
   if (!adventure) throw new Error('Missing Taking Away adventure');
   const spec = generate('take', 1, adventure.boardSeed);
   const storySpec = generate('take', 1, adventure.storySeed);
   useEffect(()=>{
+    if(!loaded)return;
     const seed=adventure.storySeed, key=`take-airfield:${seed}`;
     const entry=ensureStory(key,{age:4,theme:`A golden weather balloon airfield. ${storySpec.theme}`,title:storySpec.title,story:storySpec.story,task:storySpec.task});
     const update=()=>{
@@ -70,7 +74,7 @@ export function TakePreview() {
       if(entry.settled) setSession(s=>({...s,adventures:s.adventures.map(a=>a.storySeed===seed&&!a.started?{...a,story:{title:entry.title||storySpec.title,story:entry.story||storySpec.story}}:a)}));
     };
     update();return subscribeStory(key,update);
-  },[adventure.storySeed]);
+  },[adventure.storySeed,loaded]);
   const flightLog=adventure.story||{title:storySpec.title,story:storySpec.story};
   const begin=()=>{stopSpeech();setSession(s=>({...s,adventures:s.adventures.map((a,i)=>i===s.index?{...a,started:true,story:flightLog}:a)}));};
   const stopSpeech = () => { window.speechSynthesis?.cancel(); utterance.current = null; setSpeaking(false); };
@@ -86,14 +90,22 @@ export function TakePreview() {
     setSpeaking(true); window.speechSynthesis.speak(u);
   };
   const next = () => {
-    stopSpeech(); const seed = newSeed();
-    setSession(s => s.index < s.adventures.length - 1 ? { ...s, index: s.index + 1 } : { adventures: [...s.adventures, { storySeed: seed, boardSeed: seed, play: emptyPlay() }], index: s.index + 1 });
+    stopSpeech();
+    setSession(s => {
+      if(s.index<s.adventures.length-1)return {...s,index:s.index+1};
+      const recent=s.recentBoardSeeds??s.adventures.map(a=>a.boardSeed),seed=chooseSeed(recent);
+      return {adventures:[...s.adventures,{storySeed:seed,boardSeed:seed,play:emptyPlay()}],index:s.index+1,recentBoardSeeds:[...recent,seed].slice(-4)};
+    });
   };
   const newBoard = () => {
-    stopSpeech(); let seed = newSeed();
-    while (generate('take', 1, seed).task === spec.task) seed = (seed + 1) % 2 ** 31;
-    setSession(s => ({ ...s, adventures: s.adventures.map((a, i) => i === s.index ? { ...a, boardSeed: seed, play: emptyPlay(), started:true } : a) }));
+    stopSpeech();
+    setSession(s=>{
+      const current=s.adventures[s.index],recent=s.recentBoardSeeds??s.adventures.map(a=>a.boardSeed);
+      const seed=chooseSeed(recent,takeClues(generate('take',1,current.boardSeed)).object);
+      return {...s,recentBoardSeeds:[...recent,seed].slice(-4),adventures:s.adventures.map((a,i)=>i===s.index?{...a,boardSeed:seed,play:emptyPlay(),started:true}:a)};
+    });
   };
+  if(!loaded)return <main className="take-preview" data-phase="story"><div className="take-landscape" aria-hidden="true"/><section className="take-story-intro"><p role="status">Preparing your balloon adventure…</p></section></main>;
   return <main className="take-preview" data-reduced={reduced} data-phase={adventure.started?'play':'story'}>
     <div className="take-landscape" aria-hidden="true"/>
     <header className="take-topbar">
