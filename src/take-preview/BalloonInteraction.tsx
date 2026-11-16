@@ -65,7 +65,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   useEffect(()=>{
     const field=stage.current,root=field?.closest('.take-preview'),banner=root?.querySelector('.take-task');
     if(!field||!banner)return;
-    const align=()=>{const a=field.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-a.left,top:b.bottom+6-a.top,width:b.width*.84,height:44});};
+    const align=()=>{const r=root!.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-r.left-field.offsetLeft,top:b.bottom+6-r.top-field.offsetTop,width:b.width*.84,height:44});};
     align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);
     window.addEventListener('resize',align);return()=>{observer.disconnect();window.removeEventListener('resize',align)};
   },[props.started]);
