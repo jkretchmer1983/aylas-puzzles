@@ -114,3 +114,6 @@
 .take-preview .take-launch{isolation:isolate}
 .take-launch.has-drag:after{content:'';position:absolute;inset:-48px -12px -80px;z-index:-1;pointer-events:none;border:1px dashed #fff4cfb3;border-radius:24px;background:radial-gradient(ellipse,#fff2cc70,#fff6d91a);box-shadow:inset 0 0 24px #fff6d94d}
 .take-launch.has-drag.is-over:after{border-color:#d5f8ba;background:radial-gradient(ellipse,#e2f8ce7a,#e5fad71a)}
+
+/* A held balloon stays visible even when lifted over the sign. */
+.take-preview>.take-carried{z-index:32}

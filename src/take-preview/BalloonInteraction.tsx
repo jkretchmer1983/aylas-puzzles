@@ -11,7 +11,7 @@ export type BalloonInteractionProps = {
   previousDisabled: boolean; onNew: () => void; onStory: () => void; onHint: () => void; hintOpen: boolean;
   onReleaseSound?: () => void; started?: boolean; onNotice?: (notice:string)=>void;
 };
-type Drag = { id: number; center: Point; over: boolean };
+type Drag = { id: number; center: Point; sceneCenter: Point; over: boolean };
 type Gesture = { id: number; pointerId: number; start: Point; last: Point; active: boolean; target: HTMLButtonElement; timer: ReturnType<typeof setTimeout> | null };
 type Moving = { id: number; x: number; y: number; endX: number; endY: number; revision: number };
 const art = '/take-airfield/';
@@ -93,8 +93,8 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   function position(g: Gesture, finger: Point) {
     if (!stage.current || !releaseZone.current) return;
     const rect = stage.current.getBoundingClientRect();
-    const center = balloonCenter(finger, dragBounds());
-    setDrag({ id:g.id,center:{x:center.x-rect.left,y:center.y-rect.top},over:inReleaseZone(center,releaseBounds(),8) });
+    const bounds=dragBounds(),center = balloonCenter(finger, bounds);
+    setDrag({ id:g.id,center:{x:center.x-rect.left,y:center.y-rect.top},sceneCenter:{x:center.x-bounds.left,y:center.y-bounds.top},over:inReleaseZone(center,releaseBounds(),8) });
   }
   function activate(g: Gesture) {
     if (gesture.current !== g || latest.current.play.countMode) return;
@@ -162,6 +162,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const check=()=>{if(play.result===false){retry();return}const ok=props.onCheck(play.answer);setNotice(ok?'Up and away! You did it.':'Your balloons and work are safe. Try again.');dispatch({type:'checked',ok})};
   const moveStyle=(m:Moving)=>({'--from-x':`${m.x}%`,'--from-y':`${m.y}%`,'--to-x':`${m.endX}%`,'--to-y':`${m.endY}%`,'--flight-tilt':`${(m.id%2?1:-1)*8}deg`} as CSSProperties);
   const launchButton=<button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''} ${drag?'has-drag':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift near the sign to release'}</span><ArrowRight aria-hidden="true" /></button>;
+  const carriedBalloon=drag&&<div className={`take-carried ${drag.over?'is-over':''}`} style={{left:(launchHost?drag.sceneCenter:drag.center).x,top:(launchHost?drag.sceneCenter:drag.center).y} as CSSProperties} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>;
   return <div className={`take-game ${play.result===true?'is-celebrating':''} ${play.result===false?'has-error':''}`} data-result={play.result===true?'correct':play.result===false?'incorrect':'editing'} inert={props.started===false?true:undefined}>
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>
       {props.started!==false&&(launchHost?createPortal(launchButton,launchHost):launchButton)}
@@ -188,7 +189,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
       })}</div>
       {play.result===true&&!reduced&&<div className="take-celebration-fleet" aria-hidden="true">{celebrationFlights.map(f=><div key={f.id} className={`take-celebration-flight ${play.released.includes(f.id)?'was-released':''}`} style={{...moveStyle(f),'--departure-delay':`${f.id*45}ms`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>)}</div>}
       {returns.map(f=><div key={`${f.id}-${f.revision}`} className="take-return" style={moveStyle(f)} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/></div>)}
-      {drag&&<div className={`take-carried ${drag.over?'is-over':''}`} style={{left:drag.center.x,top:drag.center.y} as CSSProperties} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>}
+      {drag&&(launchHost?createPortal(carriedBalloon,launchHost):carriedBalloon)}
     </section>
     <img className="take-explorer" src={`${art}${play.result===true?'explorer-cheer':'explorer'}.webp`} alt="A young weather explorer watching the balloons" draggable={false}/>
     <div className="take-windsock-rig" aria-hidden="true"><span className="take-windsock-pole"/><img className="take-windsock" src={`${art}windsock.webp`} alt="" draggable={false}/></div>
