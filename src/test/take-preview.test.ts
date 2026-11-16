@@ -63,6 +63,7 @@ describe('Taking Away interaction contract', () => {
 it('accepts the displayed balloon beside and below the banner while excluding the meadow',()=>{
   const scene={left:0,top:0,right:393,bottom:852},banner={left:10,top:56,right:383,bottom:156};
   const zone=skyReleaseBounds(scene,banner);
+  expect(inReleaseZone({x:30,y:40},zone,0)).toBe(true);
   expect(inReleaseZone({x:30,y:100},zone,0)).toBe(true);
   expect(inReleaseZone({x:365,y:240},zone,0)).toBe(true);
   expect(inReleaseZone(balloonCenter({x:365,y:304},scene),zone,0)).toBe(true);

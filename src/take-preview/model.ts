@@ -59,5 +59,5 @@ export function inReleaseZone(center: Point, zone: Rect, tolerance = 12) {
 /** A generous sky region around and below the sign, in scene coordinates. */
 export function skyReleaseBounds(scene:Rect,banner:Rect):Rect {
   const height=scene.bottom-scene.top;
-  return {left:scene.left+12,right:scene.right-12,top:Math.max(scene.top+12,banner.top+(banner.bottom-banner.top)*.25-16),bottom:Math.min(scene.bottom-80,banner.bottom+Math.max(96,Math.min(164,height*.14)))};
+  return {left:scene.left+12,right:scene.right-12,top:scene.top+12,bottom:Math.min(scene.bottom-80,banner.bottom+Math.max(96,Math.min(164,height*.14)))};
 }
