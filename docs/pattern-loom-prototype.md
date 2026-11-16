@@ -1,40 +1,29 @@
-# The Pattern Loom — interaction pilot
+# The Pattern Loom — reference-art development
 
-Review branch: `prototype/pattern-loom`. Scope: Patterns only. Based on shared brief version 4 and the attached warm textile-loft render. No production art integration yet.
+Review branch: `prototype/pattern-loom`, draft PR #3. Scope is Patterns. The separate Lovable draft provides a hosted preview; neither is accepted or merged into main.
 
-## Storyboard
+## Scene architecture
 
-1. Ready: read numbered patches from left to right on a continuous woven band; the final pocket is empty. Side pegs preserve the generator's shuffled choice order.
-2. Pickup: hold 330ms to lift with a stable center 52px above the finger, or select using a button. Movement before the hold cancels pickup.
-3. Placement: the visible patch center enters the pocket's 26px forgiving margin; pocket responds. Drop elsewhere returns to the peg in 230ms. Tap/keyboard select then activate pocket also works.
-4. Replacement: pick any other choice and activate the pocket; Undo removes it. No validation or correctness colors before Check.
-5. Wrong: red textual feedback, same handle becomes Try again, sequence remains. Retry permits replacement.
-6. Correct: beater presses, stitches interlace, cloth feeds toward roller briefly. Next becomes primary. Repeat checking is disabled.
+`PatternPrototype` composes the weaving-loft scene, story, instructions, audio settings and navigation. `PatternLoom` owns pickup, placement and weaving animation. `LoomArt` maps every one of the generator's 40 symbols to its embroidery atlas position. The cleaned portrait and landscape scene plates contain no baked-in puzzle values. Woven patch bases, fabric controls, a wooden check handle and beater are independent foreground elements.
 
-## Responsive compositions
+The seeded generator and choice ordering are unchanged. Renderer validates the chosen index; scene art and generated story text cannot change correctness. All existing bands 0–6 remain available, including the repository's Ages 3–4 band. Patterns range from AB through ABCCB, up to fourteen given patches plus an empty final pocket. Rows are numbered in reading order.
 
-| Surface | Composition |
-| --- | --- |
-| Phone portrait | Full-width loom, side peg rack, scrollable single band, check below, navigation outside scroll region |
-| Wider phone | Loom gains width; patches retain square proportions |
-| iPad portrait | Larger patches and broader cloth; no fixed narrow phone container |
-| iPad landscape | Broad loom and side rack; sequence remains linear |
-| Short landscape | Pegs move into a horizontal side rack; content scrolls rather than shrinking controls |
+## Interaction
 
-## Generator inspection
+- Hold 330ms to lift a patch. Its visible center stays 52px above the finger, with a forgiving 26px pocket margin used for highlighting and drop detection.
+- Tap or keyboard-select a patch, then activate the pocket as an alternative.
+- Replace a placed patch or Undo before checking. Placement never checks the answer.
+- A wrong answer changes the wooden Check handle to Try again, with explicit red feedback.
+- Success stitches the final patch, moves the beater, feeds the cloth and emphasizes Next puzzle.
+- Previous restores in-session placement/result for a visited puzzle. New retains the story. Resize cancels an active pickup while preserving placement/result.
+- Speech is user-triggered. Optional chimes and mute are available in settings. Both system and in-game reduced motion are supported.
 
-`pattern` is enabled in bands 0–6, including the repository's Ages 3–4 band. This pilot preserves availability; the brief's exclusion of 3–4 is not applied globally. Generator units progress through AB, AAB, ABC, ABBC, ABCCB. Display lengths reach 14 existing patches plus the empty pocket. Symbols include animals, fruit, vehicles, weather and sports; three choices retain exact index mapping. Validation stays in Renderer. No generator or Sudoku edits.
+## Review
 
-## Prototype / full-scene boundary
+Preview: https://id-preview-3--0a7ba2f9-7210-4e52-9220-51a3c422ad05.lovable.app/play?band=1&t=pattern&s=12345
 
-This is an interaction review surface, not the finished reference-fidelity scene. Emoji symbols deliberately preserve identities before an embroidery asset library exists. The final artwork pass needs independent loft/character, blank woven cloth, patch bases, pegs, warp, beater, roller and handle layers. Never use the complete reference as a backdrop with baked-in sample symbols.
-
-Existing generated story text is available from Story. New retains the displayed story; Next uses existing deck navigation and its story generation. Previous restores the same seeded puzzle and in-session placed/result state. State survives responsive reflow. Instructions are user-triggered speech with mute; no automatic audio. Reduced motion follows the device. Full continuous intro assembly, unique loom-specific story generation/illustrations, optional fabric sounds, expanded reference art, and device touch QA remain for the scene integration pass.
-
-## Review URL
-
-Run `npm run dev -- --host 0.0.0.0`; open `/play?band=1&t=pattern&s=12345`. Also review bands 2–6 and `/play?band=6&t=pattern&s=45678` for long cloth.
+Long-pattern fixture: `/play?band=6&t=pattern&s=45678`.
 
 ## Validation
 
-16 tests pass, including all seven generator bands, deferred checking, retry/replacement, repeat-check prevention, press-and-hold dragging, visible-center hit testing and missed-drop return. TypeScript and production build pass. Chromium launch is blocked by the environment (socket operation denied), so visual and physical-device QA remain unverified.
+The final reference-art branch passes all 18 tests, TypeScript and the production build. Tests exercise every generator band, deferred checking, retry/replacement, repeat-check prevention, press-and-hold dragging, visible-center hit testing and missed-drop return. The hosted draft passes 52 tests and its typecheck/build. Its 35 band/viewport combinations passed, including 15-slot sequences. Browser checks cover tap/drag, retry, replacement, Undo, weaving, rotation, shuffled Next/Previous, New replacement, warmed offline play and reduced motion. An independent authenticated hosted check also confirmed wrong/retry/correct and returning from another game restores solved state. Audible sound quality was not independently assessed. Physical iOS touch behavior still needs device review.

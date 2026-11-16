@@ -1,7 +1,62 @@
+
+/* Recovered Pattern Loom material palette, isolated from other games. */
+.pattern-screen {
+  --loom-material-1: #513017;
+  --loom-material-2: #8e542d;
+  --loom-material-3: #355f7c;
+  --loom-material-4: #3b210e55;
+  --loom-material-5: #795c43;
+  --loom-material-6: #b1bf58;
+  --loom-material-7: #697a32;
+  --loom-material-8: #43501980;
+  --loom-material-9: #f3e2c1;
+  --loom-material-10: #a6744f;
+  --loom-material-11: #24110666;
+  --loom-material-12: #43260b66;
+  --loom-material-13: #fff5dc;
+  --loom-material-14: #3f200c;
+  --loom-material-15: #763c29;
+  --loom-material-16: #f9e9c9;
+  --loom-material-17: #3f200c55;
+  --loom-material-18: #3d210b70;
+  --loom-material-19: #a54732;
+  --loom-material-20: #fff4bc;
+  --loom-material-21: #617c45;
+  --loom-material-22: #dbc7a4;
+  --loom-material-23: #39200f;
+  --loom-material-24: #fff2b6;
+  --loom-material-25: #3f200b99;
+  --loom-material-26: #fff6df;
+  --loom-material-27: #2e170a;
+  --loom-material-28: #3b1b0b88;
+  --loom-material-29: #fff0d3;
+  --loom-material-30: #44220d;
+  --loom-material-31: #a73527;
+  --loom-material-32: #fff3dc;
+  --loom-material-33: #30120899;
+  --loom-material-34: #4a6537;
+  --loom-material-35: #fff4da;
+  --loom-material-36: #30120866;
+  --loom-material-37: #2b140a88;
+  --loom-material-38: #f4dbc3;
+  --loom-material-39: #a26945;
+  --loom-material-40: #36190999;
+  --loom-material-41: #fff0d2;
+  --loom-material-42: #341809;
+  --loom-material-43: #d9e8a2;
+  --loom-material-44: #32190b;
+  --loom-material-45: #36572b;
+  --loom-material-46: #f6e5c8;
+  --loom-material-47: #a56348;
+  --loom-material-48: #29120680;
+  --loom-material-49: #d4e49e;
+  --loom-material-50: #8b211a;
+  --loom-material-51: #ed7968;
+}
 /* All scene geometry is scoped to Patterns. Raster art supplies material detail;
    generated symbols and interactions remain independent DOM layers. */
 .pattern-screen {
-  --ink: #513017;
+  --ink: var(--loom-material-1);
   position: relative;
   isolation: isolate;
   height: 100dvh;
@@ -9,7 +64,7 @@
   width: 100%;
   overflow: hidden;
   color: var(--ink);
-  background: #8e542d;
+  background: var(--loom-material-2);
   font-family: Georgia, "Times New Roman", serif;
 }
 .loom-world {
@@ -41,7 +96,7 @@
 .pattern-screen a:focus-visible,
 .pattern-screen summary:focus-visible,
 .loom-rail:focus-visible {
-  outline: 3px solid #355f7c;
+  outline: 3px solid var(--loom-material-3);
   outline-offset: 3px;
 }
 .pattern-screen button {
@@ -66,7 +121,7 @@
   text-decoration: none;
   border: 0;
   background: url("/loom/ui-atlas.png") 95.51% 22.78% / 384% 538.95% no-repeat;
-  filter: drop-shadow(0 3px 2px #3b210e55);
+  filter: drop-shadow(0 3px 2px var(--loom-material-4));
   font-weight: 700;
   transition:
     transform 0.12s,
@@ -79,7 +134,7 @@
 }
 .pattern-screen .loom-control:disabled {
   filter: grayscale(0.55) brightness(0.86);
-  color: #795c43;
+  color: var(--loom-material-5);
 }
 .pattern-header {
   position: absolute;
@@ -129,8 +184,8 @@
   height: 70%;
   width: 58%;
   border-radius: 4px;
-  background: linear-gradient(#b1bf58, #697a32);
-  box-shadow: inset 0 1px 3px #43501980;
+  background: linear-gradient(var(--loom-material-6), var(--loom-material-7));
+  box-shadow: inset 0 1px 3px var(--loom-material-8);
 }
 .loom-settings {
   position: relative;
@@ -147,10 +202,10 @@
   top: calc(100% + 8px);
   width: min(300px, 86vw);
   padding: 18px;
-  background: #f3e2c1;
-  border: 3px solid #a6744f;
+  background: var(--loom-material-9);
+  border: 3px solid var(--loom-material-10);
   border-radius: 14px;
-  box-shadow: 0 8px 20px #24110666;
+  box-shadow: 0 8px 20px var(--loom-material-11);
   font:
     16px system-ui,
     sans-serif;
@@ -187,7 +242,7 @@
   gap: 7px;
   background: url("/loom/ui-atlas.png") 49.76% 23.59% / 310.3% 660.64% no-repeat;
   padding: 0 4% 0 2%;
-  filter: drop-shadow(0 4px 2px #43260b66);
+  filter: drop-shadow(0 4px 2px var(--loom-material-12));
 }
 .pattern-task h2 {
   font-size: clamp(15px, 2.8vw, 30px);
@@ -232,10 +287,10 @@
   font:
     700 clamp(11px, 1.5vw, 16px)/1.25 system-ui,
     sans-serif;
-  color: #fff5dc;
+  color: var(--loom-material-13);
   text-shadow:
-    0 1px 3px #3f200c,
-    0 1px 5px #3f200c;
+    0 1px 3px var(--loom-material-14),
+    0 1px 5px var(--loom-material-14);
 }
 .loom-direction span {
   display: block;
@@ -287,14 +342,14 @@
   font:
     700 clamp(10px, 1.3vw, 15px)/1 system-ui,
     sans-serif;
-  color: #763c29;
-  background: #f9e9c9;
+  color: var(--loom-material-15);
+  background: var(--loom-material-16);
   border-radius: 50%;
   width: 18px;
   height: 18px;
   display: grid;
   place-items: center;
-  box-shadow: 0 1px 3px #3f200c55;
+  box-shadow: 0 1px 3px var(--loom-material-14)55;
 }
 .loom-cloth li:last-child small {
   width: auto;
@@ -313,7 +368,7 @@
   display: grid;
   place-items: center;
   background: url("/loom/ui-atlas.png") 5.62% 13.87% / 404.21% 273.07% no-repeat;
-  filter: drop-shadow(1px 4px 2px #3d210b70);
+  filter: drop-shadow(1px 4px 2px var(--loom-material-18));
   border-radius: 8%;
   font-size: 42px;
   transform: rotate(-1deg);
@@ -341,7 +396,7 @@
   max-width: 100%;
   background: url("/loom/ui-atlas.png") 5.62% 13.87% / 404.21% 273.07% no-repeat;
   border-radius: 8%;
-  filter: drop-shadow(1px 4px 2px #3d210b70);
+  filter: drop-shadow(1px 4px 2px var(--loom-material-18));
   transition:
     filter 0.15s,
     transform 0.15s;
@@ -350,7 +405,7 @@
   content: "";
   position: absolute;
   inset: 11%;
-  border: 3px dashed #a54732;
+  border: 3px dashed var(--loom-material-19);
   border-radius: 15%;
   pointer-events: none;
 }
@@ -364,11 +419,11 @@
   filter: none;
 }
 .loom-over {
-  filter: drop-shadow(0 0 6px #fff4bc) !important;
+  filter: drop-shadow(0 0 6px var(--loom-material-20)) !important;
   transform: scale(1.08);
 }
 .loom-pocket.loom-over:after {
-  border-color: #617c45;
+  border-color: var(--loom-material-21);
 }
 .loom-pegs {
   position: absolute;
@@ -397,12 +452,12 @@
   z-index: -1;
   width: 24%;
   height: 35%;
-  border: 3px solid #dbc7a4;
+  border: 3px solid var(--loom-material-22);
   border-bottom: 0;
   border-radius: 40% 40% 0 0;
   top: -16%;
   left: 40%;
-  filter: drop-shadow(1px 1px 1px #39200f);
+  filter: drop-shadow(1px 1px 1px var(--loom-material-23));
 }
 .loom-peg .loom-patch {
   width: clamp(52px, 15vw, 140px);
@@ -418,7 +473,7 @@
 }
 .loom-picked .loom-patch {
   transform: translateY(-7px) rotate(-4deg) !important;
-  filter: drop-shadow(0 0 5px #fff2b6) drop-shadow(1px 9px 5px #3f200b99);
+  filter: drop-shadow(0 0 5px var(--loom-material-24)) drop-shadow(1px 9px 5px var(--loom-material-25));
 }
 .loom-vacant .loom-patch {
   opacity: 0;
@@ -435,8 +490,8 @@
   font:
     500 clamp(11px, 1.2vw, 15px)/1.2 system-ui,
     sans-serif;
-  color: #fff6df;
-  text-shadow: 0 1px 4px #2e170a;
+  color: var(--loom-material-26);
+  text-shadow: 0 1px 4px var(--loom-material-27);
   margin: 0;
 }
 .loom-actions {
@@ -456,9 +511,9 @@
   font-size: clamp(28px, 5.5vw, 60px);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   background: url("/loom/ui-atlas.png") 1.705% 79.067% / 320% 706.207% no-repeat;
-  filter: drop-shadow(0 5px 3px #3b1b0b88);
+  filter: drop-shadow(0 5px 3px var(--loom-material-28));
   transition:
     transform 0.12s,
     filter 0.2s;
@@ -478,8 +533,8 @@
   min-width: 44px;
   min-height: 44px;
   font-size: clamp(12px, 1.5vw, 18px);
-  color: #fff0d3;
-  text-shadow: 0 1px 3px #44220d;
+  color: var(--loom-material-29);
+  text-shadow: 0 1px 3px var(--loom-material-30);
 }
 .loom-actions > button:nth-child(2):disabled {
   visibility: hidden;
@@ -502,15 +557,15 @@
   pointer-events: none;
 }
 .loom-feedback.wrong {
-  background: #a73527;
-  color: #fff3dc;
-  box-shadow: 0 3px 8px #30120899;
+  background: var(--loom-material-31);
+  color: var(--loom-material-32);
+  box-shadow: 0 3px 8px var(--loom-material-33);
   animation: loom-shake 0.3s ease-out;
 }
 .loom-feedback.correct {
-  background: #4a6537;
-  color: #fff4da;
-  box-shadow: 0 3px 8px #30120866;
+  background: var(--loom-material-34);
+  color: var(--loom-material-35);
+  box-shadow: 0 3px 8px var(--loom-material-36);
 }
 .loom-carry {
   position: fixed;
@@ -520,7 +575,7 @@
   width: clamp(64px, 15vw, 130px);
   height: clamp(64px, 15vw, 130px);
   transform: translate(-50%, -50%) rotate(-4deg);
-  filter: drop-shadow(0 14px 8px #2b140a88);
+  filter: drop-shadow(0 14px 8px var(--loom-material-37));
 }
 .loom-return {
   transition:
@@ -540,8 +595,8 @@
   pointer-events: none;
 }
 .loom-solved .loom-stitches {
-  border-color: #f4dbc3;
-  box-shadow: inset 0 0 0 1px #a26945;
+  border-color: var(--loom-material-38);
+  box-shadow: inset 0 0 0 1px var(--loom-material-39);
 }
 .loom-weaving .loom-stitches {
   animation: loom-stitch 0.65s ease-out;
@@ -556,7 +611,7 @@
   background: url("/loom/ui-atlas.png") 98.47% 79.18% / 313.47% 731.43% no-repeat;
   pointer-events: none;
   visibility: hidden;
-  filter: drop-shadow(0 5px 3px #36190999);
+  filter: drop-shadow(0 5px 3px var(--loom-material-40));
 }
 .loom-weaving .loom-beater {
   visibility: visible;
@@ -576,8 +631,8 @@
   min-width: 44px;
   min-height: 44px;
   font: 14px system-ui !important;
-  color: #fff0d2 !important;
-  text-shadow: 0 1px 4px #341809;
+  color: var(--loom-material-41) !important;
+  text-shadow: 0 1px 4px var(--loom-material-42);
 }
 .loom-cancel[hidden] {
   display: none;
@@ -615,8 +670,8 @@
   flex: 1.1;
 }
 .pattern-nav .primary {
-  filter: drop-shadow(0 0 6px #d9e8a2) drop-shadow(0 3px 3px #32190b);
-  color: #36572b;
+  filter: drop-shadow(0 0 6px var(--loom-material-43)) drop-shadow(0 3px 3px var(--loom-material-44));
+  color: var(--loom-material-45);
 }
 .pattern-story {
   position: absolute;
@@ -626,10 +681,10 @@
   width: 64%;
   max-height: 44%;
   overflow: auto;
-  background: #f6e5c8 url("/loom/ui-atlas.png") 5.62% 13.87% / 404.21% 273.07%;
-  border: 3px dashed #a56348;
+  background: var(--loom-material-46) url("/loom/ui-atlas.png") 5.62% 13.87% / 404.21% 273.07%;
+  border: 3px dashed var(--loom-material-47);
   border-radius: 18px;
-  box-shadow: 0 12px 30px #29120680;
+  box-shadow: 0 12px 30px var(--loom-material-48);
   padding: clamp(18px, 3vw, 40px);
   text-align: center;
   animation: loom-unfold 0.5s ease-out;
@@ -666,7 +721,7 @@
 }
 @keyframes loom-pulse {
   50% {
-    filter: drop-shadow(0 0 7px #d4e49e) drop-shadow(0 5px 3px #3b1b0b88);
+    filter: drop-shadow(0 0 7px var(--loom-material-49)) drop-shadow(0 5px 3px var(--loom-material-28));
   }
 }
 @keyframes loom-settle {
@@ -1038,8 +1093,35 @@
 
 /* Keep physical patches square, even when the cloth changes row count. */
 .loom-patch, .pattern-screen .loom-pocket { aspect-ratio: 1; }
-.pattern-screen .loom-check-wrong { color: #8b211a; filter: drop-shadow(0 0 7px #ed7968) drop-shadow(0 5px 3px #3b1b0b88); }
+.pattern-screen .loom-check-wrong { color: var(--loom-material-50); filter: drop-shadow(0 0 7px var(--loom-material-51)) drop-shadow(0 5px 3px var(--loom-material-28)); }
 .pattern-screen .loom-control { border-radius: 18%; }
 .pattern-task { border-radius: 40% / 35%; }
 .pattern-screen .loom-check { border-radius: 25% / 42%; }
 .loom-beater { border-radius: 12%; }
+
+/* Short landscapes keep the painted title visible and reserve the last 96px
+   for the answer action and navigation, rather than scaling touch targets. */
+@media (orientation: landscape) and (max-height: 600px) {
+  .pattern-screen { min-height: 393px; }
+  .pattern-header .loom-age { width: 60px; height: 48px; font-size: 14px; white-space: nowrap; }
+  .pattern-task { top: 31%; height: 44px; left: 25%; width: 50%; }
+  .loom-direction { display: none; }
+  .loom-frame { top: 44%; height: calc(100% - 44% - 98px); left: 14%; width: 62%; }
+  .pattern-loom { --patch-size: 44px; }
+  .loom-cloth { gap: 3px 8px; }
+  .loom-pegs { top: 40%; height: 43%; left: 85%; width: 10%; flex-direction: column; }
+  .pattern-screen .loom-peg { width: 48px; height: 48px; }
+  .loom-peg .loom-patch { width: 48px; height: 48px; }
+  .loom-actions { top: auto; bottom: 49px; height: 44px; left: 34%; width: 33%; }
+  .loom-actions > button:nth-child(2) { bottom: 0; right: -30%; }
+  .loom-feedback { top: auto; bottom: 52px; left: 3%; width: 29%; min-height: 36px; font-size: 12px; }
+  .loom-cancel { top: auto; bottom: 50px; left: 3%; font-size: 12px !important; }
+  .pattern-nav { bottom: max(2px, env(safe-area-inset-bottom)); height: 44px; }
+  .pattern-story { top: 32%; max-height: 54%; }
+}
+/* Atlas padding is not part of an embroidered object. */
+.loom-embroidery { clip-path: inset(5% round 12%); }
+.loom-patch, .pattern-screen .loom-pocket { clip-path: inset(2% round 12%); }
+.loom-pocket > span:not(.loom-patch) { max-width: 84%; font-size: 14px; line-height: 1.05; }
+.pattern-nav .loom-control { min-width: 0; }
+.pattern-nav .loom-control:last-child span { white-space: normal; line-height: 1.05; }

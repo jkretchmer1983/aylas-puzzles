@@ -47,11 +47,13 @@ export function PatternLoom({
     timer: ReturnType<typeof setTimeout>;
   } | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const audio = useRef<AudioContext[]>([]);
   const suppressClick = useRef(false);
   useEffect(
     () => () => {
       if (gesture.current) clearTimeout(gesture.current.timer);
       timers.current.forEach(clearTimeout);
+      audio.current.forEach(ctx => { void ctx.close().catch(() => {}); });
     },
     [],
   );
@@ -82,11 +84,12 @@ export function PatternLoom({
     if (!sound) return;
     try {
       const ctx = new AudioContext();
+      audio.current.push(ctx);
       [0, 0.11, 0.22].slice(0, success ? 3 : 1).forEach((delay, i) => {
         const oscillator = ctx.createOscillator(),
           gain = ctx.createGain();
         oscillator.type = "sine";
-        oscillator.frequency.value = success ? [523, 659, 784][i]! : 220;
+        oscillator.frequency.value = success ? ([523, 659, 784][i] ?? 523) : 220;
         gain.gain.setValueAtTime(0, ctx.currentTime + delay);
         gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + delay + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.2);
@@ -213,7 +216,7 @@ export function PatternLoom({
                     <span>{picked === null ? "?" : "Place here"}</span>
                   ) : (
                     <span className="loom-patch loom-placed" key={placed}>
-                      <Embroidery symbol={options[placed]!} />
+                      <Embroidery symbol={(options[placed] ?? "")} />
                     </span>
                   )}
                   <i className="loom-stitches" aria-hidden="true" />
@@ -329,7 +332,7 @@ export function PatternLoom({
           style={{ left: carry.x, top: carry.y }}
           aria-hidden="true"
         >
-          <Embroidery symbol={options[carry.index]!} />
+          <Embroidery symbol={(options[carry.index] ?? "")} />
         </span>
       )}
       <button

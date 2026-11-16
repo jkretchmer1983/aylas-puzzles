@@ -15,7 +15,7 @@ describe("pattern loom", () => {
         report = vi.fn();
       if (spec.kind.type !== "choice" || spec.visual?.type !== "rows") throw Error("Wrong kind");
       render(<PatternInteraction spec={spec} report={report} />);
-      spec.visual.rows[0]!.slice(0, -1).forEach((symbol, i) =>
+      spec.visual.rows.flat().slice(0, -1).forEach((symbol, i) =>
         expect(screen.getByLabelText(`Position ${i + 1}: ${symbol}`)).toBeInTheDocument(),
       );
       fireEvent.click(
@@ -88,6 +88,36 @@ describe("pattern loom", () => {
       "Place here",
     );
     expect(document.querySelector(".loom-carry")).toBeNull();
+  });
+  it("retains placement through resizing and restores saved state without awarding on mount", () => {
+    const spec = generate("pattern", 6, 12345), report = vi.fn(), save = vi.fn();
+    if (spec.kind.type !== "choice") throw Error("Wrong kind");
+    const { unmount } = render(<PatternInteraction spec={spec} report={report} save={save} />);
+    fireEvent.click(screen.getByLabelText(`Pick patch 1: ${spec.kind.options[0]}`));
+    fireEvent.click(screen.getByLabelText("Empty pocket, place selected patch"));
+    fireEvent(window, new Event("resize"));
+    expect(screen.getByLabelText(/Pocket contains/)).toBeInTheDocument();
+    expect(save).toHaveBeenLastCalledWith({ placed: 0, result: "ready" });
+    unmount();
+    render(<PatternInteraction spec={spec} report={report} saved={{placed: 0, result: "ready"}} />);
+    expect(screen.getByLabelText(/Pocket contains/)).toBeInTheDocument();
+    expect(report).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", {name:"Undo"}));
+    expect(screen.getByLabelText("Empty pocket, place selected patch")).toBeInTheDocument();
+  });
+  it("only creates sound on a check gesture when enabled", () => {
+    const close = vi.fn().mockResolvedValue(undefined), frequency = {value: 0};
+    const oscillator = () => ({type: "", frequency, connect: vi.fn(), start: vi.fn(), stop: vi.fn()});
+    const Audio = vi.fn(function() { return { currentTime: 0, destination: {}, close, createOscillator: oscillator, createGain: () => ({gain: {setValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn()}, connect: vi.fn()}) }; });
+    vi.stubGlobal("AudioContext", Audio);
+    const spec = generate("pattern", 1, 12345);
+    const {rerender} = render(<PatternInteraction spec={spec} report={vi.fn()} sound={false} />);
+    fireEvent.click(screen.getByLabelText(/Pick patch 1:/));
+    fireEvent.click(screen.getByLabelText("Empty pocket, place selected patch"));
+    expect(Audio).not.toHaveBeenCalled();
+    rerender(<PatternInteraction spec={spec} report={vi.fn()} sound />);
+    fireEvent.click(screen.getByRole("button", {name:"Check"}));
+    expect(Audio).toHaveBeenCalledTimes(1);
   });
   it("uses the lifted center with a forgiving target, independent of finger position", () => {
     const rect = { left: 100, right: 180, top: 100, bottom: 180 };

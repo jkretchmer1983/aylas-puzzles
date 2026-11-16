@@ -15,7 +15,9 @@ import type { PuzzleSpec } from "../types";
 import { PatternInteraction } from "../Renderer";
 import type { LoomState } from "./PatternLoom";
 
+
 const states = new Map<string, LoomState>();
+const started = new Set<string>();
 export function PatternPrototype({
   spec,
   puzzleKey,
@@ -37,7 +39,7 @@ export function PatternPrototype({
   fresh: () => void;
   hasPrevious: boolean;
 }) {
-  const [storyOpen, setStoryOpen] = useState(!states.has(puzzleKey));
+  const [storyOpen, setStoryOpen] = useState(!started.has(puzzleKey));
   const [feeding, setFeeding] = useState(false);
   const [hint, setHint] = useState(false);
   const [sound, setSound] = useState(false);
@@ -47,8 +49,11 @@ export function PatternPrototype({
   const startTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settings = useRef<HTMLDetailsElement>(null);
   useEffect(() => {
+    window.speechSynthesis?.cancel();
+    setSpeaking(false);
     setSolved(states.get(puzzleKey)?.result === "correct");
     setHint(false);
+    setStoryOpen(!started.has(puzzleKey));
   }, [puzzleKey]);
   useEffect(
     () => () => {
@@ -75,6 +80,7 @@ export function PatternPrototype({
     window.speechSynthesis.speak(utterance);
   };
   const start = () => {
+    started.add(puzzleKey);
     setStoryOpen(false);
     setFeeding(true);
     if (startTimer.current) clearTimeout(startTimer.current);
