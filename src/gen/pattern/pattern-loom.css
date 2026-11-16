@@ -1138,7 +1138,13 @@
   overscroll-behavior: contain;
   transform: rotateX(24deg);
   transform-origin: center bottom;
-  scrollbar-width: thin;
+}
+.pattern-screen .loom-rail {
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.pattern-screen .loom-rail::-webkit-scrollbar {
+  display: none;
 }
 .loom-cloth {
   min-height: calc(var(--loom-active-rows, 3) * (var(--patch-size) + 14px) + (var(--loom-active-rows, 3) - 1) * 8px);
@@ -1192,9 +1198,50 @@
   .loom-cloth { gap: 8px; }
 }
 
-/* Scrolling is part of the cloth, never a native white bar across the art. */
-.pattern-screen .loom-rail { overflow-x: hidden; scrollbar-width: none; }
-.pattern-screen .loom-rail::-webkit-scrollbar { display: none; }
-
-/* Keep the projected first column fully on the cloth without shrinking patches. */
-.pattern-screen .loom-frame { translate: clamp(20px, 2vw, 30px) 0; }
+/* Compact cloth block. .loom-frame is only the zone left free by the title,
+   feedback/footer and hanging choices; JS anchors .loom-plane to the woven cloth
+   in the cover-cropped painting and sizes patches from it. */
+.pattern-screen .loom-frame {
+  left: 0;
+  width: calc(82% - 8px);
+  top: 29%;
+  height: 39.5%;
+  perspective: none;
+}
+.loom-plane {
+  position: absolute;
+}
+.pattern-screen .loom-cloth {
+  inset: 0 0 auto;
+  grid-template-columns: repeat(var(--loom-cols, 3), var(--patch-size));
+  grid-template-rows: none;
+  grid-auto-rows: calc(var(--patch-size) + 14px);
+  gap: 8px;
+  justify-content: center;
+  align-content: start;
+  min-height: 0;
+}
+.pattern-screen .loom-cloth li {
+  width: var(--patch-size);
+  height: 100%;
+  padding-top: 14px;
+  align-items: flex-start;
+}
+.pattern-screen .loom-cloth small {
+  top: 0;
+  left: 0;
+}
+@media (orientation: landscape) and (min-width: 700px) {
+  .pattern-screen .loom-frame {
+    left: 0;
+    width: calc(86% - 8px);
+    top: 36%;
+    height: auto;
+  }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .pattern-screen .loom-frame {
+    width: calc(85% - 8px);
+    top: 37%;
+  }
+}

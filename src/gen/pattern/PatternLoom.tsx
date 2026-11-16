@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { PuzzleSpec } from "../types";
 import "./pattern-loom.css";
 import { Embroidery } from "./LoomArt";
+import { fitLoomPlane, LANDSCAPE_CLOTH, PORTRAIT_CLOTH, type LoomFit } from "./loom-fit";
 
 export type LoomState = { placed: number | null; result: "ready" | "wrong" | "correct" };
 export const patchOverPocket = (
@@ -38,7 +39,14 @@ export function PatternLoom({
   const [weaving, setWeaving] = useState(false);
   const pocket = useRef<HTMLButtonElement>(null);
   const frame = useRef<HTMLDivElement>(null);
-  const [fit, setFit] = useState({ patch: 44, rows: Math.ceil((sequence.length + 1) / 3) });
+  const [fit, setFit] = useState<LoomFit & { cols: number }>({
+    patch: 50,
+    rows: Math.ceil((sequence.length + 1) / 3),
+    cols: 3,
+    perspective: 450,
+    plane: { left: 0, top: 0, width: 0, height: 0 },
+    scrolls: false,
+  });
   const rail = useRef<HTMLDivElement>(null);
   const pegs = useRef<(HTMLButtonElement | null)[]>([]);
   const gesture = useRef<{
@@ -56,14 +64,44 @@ export function PatternLoom({
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => {
       const wide = window.matchMedia("(orientation: landscape) and (min-width: 700px)").matches;
-      const cols = wide ? 5 : 3;
-      const rows = Math.ceil((sequence.length + 1) / cols);
-      // A 50px square keeps the projected pocket at least 44px tall.
-      const patch = Math.max(50, Math.floor(Math.min(
-        (el.clientWidth - (cols - 1) * 8) / cols,
-        (el.clientHeight - (rows - 1) * 8) / rows - 14,
-      )));
-      setFit(old => old.patch === patch && old.rows === rows ? old : { patch, rows });
+      const stage = el.closest(".pattern-screen") ?? document.documentElement;
+      const img = stage.querySelector<HTMLImageElement>(".loom-world img");
+      const art = wide ? LANDSCAPE_CLOTH : PORTRAIT_CLOTH;
+      const s = stage.getBoundingClientRect();
+      const z = el.getBoundingClientRect();
+      // The CSS frame is the zone left free by title, footer and hanging choices;
+      // the painted cloth inside it decides where the block actually sits.
+      const count = sequence.length + 1;
+      const fitFor = (cols: number) => fitLoomPlane({
+        stageW: s.width,
+        stageH: s.height,
+        art,
+        naturalW: img?.naturalWidth || art.w,
+        naturalH: img?.naturalHeight || art.h,
+        zone: { left: z.left - s.left, top: z.top - s.top, right: z.right - s.left, bottom: z.bottom - s.top },
+        cols,
+        count,
+      });
+      let cols = wide ? 5 : 3;
+      let next = fitFor(cols);
+      // Short landscapes show little cloth: widen the rows rather than hide the pocket.
+      for (let c = cols + 1; wide && next.scrolls && c <= Math.min(count, 9); c++) {
+        const wider = fitFor(c);
+        if (wider.plane.width <= z.width && !wider.scrolls) { cols = c; next = wider; break; }
+      }
+      const plane = {
+        left: Math.round(next.plane.left - (z.left - s.left)),
+        top: Math.round(next.plane.top - (z.top - s.top)),
+        width: Math.round(next.plane.width),
+        height: Math.round(next.plane.height),
+      };
+      setFit(old =>
+        old.patch === next.patch && old.rows === next.rows && old.cols === cols &&
+        old.perspective === next.perspective && old.plane.left === plane.left &&
+        old.plane.top === plane.top && old.plane.width === plane.width && old.plane.height === plane.height
+          ? old
+          : { ...next, cols, plane },
+      );
     };
     let pending = 0;
     const scheduleMeasure = () => {
@@ -73,8 +111,15 @@ export function PatternLoom({
     const observer = new ResizeObserver(scheduleMeasure);
     observer.observe(el);
     window.addEventListener("resize", scheduleMeasure);
+    const img = el.closest(".pattern-screen")?.querySelector(".loom-world img");
+    img?.addEventListener("load", scheduleMeasure);
     measure();
-    return () => { observer.disconnect(); cancelAnimationFrame(pending); window.removeEventListener("resize", scheduleMeasure); };
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(pending);
+      window.removeEventListener("resize", scheduleMeasure);
+      img?.removeEventListener("load", scheduleMeasure);
+    };
   }, [sequence.length]);
 
   useEffect(
@@ -189,6 +234,7 @@ export function PatternLoom({
         {
           "--patch-size": `${fit.patch}px`,
           "--loom-active-rows": fit.rows,
+          "--loom-cols": fit.cols,
           "--loom-rows": Math.ceil((sequence.length + 1) / 3),
           "--loom-wide-rows": Math.ceil((sequence.length + 1) / 5),
         } as CSSProperties
@@ -201,6 +247,16 @@ export function PatternLoom({
       <div className="loom-workspace">
         <div className="loom-frame" ref={frame}>
           <div className="loom-warp" aria-hidden="true" />
+          <div
+            className="loom-plane"
+            style={{
+              left: fit.plane.left,
+              top: fit.plane.top,
+              width: fit.plane.width,
+              height: fit.plane.height,
+              perspective: `${fit.perspective}px`,
+            }}
+          >
           <div
             className="loom-rail"
             ref={rail}
@@ -253,6 +309,7 @@ export function PatternLoom({
                 </button>
               </li>
             </ol>
+          </div>
           </div>
           <div className="loom-beater" aria-hidden="true" />
           <div className="loom-roller" aria-hidden="true" />
