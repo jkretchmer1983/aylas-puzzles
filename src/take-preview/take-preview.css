@@ -98,3 +98,7 @@
 @media(orientation:landscape) and (max-height:599px){.take-preview .take-airfield .take-balloon-slot:nth-child(n){top:calc(46% + var(--slot-row) * 33% + var(--meadow-jitter,0%))!important}}
 
 @media(orientation:portrait){.take-landscape{transform:scale(1.2)}}
+
+/* Distant releases sit behind every anchored balloon and its tether. */
+.take-airfield>.take-released-fleet{z-index:1;isolation:isolate}
+.take-airfield>.take-balloon-grid{z-index:2;isolation:isolate}
