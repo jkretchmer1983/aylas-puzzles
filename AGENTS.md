@@ -73,4 +73,4 @@ Implementation status at this policy update: existing shared story writer only r
 - V2 Logic Adventures Beta project c7960d92-dee8-4b06-b59c-5a53fe272e8c remains a distinct track; this V1 release direction does not authorize redirecting, overwriting or publishing that project.
 <!-- SCENE-RELEASE:END -->
 
-- Audio: all narration, effects and music go through src/lib/audio (shared narrator, mixer, profile registry) and ReadAloud/AudioSettings; every template must be registered in TEMPLATE_AUDIO (test-enforced). See AUDIO.md. Why: one narrator/track, persistent settings and lifecycle cleanup across games.
+- Audio only via src/lib/audio + ReadAloud; register templates in TEMPLATE_AUDIO (see AUDIO.md). Why: one narrator/track.
