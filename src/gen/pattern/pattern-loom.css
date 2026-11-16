@@ -1195,3 +1195,6 @@
 /* Scrolling is part of the cloth, never a native white bar across the art. */
 .pattern-screen .loom-rail { overflow-x: hidden; scrollbar-width: none; }
 .pattern-screen .loom-rail::-webkit-scrollbar { display: none; }
+
+/* Keep the projected first column fully on the cloth without shrinking patches. */
+.pattern-screen .loom-frame { translate: clamp(20px, 2vw, 30px) 0; }
