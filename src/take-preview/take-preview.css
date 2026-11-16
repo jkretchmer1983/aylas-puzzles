@@ -102,3 +102,8 @@
 /* Distant releases sit behind every anchored balloon and its tether. */
 .take-airfield>.take-released-fleet{z-index:1;isolation:isolate}
 .take-airfield>.take-balloon-grid{z-index:2;isolation:isolate}
+
+/* Make the next solving action clear without stretching the painted button. */
+.take-preview .take-check.is-ready{color:#fffbea;text-shadow:0 1px 2px #23462d;animation:take-check-beacon 1.6s ease-in-out infinite;filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}
+@keyframes take-check-beacon{0%,100%{filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}50%{filter:brightness(1.36) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 5px #fff8dc) drop-shadow(0 0 16px #ffdd8fee)}}
+.take-preview[data-reduced=true] .take-check.is-ready{animation:none;filter:brightness(1.2) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 4px #fff3cbe6) drop-shadow(0 0 10px #ffd577bb)}
