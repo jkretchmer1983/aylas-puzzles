@@ -121,7 +121,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const objectName=clues.balloon?'Balloon':`${clues.object} parcel`;
   const count=clues.total,cols=Math.min(4,count),rows=Math.ceil(count/cols);
   const retry=()=>{dispatch({type:'retry'});replaceAnswer.current=true;answerInput.current?.focus();answerInput.current?.select();props.onAnnounce('Try again. Your balloons and answer are still here.');};
-  const check=()=>{if(play.result===false){retry();return}dispatch({type:'checked',ok:props.onCheck(play.answer)})};
+  const check=()=>{if(play.result===false){retry();return}const ok=props.onCheck(play.answer);setNotice(ok?'Up and away! You did it.':'Your balloons and work are safe. Try again.');dispatch({type:'checked',ok})};
   const moveStyle=(m:Moving)=>({'--from-x':`${m.x}%`,'--from-y':`${m.y}%`,'--to-x':`${m.endX}%`,'--to-y':`${m.endY}%`,'--flight-tilt':`${(m.id%2?1:-1)*8}deg`} as CSSProperties);
   return <div className={`take-game ${play.result===true?'is-celebrating':''} ${play.result===false?'has-error':''}`} data-result={play.result===true?'correct':play.result===false?'incorrect':'editing'} inert={props.started===false?true:undefined}>
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>

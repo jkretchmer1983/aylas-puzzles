@@ -39,3 +39,6 @@
 .take-age{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}
 
 .take-game.is-celebrating .take-explorer{animation:none}
+
+.take-game[data-result="correct"] .take-check{opacity:.6;filter:saturate(.45)}
+@media(max-width:699px) and (orientation:portrait){.take-navigation:has(.take-next-primary){grid-template-columns:1fr .65fr 1.65fr}.take-preview .take-navigation .take-next-primary{font-size:14px}.take-next-primary .take-next-short{display:none}.take-next-primary .take-next-long{display:inline}.take-navigation:has(.take-next-primary)>button:nth-child(2)>svg{display:none}}
