@@ -23,6 +23,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const suppressClick = useRef<number | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [flights, setFlights] = useState<Moving[]>([]);
+  const [celebrationFlights, setCelebrationFlights] = useState<Moving[]>([]);
   const [returns, setReturns] = useState<Moving[]>([]);
   const [notice, setNotice] = useState('Hold a balloon to lift it · or tap to select');
   const [celebrated, setCelebrated] = useState(false);
@@ -49,10 +50,16 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   useEffect(() => { cancelGesture();timers.current.forEach(clearTimeout);timers.current.clear();setFlights([]);setReturns([]);setRecalled([]);setNotice('Hold a balloon to lift it · or tap to select'); }, [props.sessionKey]);
   useEffect(()=>{
     setCelebrated(false);
-    if(play.result!==true)return;
-    const timer=setTimeout(()=>setCelebrated(true),reduced?0:1600);
+    if(play.result!==true){setCelebrationFlights([]);return;}
+    cancelGesture();setReturns([]);
+    setCelebrationFlights(Array.from({length:clues.total},(_,id)=>{
+      const released=latest.current.play.released.includes(id);
+      const p=released?{x:48+(id%4)*12,y:8+(id%3)*12}:home(id);
+      return {id,...p,endX:p.x+(id%2?18:-18),endY:-90,revision:Date.now()};
+    }));
+    const timer=setTimeout(()=>setCelebrated(true),reduced?0:2800);
     return()=>clearTimeout(timer);
-  },[play.result,reduced]);
+  },[play.result,reduced,props.sessionKey]);
   function position(g: Gesture, finger: Point) {
     if (!stage.current || !releaseZone.current) return;
     const rect = stage.current.getBoundingClientRect();
@@ -64,7 +71,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     g.active=true;suppressClick.current=g.id;setNotice('Lift into the sky. Let go when the line lights up.');position(g,g.last);
   }
   function pointerDown(e: ReactPointerEvent<HTMLButtonElement>, id: number) {
-    if (!e.isPrimary || e.button !== 0 || gesture.current || play.countMode) return;
+    if (play.result===true || !e.isPrimary || e.button !== 0 || gesture.current || play.countMode) return;
     suppressClick.current=null;
     const point={x:e.clientX,y:e.clientY};
     const g:Gesture={id,pointerId:e.pointerId,start:point,last:point,active:false,target:e.currentTarget,timer:null};
@@ -82,6 +89,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     return b&&r?{x:(b.left+b.width/2-r.left)/r.width*100,y:(b.top+b.height/2-r.top)/r.height*100}:{x:50,y:70};
   }
   function release(ids:number[],at?:{id:number;left:number;top:number}) {
+    if(latest.current.play.result===true)return;
     const available=[...new Set(ids)].filter(id=>!latest.current.play.released.includes(id));if(!available.length)return;
     const r=stage.current?.getBoundingClientRect();
     const next=available.map(id=>{const p=at?.id===id&&r?{x:at.left/r.width*100,y:at.top/r.height*100}:home(id);return {id,...p,endX:48+(id%4)*12,endY:8+(id%3)*12,revision:Date.now()}});
@@ -136,7 +144,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
           <img className="take-anchor" src={`${art}anchor.webp`} alt="" draggable={false}/>
           {!released&&<>
             <svg className="take-tether" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 2 Q26 34 30 66" fill="none" stroke="#ead2a2" strokeWidth="1.8">{!reduced&&<animate attributeName="d" values="M30 2 Q26 34 30 66;M30 2 Q34 34 30 66;M30 2 Q26 34 30 66" dur="4.8s" begin={`${id*-.4}s`} repeatCount="indefinite"/>}</path></svg>
-            <button data-balloon-id={id} className={`take-balloon-target ${selected?'is-selected':''} ${marked?'is-marked':''} ${drag?.id===id||returning?'is-carried':''} ${recalled.includes(id)?'is-recalled':''}`} aria-label={`${objectName} ${id+1}${marked?', counted':''}`} aria-pressed={play.countMode?marked:selected} onPointerDown={e=>pointerDown(e,id)} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelGesture} onLostPointerCapture={()=>{if(gesture.current?.active)cancelGesture()}} onClick={e=>{if(e.detail!==0&&suppressClick.current===id){suppressClick.current=null;return}dispatch({type:'select',id})}} onKeyDown={e=>{if(e.key==='Escape'){cancelGesture();if(selected)dispatch({type:'select',id})}}}>
+            <button data-balloon-id={id} disabled={play.result===true} className={`take-balloon-target ${selected?'is-selected':''} ${marked?'is-marked':''} ${drag?.id===id||returning?'is-carried':''} ${recalled.includes(id)?'is-recalled':''}`} aria-label={`${objectName} ${id+1}${marked?', counted':''}`} aria-pressed={play.countMode?marked:selected} onPointerDown={e=>pointerDown(e,id)} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelGesture} onLostPointerCapture={()=>{if(gesture.current?.active)cancelGesture()}} onClick={e=>{if(e.detail!==0&&suppressClick.current===id){suppressClick.current=null;return}dispatch({type:'select',id})}} onKeyDown={e=>{if(e.key==='Escape'){cancelGesture();if(selected)dispatch({type:'select',id})}}}>
               <Balloon object={clues.balloon?null:clues.object}/>{selected&&<span className="take-selection-tick" aria-hidden="true">✓</span>}{marked&&<span className="take-count-dot" aria-hidden="true">✓</span>}
             </button>
           </>}
@@ -147,6 +155,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
         const f=flights.find(f=>f.id===id)||{id,x:50,y:60,endX:48+(id%4)*12,endY:8+(id%3)*12,revision:0};
         return <div key={`${id}-${f.revision}`} className={`take-flight ${f.revision?'is-new':''}`} style={{...moveStyle(f),'--formation-x':`${38+index*9}%`,'--formation-y':`${8+Math.abs(index-(play.released.length-1)/2)*7}%`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>;
       })}</div>
+      {play.result===true&&!reduced&&<div className="take-celebration-fleet" aria-hidden="true">{celebrationFlights.map(f=><div key={f.id} className={`take-celebration-flight ${play.released.includes(f.id)?'was-released':''}`} style={{...moveStyle(f),'--departure-delay':`${f.id*45}ms`} as CSSProperties}><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>)}</div>}
       {returns.map(f=><div key={`${f.id}-${f.revision}`} className="take-return" style={moveStyle(f)} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/></div>)}
       {drag&&<div className={`take-carried ${drag.over?'is-over':''}`} style={{left:drag.center.x,top:drag.center.y} as CSSProperties} aria-hidden="true"><Balloon object={clues.balloon?null:clues.object}/><LooseString reduced={reduced}/></div>}
     </section>

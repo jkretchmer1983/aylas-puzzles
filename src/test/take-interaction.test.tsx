@@ -114,3 +114,24 @@ describe('physical balloon scene feedback and pointer behavior',()=>{
     expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('');
   });
 });
+
+it('sends every balloon away on success without adding celebratory releases to Undo history',()=>{
+  vi.useFakeTimers();
+  const {container}=render(<Harness reduced={false}/>);
+  fireEvent.click(container.querySelector('[data-balloon-id]')!);
+  fireEvent.click(screen.getByRole('button',{name:'Release 1'}));
+  const spec=generate('take',1,1);
+  if(spec.kind.type!=='number')throw new Error('Expected number');
+  for(const digit of String(spec.kind.answer))fireEvent.click(screen.getByRole('button',{name:digit}));
+  fireEvent.click(screen.getByRole('button',{name:'Check my answer'}));
+  expect(container.querySelectorAll('.take-celebration-flight').length).toBe(takeCount());
+  expect(container.querySelectorAll('.take-celebration-flight.was-released').length).toBe(1);
+  fireEvent(window,new Event('orientationchange'));
+  act(()=>vi.advanceTimersByTime(2800));
+  expect(screen.getByText('Correct! Ready for another?')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button',{name:'Undo'}));
+  expect(container.querySelectorAll('.take-celebration-flight').length).toBe(0);
+  expect(container.querySelectorAll('[data-balloon-id]').length).toBe(takeCount());
+  expect(screen.getByRole('button',{name:'Undo'}).hasAttribute('disabled')).toBe(true);
+  vi.useRealTimers();
+});

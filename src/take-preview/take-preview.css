@@ -34,7 +34,7 @@
 
 @media(orientation:portrait) and (min-width:700px) and (min-height:600px){.take-landscape{background-position:center bottom}.take-balloon-slot:nth-child(n){top:calc(65% + var(--slot-row) * 20%)!important;left:calc(var(--base-left) + var(--slot-row) * 8%)!important}.take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:82%!important}}
 .take-preview .take-launch:not(.is-visible){opacity:0;pointer-events:none}.take-gesture-tip{background:transparent;color:#244965;text-shadow:0 1px 2px #fff9df,0 0 4px #fff6d9}
-@media(orientation:portrait){.take-landscape{background-size:auto 114%;background-position:center bottom}}
+@media(orientation:portrait){.take-landscape{background-size:cover;background-position:center bottom;transform:scale(1.14);transform-origin:center bottom}}
 
 .take-age{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}
 
@@ -42,3 +42,21 @@
 
 .take-game[data-result="correct"] .take-check{opacity:.6;filter:saturate(.45)}
 @media(max-width:699px) and (orientation:portrait){.take-navigation:has(.take-next-primary){grid-template-columns:1fr .65fr 1.65fr}.take-preview .take-navigation .take-next-primary{font-size:14px}.take-next-primary .take-next-short{display:none}.take-next-primary .take-next-long{display:inline}.take-navigation:has(.take-next-primary)>button:nth-child(2)>svg{display:none}}
+
+/* Keep the painted world full bleed even on wide portrait displays. */
+@media(orientation:portrait){.take-preview[data-phase="story"] .take-landscape{transform:scale(1.25) translateY(-2%)}}
+/* The live answer occupies the artwork's single ivory recess (470 × 243 source). */
+.take-preview .take-answer-row{position:absolute;inset:0;height:auto;margin:0;pointer-events:none}
+.take-preview .take-answer-row>button,.take-preview .take-answer-window{pointer-events:auto;position:absolute;top:13%;height:27%;min-height:44px}
+.take-preview .take-answer-row>.take-undo{left:5%;width:27%}
+.take-preview .take-answer-row>.take-check{right:4%;width:28%}
+.take-preview .take-answer-window{left:34%;top:14%;width:31%;height:24%;min-height:44px;flex:none;background:transparent;border:0;border-radius:0;box-shadow:none}
+.take-preview .take-number-keys{position:absolute;left:6%;right:6%;top:45%}
+.take-game[data-result="correct"] .take-balloon-target,.take-game[data-result="correct"] .take-tether,.take-game[data-result="correct"] .take-released-fleet{visibility:hidden;pointer-events:none}
+.take-celebration-fleet{position:absolute;inset:0;pointer-events:none}
+.take-celebration-flight{position:absolute;width:var(--body);height:calc(var(--body)*1.3);left:var(--from-x);top:var(--from-y);animation:take-depart 2.4s cubic-bezier(.45,.02,.62,.8) var(--departure-delay) both}
+.take-celebration-flight.was-released{animation-name:take-depart-small}
+@keyframes take-depart{0%{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}18%{transform:translate(-50%,-50%) scale(.98) rotate(var(--flight-tilt))}85%{opacity:1}100%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.12) rotate(-12deg);opacity:0}}
+@keyframes take-depart-small{0%{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(.44);opacity:1}85%{opacity:1}100%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.08) rotate(12deg);opacity:0}}
+
+.take-preview .take-answer-row>.take-check.is-retry{position:absolute}
