@@ -15,14 +15,14 @@ describe('forest motion preserves puzzle state', () => {
     expect(container.querySelectorAll('.engraving-in-progress')).toHaveLength(0);
     const open=k.given.findIndex(x=>x===null);
     fireEvent.click(screen.getByLabelText(`Row ${Math.floor(open/4)+1}, column ${open%4+1}, empty`));
-    fireEvent.click(screen.getByRole('button',{name:k.symbols[k.solution[open]],exact:true}));
+    fireEvent.click(screen.getByRole('button',{name:k.symbols[k.solution[open]]}));
     expect(container.querySelectorAll('.engraving-in-progress')).toHaveLength(1);
     expect(container.querySelectorAll('.pz-sudoku-fixed .engraving-in-progress')).toHaveLength(0);
     expect(report).not.toHaveBeenCalled();
     k.given.forEach((given,i)=>{
       if(given!==null||i===open)return;
       fireEvent.click(screen.getByLabelText(`Row ${Math.floor(i/4)+1}, column ${i%4+1}, empty`));
-      fireEvent.click(screen.getByRole('button',{name:k.symbols[k.solution[i]],exact:true}));
+      fireEvent.click(screen.getByRole('button',{name:k.symbols[k.solution[i]]}));
     });
     fireEvent.click(screen.getByRole('button',{name:'Check my answer ✓'}));
     expect(report).toHaveBeenCalledWith(true);
