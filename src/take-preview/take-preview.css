@@ -76,3 +76,6 @@
 @media(min-width:700px) and (min-height:600px){.take-banner-guidance{font-size:11px}.take-task p{font-size:18px}}
 @media(orientation:landscape) and (max-height:599px){.take-banner-guidance{font-size:9px}.take-task p{font-size:12px}}
 @media(max-width:699px) and (orientation:portrait){.take-task{padding:36px 20px 6px}.take-task p{font-size:15px}}
+
+/* Focus and rotation must never scroll artwork inside the fixed scene. */
+.take-preview{overflow:clip}
