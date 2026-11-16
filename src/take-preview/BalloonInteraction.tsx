@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CornerUpLeft, Hand, HelpCircle, RotateCcw, Undo2 } from 'lucide-react';
 import { balloonCenter, inReleaseZone, playReducer, takeClues, type PlayAction, type PlayState, type Point } from './model';
 import type { PuzzleSpec } from '../gen/types';
@@ -25,6 +26,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const [flights, setFlights] = useState<Moving[]>([]);
   const [celebrationFlights, setCelebrationFlights] = useState<Moving[]>([]);
   const [returns, setReturns] = useState<Moving[]>([]);
+  const [launchHost,setLaunchHost]=useState<Element|null>(null);
   const [launchStyle,setLaunchStyle]=useState<CSSProperties>();
   const [notice, setNotice] = useState('Hold a balloon to lift it · or tap to select');
   const [celebrated, setCelebrated] = useState(false);
@@ -64,8 +66,9 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   useEffect(()=>{props.onNotice?.(notice)},[notice,props.onNotice]);
   useEffect(()=>{
     const field=stage.current,root=field?.closest('.take-preview'),banner=root?.querySelector('.take-task');
-    if(!field||!banner)return;
-    const align=()=>{const r=root!.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-r.left-field.offsetLeft,top:b.bottom+6-r.top-field.offsetTop,width:b.width*.84,height:44});};
+    if(!field||!banner||!root)return;
+    setLaunchHost(root);
+    const align=()=>{const r=root!.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-r.left,top:b.bottom+6-r.top,width:b.width*.84,height:44});};
     align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);
     window.addEventListener('resize',align);return()=>{observer.disconnect();window.removeEventListener('resize',align)};
   },[props.started]);
@@ -141,9 +144,10 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const retry=()=>{dispatch({type:'retry'});replaceAnswer.current=true;answerInput.current?.focus();answerInput.current?.select();props.onAnnounce('Try again. Your balloons and answer are still here.');};
   const check=()=>{if(play.result===false){retry();return}const ok=props.onCheck(play.answer);setNotice(ok?'Up and away! You did it.':'Your balloons and work are safe. Try again.');dispatch({type:'checked',ok})};
   const moveStyle=(m:Moving)=>({'--from-x':`${m.x}%`,'--from-y':`${m.y}%`,'--to-x':`${m.endX}%`,'--to-y':`${m.endY}%`,'--flight-tilt':`${(m.id%2?1:-1)*8}deg`} as CSSProperties);
+  const launchButton=<button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift above this line to release'}</span><ArrowRight aria-hidden="true" /></button>;
   return <div className={`take-game ${play.result===true?'is-celebrating':''} ${play.result===false?'has-error':''}`} data-result={play.result===true?'correct':play.result===false?'incorrect':'editing'} inert={props.started===false?true:undefined}>
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>
-      <button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift above this line to release'}</span><ArrowRight aria-hidden="true" /></button>
+      {props.started!==false&&(launchHost?createPortal(launchButton,launchHost):launchButton)}
       <div className="take-launch-task">Take away {clues.removed}{clues.balloon?' balloons':` ${clues.object}`}</div>
       <div className="take-balloon-grid" aria-label="Tethered balloons">
       {Array.from({length:count},(_,id)=>{
