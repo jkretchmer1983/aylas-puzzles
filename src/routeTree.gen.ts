@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as StoryWorldRouteImport } from './routes/story-world'
+import { Route as TakePreviewRouteImport } from './routes/take-preview'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as ApiGenerateImageRouteImport } from './routes/api/generate-image'
 
@@ -36,6 +37,11 @@ const StoryWorldRoute = StoryWorldRouteImport.update({
   path: '/story-world',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TakePreviewRoute = TakePreviewRouteImport.update({
+  id: '/take-preview',
+  path: '/take-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
   '/story-world': typeof StoryWorldRoute
+  '/take-preview': typeof TakePreviewRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
 }
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
   '/story-world': typeof StoryWorldRoute
+  '/take-preview': typeof TakePreviewRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
 }
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
   '/story-world': typeof StoryWorldRoute
+  '/take-preview': typeof TakePreviewRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
 }
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/play'
     | '/story-world'
+    | '/take-preview'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
   fileRoutesByTo: FileRoutesByTo
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/play'
     | '/story-world'
+    | '/take-preview'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
   id:
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/play'
     | '/story-world'
+    | '/take-preview'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
   fileRoutesById: FileRoutesById
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   PlayRoute: typeof PlayRoute
   StoryWorldRoute: typeof StoryWorldRoute
+  TakePreviewRoute: typeof TakePreviewRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiGenerateImageRoute: typeof ApiGenerateImageRoute
 }
@@ -139,6 +152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoryWorldRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/take-preview': {
+      id: '/take-preview'
+      path: '/take-preview'
+      fullPath: '/take-preview'
+      preLoaderRoute: typeof TakePreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   PlayRoute: PlayRoute,
   StoryWorldRoute: StoryWorldRoute,
+  TakePreviewRoute: TakePreviewRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiGenerateImageRoute: ApiGenerateImageRoute,
