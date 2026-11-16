@@ -83,7 +83,11 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
       setMeadowLift(bottoms.length?Math.max(0,Math.ceil(Math.max(...bottoms)-c.top+clearance)):0);
     };
     align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);const suitcase=root.querySelector('.take-console');if(suitcase)observer.observe(suitcase);field.querySelectorAll('.take-anchor').forEach(anchor=>observer.observe(anchor));
-    window.addEventListener('resize',align);return()=>{observer.disconnect();window.removeEventListener('resize',align)};
+    // Scene entrances move the field and case independently; measure again once
+    // their framing motion settles instead of retaining an in-flight clearance.
+    const settled=setTimeout(align,1400);
+    root.addEventListener('transitionend',align);root.addEventListener('animationend',align);
+    window.addEventListener('resize',align);return()=>{clearTimeout(settled);observer.disconnect();root.removeEventListener('transitionend',align);root.removeEventListener('animationend',align);window.removeEventListener('resize',align)};
   },[props.started,props.sessionKey,clues.total]);
   function releaseBounds(){
     const root=stage.current?.closest('.take-preview'),banner=root?.querySelector('.take-task');
@@ -197,7 +201,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     <p className="take-sr-only" aria-live="polite">{props.onNotice?'':notice}</p>
     <section className="take-console" aria-label="Answer controls">
       <div className="take-answer-row"><button className="take-undo" onClick={undo} disabled={!play.released.length}><Undo2/><span>Undo</span></button><label className="take-sr-only" htmlFor="take-answer">How many are left?</label><div className="take-answer-window"><input ref={answerInput} id="take-answer" aria-label="Your answer" inputMode="none" value={play.answer} placeholder="?" onChange={e=>props.onPlayChange({...play,answer:e.target.value.replace(/\D/g,'').slice(0,4),result:null})} onKeyDown={e=>{if(e.key==='Enter'&&play.answer)check()}}/><button className="take-erase" aria-label="Erase last digit" onClick={()=>{replaceAnswer.current=false;dispatch({type:'erase'})}}><CornerUpLeft/></button></div><button className={`take-check ${ready?'is-ready':''} ${play.result===false?'is-retry':''}`} disabled={!play.answer} onClick={check} aria-label={play.result===false?'Try again':'Check my answer'}>{play.result===false?'Try again':'Check'}</button></div>
-      <div className="take-number-keys" aria-label="Number keys">{['1','2','3','4','5','6','7','8','9','0'].map(d=><button key={d} aria-label={d} onClick={()=>{dispatch({type:'digit',digit:d,replace:replaceAnswer.current});replaceAnswer.current=false}}>{d}</button>)}</div>
+      <div className="take-number-keys" aria-label="Number keys">{['1','2','3','4','5','6','7','8'].map(d=><button key={d} aria-label={d} onClick={()=>{dispatch({type:'digit',digit:d,replace:replaceAnswer.current});replaceAnswer.current=false}}>{d}</button>)}</div>
     </section>
     <div className={`take-feedback ${play.result===true?'is-correct':''} ${play.result===false?'is-incorrect':''}`} role="status" aria-live="polite">{play.result===true?<><span className="take-success-mark">✓</span>{celebrated?'Correct! Ready for another?':'Wonderful! Watch them fly!'}</>:play.result===false?<><span aria-hidden="true">↶</span>Not quite. Try again — your work is safe.</>:props.hintOpen?spec.hint:''}</div>
     <nav className="take-navigation" aria-label="Puzzle navigation"><button onClick={props.onPrevious} disabled={props.previousDisabled} aria-label="Previous puzzle"><ArrowLeft/><span>Previous</span></button><button onClick={props.onNew}><RotateCcw/><span>New</span></button><button className={`take-next-button ${play.result===true&&celebrated?'take-next-primary':''}`} onClick={props.onNext}><span className="take-next-short">Next</span><span className="take-next-long">Next puzzle</span><ArrowRight/></button></nav>

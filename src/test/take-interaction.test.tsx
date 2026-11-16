@@ -57,15 +57,15 @@ function takeCount(){
 describe('physical balloon scene feedback and pointer behavior',()=>{
   it('turns the same check control into Try again without resetting the answer or balloons',()=>{
     render(<Harness/>);
-    fireEvent.click(screen.getByRole('button',{name:'0'}));
+    fireEvent.click(screen.getByRole('button',{name:'8'}));
     const check=screen.getByRole('button',{name:'Check my answer'});
     fireEvent.click(check);
     expect(screen.getByRole('button',{name:'Try again'})).toBe(check);
-    expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('0');
+    expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('8');
     const before=screen.getAllByRole('button').filter(b=>b.hasAttribute('data-balloon-id')).length;
     fireEvent.click(check);
     expect(screen.getByRole('button',{name:'Check my answer'})).toBe(check);
-    expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('0');
+    expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('8');
     expect(screen.getAllByRole('button').filter(b=>b.hasAttribute('data-balloon-id')).length).toBe(before);
     fireEvent.click(screen.getByRole('button',{name:'5'}));
     expect((screen.getByLabelText('Your answer') as HTMLInputElement).value).toBe('5');

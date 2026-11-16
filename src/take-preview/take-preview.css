@@ -117,3 +117,114 @@
 
 /* A held balloon stays visible even when lifted over the sign. */
 .take-preview>.take-carried{z-index:32}
+
+/* The reference console is one registered painting: never stretch its leather,
+   answer recess or eight physical keys independently. All controls stay live. */
+.take-preview .take-console{
+  container-type:inline-size;width:96%;max-width:720px;left:50%;right:auto;
+  height:auto;aspect-ratio:1958/803;padding:0;bottom:82px;
+  transform:translateX(-50%);background-image:url('/take-airfield/suitcase-reference-v2.webp');
+  background-size:contain;background-position:center;background-repeat:no-repeat;
+  filter:drop-shadow(0 7px 4px #33220b45);
+}
+.take-preview .take-answer-row{inset:0;position:absolute;pointer-events:none}
+.take-preview .take-answer-row>.take-undo{
+  left:7.9%;top:8%;width:20.2%;height:31.5%;min-height:0;
+  background:none;padding:0 1% 0 3%;font-size:clamp(12px,4.3cqw,29px);
+  color:#352511;filter:none;gap:2px;
+}
+.take-preview .take-undo svg{display:block;width:clamp(13px,3.5cqw,24px);height:auto;stroke-width:3}
+.take-preview .take-answer-row>.take-check{
+  left:68%;right:auto;top:7.5%;width:28.3%;height:34.4%;min-height:0;
+  background:none;padding:0 0 2%;font-size:clamp(15px,4.5cqw,32px);
+  color:#fff5da;text-shadow:0 1px 2px #243b25;isolation:isolate;
+}
+.take-preview .take-answer-row>.take-check::before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:transparent;mask:url('/take-airfield/check-reference-v2.webp') center/contain no-repeat;
+}
+.take-preview .take-check.is-ready::before{background:#ffe58b55}
+.take-preview .take-check.is-retry::before{background:#c16b3dbb}
+.take-preview .take-answer-row>.take-check.is-retry{font-size:clamp(12px,3.5cqw,25px);background:none}
+.take-preview .take-answer-window{
+  left:36.5%;top:12.4%;width:26.4%;height:24.1%;min-height:0;
+  background:none;border:0;box-shadow:none;
+}
+.take-preview .take-answer-window input{
+  height:100%;padding:0 12% 0 3%;font-size:clamp(20px,5.2cqw,38px);
+  font-weight:800;color:#46301b;
+}
+.take-preview .take-answer-window input::placeholder{color:transparent}
+.take-preview .take-answer-window .take-erase{
+  right:0;top:0;width:22%;height:100%;min-width:0;min-height:0;
+  background:none;opacity:.55;padding:0;filter:none;
+}
+.take-preview .take-erase svg{width:clamp(12px,2.5cqw,18px);height:auto}
+.take-preview .take-number-keys{
+  position:absolute;left:10.9%;right:8.6%;top:45.5%;height:22.8%;
+  display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:1.1%;
+}
+.take-preview .take-number-keys button{
+  position:relative;width:100%;height:100%;min-width:0;min-height:0;padding:0 0 3%;
+  background:none;filter:none;font-size:clamp(20px,6.6cqw,46px);line-height:1;
+  color:#3a281b;font-weight:800;text-shadow:0 1px #fff3d9;
+}
+.take-preview .take-number-keys button::after{content:'';position:absolute;left:0;right:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}
+.take-preview .take-console button:disabled{opacity:.65}
+.take-preview .take-console button:not(:disabled):active{transform:translateY(1px);filter:brightness(.96)}
+.take-preview .take-check.is-ready{animation:take-check-beacon 1.6s ease-in-out infinite}
+.take-preview .take-navigation{
+  container-type:inline-size;left:auto;right:2%;bottom:8px;width:70%;height:auto;
+  aspect-ratio:1729/323;display:grid;grid-template-columns:1.78fr 1fr 1.78fr;
+  gap:1.2%;padding:2.3% 2.7%;background:url('/take-airfield/navigation-reference-v2.webp') center/100% 100% no-repeat;
+}
+.take-preview .take-navigation button{
+  width:100%;max-width:none;height:100%;min-height:36px;min-width:0;
+  justify-self:stretch;background:none;font-size:clamp(10px,4.3cqw,23px);padding:0;gap:3px;filter:none;
+}
+.take-preview .take-navigation button:first-child,.take-preview .take-navigation button:last-child{justify-self:stretch}
+.take-preview .take-navigation svg{width:clamp(12px,4cqw,21px);height:auto;stroke-width:3}
+.take-preview .take-navigation button:nth-child(2)>svg{display:none}
+.take-preview .take-navigation .take-next-short{display:inline}
+.take-preview .take-navigation .take-next-long{display:none}
+.take-preview .take-navigation .take-next-primary{
+  background:none;color:#28523c;text-shadow:0 1px #fff8df;
+  font-size:clamp(10px,4.3cqw,23px);animation:take-reference-next 1.6s ease-in-out infinite;
+}
+@keyframes take-reference-next{50%{filter:drop-shadow(0 0 5px #f9de82);color:#39744a}}
+.take-preview .take-books{left:1%;bottom:4px;gap:4px;align-items:flex-end}
+.take-preview .take-story-button{
+  background-image:url('/take-airfield/flight-log-reference-v2.webp');background-size:contain;
+  width:63px;height:74px;min-width:0;padding:34px 7px 10px 13px;
+  transform:none;font-size:9px;line-height:1.12;gap:0;
+}
+.take-preview .take-hint-button{
+  background-image:url('/take-airfield/hint-reference-v2.webp');background-size:contain;
+  width:47px;height:64px;min-width:0;padding:30px 4px 10px;
+  transform:none;font-size:11px;line-height:1.1;
+}
+.take-preview .take-books svg{display:none}
+@media(min-width:700px) and (min-height:600px){
+  .take-preview .take-console{width:min(78%,760px);max-width:none;bottom:122px}
+  .take-preview .take-navigation{left:32%;right:3%;width:auto;bottom:12px;max-width:650px;padding:1.25% 1.5%;height:auto}
+  .take-preview .take-navigation button{height:100%;min-height:44px}
+  .take-preview .take-books{left:2%;bottom:10px;gap:9px}
+  .take-preview .take-story-button{width:112px;height:130px;font-size:16px;padding:58px 12px 17px 23px}
+  .take-preview .take-hint-button{width:81px;height:108px;font-size:20px;padding:53px 7px 19px}
+}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){
+  .take-preview .take-console{width:min(60%,760px);bottom:120px}
+  .take-preview .take-navigation{left:auto;width:47%;max-width:600px;right:3%;padding:1.05% 1.25%}
+}
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-console{left:auto;right:1%;bottom:66px;width:48%;max-width:500px;transform:none}
+  .take-preview .take-navigation{left:auto;right:1%;width:48%;bottom:5px;padding:1.05% 1.25%}
+  .take-preview .take-navigation button{min-height:36px}
+  .take-preview .take-story-button{width:50px;height:59px;font-size:8px;padding:27px 5px 8px 11px}
+  .take-preview .take-hint-button{width:39px;height:52px;font-size:9px;padding:25px 4px 9px}
+}
+/* Short landscape gives the wider case its own side of the meadow. */
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-airfield{right:53%}
+  .take-preview .take-feedback.is-incorrect{left:51%;right:1%;bottom:calc(70px + 48vw * 803 / 1958);height:30px}
+}
