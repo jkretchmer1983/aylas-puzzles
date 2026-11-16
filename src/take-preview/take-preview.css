@@ -89,3 +89,10 @@
 /* Center copy on the painted cloth, excluding the rope area above it. */
 .take-preview .take-task .take-banner-copy{position:absolute;inset:34% 20% 8% 8%;justify-content:center;gap:4px}
 .take-preview .take-task>.take-icon{position:absolute;right:7%;top:64%;translate:0 -50%}
+
+/* Lift anchor footprints into the meadow and stagger the rows without hiding clues. */
+.take-preview .take-balloon-slot:nth-child(n){top:calc(48% + var(--slot-row) * 27% + var(--meadow-jitter,0%))!important;left:calc(var(--base-left) + var(--slot-row) * 3%)!important}
+.take-preview .take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:calc(64% + var(--meadow-jitter,0%))!important}
+@media(orientation:portrait) and (min-width:700px) and (min-height:600px){.take-preview .take-balloon-slot:nth-child(n){top:calc(57% + var(--slot-row) * 20% + var(--meadow-jitter,0%))!important}.take-preview .take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:calc(68% + var(--meadow-jitter,0%))!important}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-preview .take-airfield .take-balloon-slot:nth-child(n){top:calc(58% + var(--meadow-jitter,0%))!important;left:calc(8% + (var(--slot-i) + .5) / var(--total) * 84%)!important}}
+@media(orientation:landscape) and (max-height:599px){.take-preview .take-airfield .take-balloon-slot:nth-child(n){top:calc(55% + var(--slot-row) * 24% + var(--meadow-jitter,0%))!important}}

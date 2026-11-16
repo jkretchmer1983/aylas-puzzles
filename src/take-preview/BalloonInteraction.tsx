@@ -154,7 +154,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
         const released=play.released.includes(id),selected=play.selected.includes(id),marked=play.marked.includes(id);
         const returning=returns.some(f=>f.id===id);
         const col=id%cols,row=Math.floor(id/cols),left=12+(col+.5)/cols*78,top=rows===1?81:61+row*31;
-        return <div className="take-balloon-slot" key={id} style={{left:`${left}%`,top:`${top}%`,'--bob-delay':`${id*-.63}s`,'--assemble-delay':`${id*45}ms`,'--base-left':`${left}%`,'--slot-i':id,'--slot-row':row,'--total':count} as CSSProperties}>
+        return <div className="take-balloon-slot" key={id} style={{left:`${left}%`,top:`${top}%`,'--bob-delay':`${id*-.63}s`,'--assemble-delay':`${id*45}ms`,'--meadow-jitter':`${[0,-2,1,-1,2,-1,0,1][id%8]}%`,'--base-left':`${left}%`,'--slot-i':id,'--slot-row':row,'--total':count} as CSSProperties}>
           <img className="take-anchor" src={`${art}anchor.webp`} alt="" draggable={false}/>
           {!released&&<>
             <svg className="take-tether" viewBox="0 0 60 70" aria-hidden="true"><path d="M30 2 Q26 34 30 66" fill="none" stroke="#ead2a2" strokeWidth="1.8">{!reduced&&<animate attributeName="d" values="M30 2 Q26 34 30 66;M30 2 Q34 34 30 66;M30 2 Q26 34 30 66" dur="4.8s" begin={`${id*-.4}s`} repeatCount="indefinite"/>}</path></svg>
