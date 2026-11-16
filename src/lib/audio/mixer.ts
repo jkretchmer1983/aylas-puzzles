@@ -42,7 +42,7 @@ function context(): AudioContext | undefined {
     applyGains();
     document.addEventListener('visibilitychange', () => {
       if (!ctx) return;
-      if (document.hidden) void ctx.suspend().catch(() => {}); else if (wanted && musicOn()) void ctx.resume().catch(() => {});
+      if (document.hidden) { stopMusic(true); void ctx.suspend().catch(() => {}); } else if (wanted && musicOn()) { void ctx.resume().catch(() => {}); startMusic(wanted); }
     });
   } catch { ctx = undefined; }
   return ctx;
@@ -97,6 +97,24 @@ export function playEffect(profile: AudioProfile | string, kind: EffectKind) {
 // ---------- Procedural music: a lookahead scheduler, one track at a time ----------
 let wanted: AudioProfile | undefined, playing: AudioProfile | undefined, timer: ReturnType<typeof setInterval> | undefined;
 let step = 0, nextAt = 0;
+/** Each music track owns a gain group and the set of sources it scheduled, so replacement can silence and stop them. */
+interface Track { gain: GainNode; sources: Set<AudioScheduledSourceNode>; nodes: AudioNode[] }
+let track: Track | undefined;
+const track_ = () => track;
+function own(t: Track | undefined, src: AudioScheduledSourceNode, ...nodes: AudioNode[]) {
+  if (!t) return;
+  t.sources.add(src); t.nodes.push(...nodes);
+  const prev = src.onended;
+  src.onended = (e) => { t.sources.delete(src); if (typeof prev === 'function') prev.call(src, e); };
+}
+function disposeTrack(t: Track) {
+  const c = ctx; if (!c) return;
+  const now = c.currentTime;
+  try { t.gain.gain.cancelScheduledValues(now); t.gain.gain.setValueAtTime(t.gain.gain.value, now); t.gain.gain.linearRampToValueAtTime(0, now + .04); } catch { /* closed */ }
+  // Stop everything already playing AND everything scheduled for the future.
+  t.sources.forEach((s) => { try { s.stop(now + .05); } catch { try { s.stop(); } catch { /* already stopped */ } } });
+  setTimeout(() => { t.sources.forEach((s) => { try { s.disconnect(); } catch { /* */ } }); t.sources.clear(); try { t.gain.disconnect(); } catch { /* */ } }, 120);
+}
 const hz = (p: AudioProfile, degree: number, octave: number) => {
   const s = p.music.scale, o = Math.floor(degree / s.length), i = ((degree % s.length) + s.length) % s.length;
   return p.music.root * 2 ** (octave + o + s[i] / 12);
@@ -107,29 +125,30 @@ function note(c: AudioContext, out: AudioNode, wave: OscillatorType, f: number, 
   g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(vol, at + attack); g.gain.exponentialRampToValueAtTime(.0001, at + dur);
   o.connect(flt); flt.connect(g); g.connect(out); o.start(at); o.stop(at + dur + .05);
   o.onended = () => { o.disconnect(); flt.disconnect(); g.disconnect(); };
+  own(track_(), o);
 }
 function drum(c: AudioContext, out: AudioNode, kind: string, at: number) {
   if (kind === 'k') { const o = c.createOscillator(), g = c.createGain(); o.frequency.setValueAtTime(160, at); o.frequency.exponentialRampToValueAtTime(60, at + .12);
-    g.gain.setValueAtTime(.12, at); g.gain.exponentialRampToValueAtTime(.0001, at + .15); o.connect(g); g.connect(out); o.start(at); o.stop(at + .16); o.onended = () => { o.disconnect(); g.disconnect(); }; return; }
+    g.gain.setValueAtTime(.12, at); g.gain.exponentialRampToValueAtTime(.0001, at + .15); o.connect(g); g.connect(out); o.start(at); o.stop(at + .16); o.onended = () => { o.disconnect(); g.disconnect(); }; own(track_(), o); return; }
   const len = kind === 's' ? .06 : .025, buf = c.createBuffer(1, Math.floor(c.sampleRate * len), c.sampleRate), d = buf.getChannelData(0);
   for (let n = 0; n < d.length; n++) d[n] = (Math.random() * 2 - 1) * (1 - n / d.length);
   const b = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); b.buffer = buf; f.type = 'highpass'; f.frequency.value = kind === 's' ? 5000 : 2500; g.gain.value = kind === 's' ? .03 : .05;
-  b.connect(f); f.connect(g); g.connect(out); b.start(at); b.onended = () => { b.disconnect(); f.disconnect(); g.disconnect(); };
+  b.connect(f); f.connect(g); g.connect(out); b.start(at); b.onended = () => { b.disconnect(); f.disconnect(); g.disconnect(); }; own(track_(), b);
 }
 function schedule() {
-  const c = ctx, p = playing; if (!c || !p || !musicBus) return;
+  const c = ctx, p = playing, out = track?.gain; if (!c || !p || !out) return;
   const m = p.music, eighth = 30 / m.bpm;
   while (nextAt < c.currentTime + .3) {
     const pos = step % 8, bar = Math.floor(step / 8) % m.chords.length, chord = m.chords[bar];
     const at = nextAt + (pos % 2 ? (m.swing ?? 0) * eighth : 0);
     if (pos === 0) {
-      [0, 2, 4].forEach((d) => note(c, musicBus!, m.pad, hz(p, chord + d, 0), at, eighth * 8, .035, .4));
-      note(c, musicBus!, m.bass, hz(p, chord, -1), at, eighth * 3, .09);
+      [0, 2, 4].forEach((d) => note(c, out, m.pad, hz(p, chord + d, 0), at, eighth * 8, .035, .4));
+      note(c, out, m.bass, hz(p, chord, -1), at, eighth * 3, .09);
     }
-    if (pos === 4) note(c, musicBus!, m.bass, hz(p, chord + 4, -1), at, eighth * 2, .06);
+    if (pos === 4) note(c, out, m.bass, hz(p, chord + 4, -1), at, eighth * 2, .06);
     const mel = m.melody[(pos + (bar % 2 ? 0 : 0)) % 8];
-    if (mel !== null && mel !== undefined) note(c, musicBus!, m.lead, hz(p, mel + (bar === 3 ? 1 : 0), m.leadOctave - 1), at, eighth * 1.6, .05);
-    const dk = m.drums[pos]; if (dk && dk !== '.') drum(c, musicBus!, dk, at);
+    if (mel !== null && mel !== undefined) note(c, out, m.lead, hz(p, mel + (bar === 3 ? 1 : 0), m.leadOctave - 1), at, eighth * 1.6, .05);
+    const dk = m.drums[pos]; if (dk && dk !== '.') drum(c, out, dk, at);
     nextAt += eighth; step++;
   }
 }
@@ -141,14 +160,19 @@ export function startMusic(profile: AudioProfile) {
   if (playing?.id === profile.id && timer) return;
   stopMusic(true);
   playing = profile; step = 0; nextAt = c.currentTime + .1;
+  const gain = c.createGain(); gain.gain.value = 1; gain.connect(musicBus!);
+  track = { gain, sources: new Set(), nodes: [] };
   if (c.state !== 'running' && !document.hidden) void c.resume().catch(() => {});
   timer = setInterval(schedule, 100); schedule();
 }
 export function stopMusic(keepWanted = false) {
   if (timer) clearInterval(timer);
   timer = undefined; playing = undefined;
+  const t = track; track = undefined; if (t) disposeTrack(t);
   if (!keepWanted && !musicOn()) { /* keep wanted so re-enabling resumes */ }
 }
 /** Route unmount: forget the scene entirely. */
 export function releaseMusic(profile?: AudioProfile) { if (!profile || wanted?.id === profile.id) { wanted = undefined; stopMusic(); } }
 export const currentTrack = () => playing?.id;
+/** Test/diagnostic: number of live music sources owned by the current track. */
+export const liveMusicSources = () => track?.sources.size ?? 0;

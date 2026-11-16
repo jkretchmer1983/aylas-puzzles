@@ -1,5 +1,5 @@
 /** Shared narrator: one utterance at a time, gesture-started, voice-list tolerant, ducks the mixer. */
-import { getAudioSettings, setDucked, unlockAudio } from './mixer';
+import { getAudioSettings, setDucked, subscribeAudio, unlockAudio } from './mixer';
 import { speechText } from './speech-text';
 
 export type NarrationState = { id: string | null; status: 'idle' | 'loading' | 'speaking' | 'error'; error?: string };
@@ -24,6 +24,8 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopNarration(); });
   window.addEventListener('pagehide', () => stopNarration());
 }
+// Mute or voice-off from anywhere cancels the active utterance.
+subscribeAudio(() => { const a = getAudioSettings(); if ((a.muted || !a.voice) && current) stopNarration(); });
 let current: SpeechSynthesisUtterance | null = null, watchdog: ReturnType<typeof setTimeout> | undefined;
 const finish = (u: SpeechSynthesisUtterance, s: NarrationState) => {
   if (current !== u) return;

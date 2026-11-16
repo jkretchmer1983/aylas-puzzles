@@ -83,3 +83,83 @@ describe('settings', () => {
     expect(getAudioSettings().muted).toBe(true);
   });
 });
+
+describe('narrator cancellation', () => {
+  it('mute and voice-off cancel the active utterance even outside the settings menu', () => {
+    const synth = stubSpeech();
+    render(<ReadAloud text="Hello" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    synth.cancel.mockClear();
+    act(() => setAudioSettings({ muted: true }));
+    expect(synth.cancel).toHaveBeenCalledTimes(1);
+    expect(isDucked()).toBe(false);
+    act(() => setAudioSettings({ muted: false }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    synth.cancel.mockClear();
+    act(() => setAudioSettings({ voice: false }));
+    expect(synth.cancel).toHaveBeenCalledTimes(1);
+  });
+  it('text change cancels only its own speaker', () => {
+    const synth = stubSpeech();
+    const { rerender } = render(<><ReadAloud text="Story" label="story" /><ReadAloud text="Task A" /></>);
+    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
+    synth.cancel.mockClear();
+    rerender(<><ReadAloud text="Story" label="story" /><ReadAloud text="Task B" /></>);
+    expect(synth.cancel).not.toHaveBeenCalled();
+    rerender(<><ReadAloud text="Story 2" label="story" /><ReadAloud text="Task B" /></>);
+    expect(synth.cancel).toHaveBeenCalled();
+  });
+});
+
+describe('music track lifecycle', () => {
+  type Src = { started: number; stopAt?: number; stops: number[]; onended: null | ((e?: unknown) => void); connect: () => void; disconnect: () => void; start: (t: number) => void; stop: (t?: number) => void };
+  function fakeContext() {
+    const sources: Src[] = []; const gains: { gain: Record<string, unknown>; disconnected: boolean }[] = [];
+    const param = () => ({ value: 1, setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn(), linearRampToValueAtTime: vi.fn(), setTargetAtTime: vi.fn(), cancelScheduledValues: vi.fn() });
+    const src = (): Src => { const s: Src = { started: -1, stops: [], onended: null, connect() {}, disconnect() {}, start(t) { s.started = t; }, stop(t = 0) { s.stops.push(t); } }; sources.push(s); return s; };
+    class Ctx {
+      currentTime = 0; state = 'running'; sampleRate = 8000; destination = {};
+      createGain() { const g = { gain: param(), connect() {}, disconnected: false, disconnect() { g.disconnected = true; } }; gains.push(g); return g; }
+      createOscillator() { return Object.assign(src(), { type: 'sine', frequency: param() }); }
+      createBufferSource() { return Object.assign(src(), { buffer: null }); }
+      createBiquadFilter() { return { type: '', frequency: param(), Q: param(), connect() {}, disconnect() {} }; }
+      createBuffer(_c: number, n: number) { return { getChannelData: () => new Float32Array(n) }; }
+      resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); }
+    }
+    return { Ctx, sources, gains };
+  }
+  async function freshMixer() {
+    vi.resetModules();
+    const f = fakeContext(); vi.stubGlobal('AudioContext', f.Ctx);
+    const m = await import('@/lib/audio/mixer'); const p = await import('@/lib/audio/profiles');
+    return { ...f, m, P: p.AUDIO_PROFILES };
+  }
+  it('replacing a scene stops every source of the old track, including future-scheduled notes', async () => {
+    const { m, P, sources } = await freshMixer();
+    m.startMusic(P.forest);
+    const old = [...sources];
+    expect(old.length).toBeGreaterThan(0);
+    expect(m.liveMusicSources()).toBe(old.length);
+    m.startMusic(P.market);
+    expect(m.currentTrack()).toBe('market');
+    // Old pad/bass notes were scheduled to end far later; each must be re-stopped within ~50ms.
+    old.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
+    expect(m.liveMusicSources()).toBe(sources.length - old.length);
+  });
+  it('release, mute and music-off silence the live track sources', async () => {
+    const { m, P, sources } = await freshMixer();
+    m.startMusic(P.river); let live = [...sources];
+    m.releaseMusic(P.river);
+    live.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
+    expect(m.currentTrack()).toBeUndefined();
+    m.startMusic(P.temple); live = sources.slice(live.length);
+    m.setAudioSettings({ muted: true });
+    live.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
+    m.setAudioSettings({ muted: false });
+    expect(m.currentTrack()).toBe('temple');
+    const again = sources.slice(sources.length - m.liveMusicSources());
+    m.setAudioSettings({ music: false });
+    again.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
+    m.setAudioSettings({ music: true });
+  });
+});
