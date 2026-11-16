@@ -37,6 +37,8 @@ export function PatternLoom({
   const [over, setOver] = useState(false);
   const [weaving, setWeaving] = useState(false);
   const pocket = useRef<HTMLButtonElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState({ patch: 44, rows: Math.ceil((sequence.length + 1) / 3) });
   const rail = useRef<HTMLDivElement>(null);
   const pegs = useRef<(HTMLButtonElement | null)[]>([]);
   const gesture = useRef<{
@@ -49,6 +51,32 @@ export function PatternLoom({
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const audio = useRef<AudioContext[]>([]);
   const suppressClick = useRef(false);
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const measure = () => {
+      const wide = window.matchMedia("(orientation: landscape) and (min-width: 700px)").matches;
+      const cols = wide ? 5 : 3;
+      const rows = Math.ceil((sequence.length + 1) / cols);
+      // A 50px square keeps the projected pocket at least 44px tall.
+      const patch = Math.max(50, Math.floor(Math.min(
+        (el.clientWidth - (cols - 1) * 8) / cols,
+        (el.clientHeight - (rows - 1) * 8) / rows - 14,
+      )));
+      setFit(old => old.patch === patch && old.rows === rows ? old : { patch, rows });
+    };
+    let pending = 0;
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(pending);
+      pending = requestAnimationFrame(measure);
+    };
+    const observer = new ResizeObserver(scheduleMeasure);
+    observer.observe(el);
+    window.addEventListener("resize", scheduleMeasure);
+    measure();
+    return () => { observer.disconnect(); cancelAnimationFrame(pending); window.removeEventListener("resize", scheduleMeasure); };
+  }, [sequence.length]);
+
   useEffect(
     () => () => {
       if (gesture.current) clearTimeout(gesture.current.timer);
@@ -159,6 +187,8 @@ export function PatternLoom({
       className={`pattern-loom ${weaving ? "loom-weaving" : ""} ${result === "correct" ? "loom-solved" : ""}`}
       style={
         {
+          "--patch-size": `${fit.patch}px`,
+          "--loom-active-rows": fit.rows,
           "--loom-rows": Math.ceil((sequence.length + 1) / 3),
           "--loom-wide-rows": Math.ceil((sequence.length + 1) / 5),
         } as CSSProperties
@@ -169,7 +199,7 @@ export function PatternLoom({
         Start at 1 · read across → <span>Then follow the next numbered row ↓</span>
       </p>
       <div className="loom-workspace">
-        <div className="loom-frame">
+        <div className="loom-frame" ref={frame}>
           <div className="loom-warp" aria-hidden="true" />
           <div
             className="loom-rail"
