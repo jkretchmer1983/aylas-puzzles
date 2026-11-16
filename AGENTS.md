@@ -33,3 +33,31 @@
 - Sudoku's empty carved hollows are painted directly into forest-carved-reference.jpg; the 16 transparent touch targets use measured source-image tracks registered to the scenery's single uniform scale. Never substitute CSS boxes or a raised board. Keep both bark edges visible, use the centered title-reference plaque and bundled Forest Lora/Nunito fonts, and reserve the result row above bottom navigation.
 
 - Responsive forest portrait play selects the original 393×852 phone canvas or a 768×1100 broad canvas by available width/aspect ratio (forest-layout.ts), retaining one mounted puzzle across resizing. The broad canvas uses forest-tablet-portrait.jpg at 1.2× overscan and measured hollow tracks; never resize that painting independently of its target coordinates. Tablet surfaces have matching SVG end caps; the vertical rack must explicitly use flex and square 84px tiles. Landscape re-composition remains separate from this portrait pass.
+
+
+<!-- DYNAMIC-CONTENT:BEGIN -->
+## Shared requirement: fresh stories AND playable subjects
+
+This latest requirement takes precedence over earlier notes that restrict AI to a rewritten caption. Mathematical facts remain immutable; presentation subjects can vary through validated structured bindings.
+
+# Dynamic stories and playable objects — applies to every game
+
+Every genuinely NEW puzzle instance must have fresh, coordinated narrative content and eligible playable object artwork, not merely different numbers or a rewritten caption over the same fixed fruit sprites. Friendly monsters, dinosaurs, robots, animals, fruit and other age-appropriate subjects can rotate independently of a game's approved setting. The loom, cockpit, airfield and other engineered environments and tested controls remain stable.
+
+Use one shared versioned content-generation policy consumed by all game adapters. Do not copy separate story prompts into each game. Generate a structured instance theme/subject binding, then derive the story, spoken instructions, illustration and actual manipulatives from that SAME binding. Persist the binding for the instance. A story about six monsters must show six playable monsters, not six apples beneath new text.
+
+Correctness is generator-owned. Preserve exact counts, arithmetic, sequence unit and ordering, clue relationships, answer indices, difficulty and validation. Keep raw tasks/clues immutable; if presentation nouns change, use controlled structured substitutions and validate consistency, never a free AI rewrite of mathematical facts. AI must not generate answers or determine validation. Render exact quantity using code from reusable object assets, never ask a scene illustration to establish quantity.
+
+Use game-specific semantic restrictions: coin denominations, clock hands, required shape sides/corners, color-mixing rules, animal leg counts and identity-based logic clues remain correct and visible. A monster may replace a counted apple, but cannot arbitrarily replace a triangle, 5-cent coin, or four-legged animal unless its required properties and all dependent clues are explicitly preserved. Repeated symbols use identical subject mappings across the entire pattern/equation.
+
+Stories should be genuinely varied, playful, clever, age-appropriate and connected to the selected objects and exact task. Vary premise, characters and situation; track recent themes to reduce immediate repeats. Keep stories short and avoid answer leaks. Match readable tactile art to each approved scene; new objects do not require rebuilding its geometry or controls.
+
+Fresh launch / Next creates a new instance ID and seed unless explicitly resuming or following a reproducible shared puzzle link. Refresh of an explicit instance, Previous, orientation changes, rerenders and animation never regenerate it or lose work. New numbers/board retains current story and subject theme as already specified. Theme/image caches key by instance/theme/policy version, never game type alone. Persist stable instance mappings so story, audio, images and pieces cannot disagree or race.
+
+Provide clear loading and bounded failure behavior. Offline or AI failure rotates through a curated compatible theme library rather than silently claiming a static sample is newly generated. Do not embed credentials in clients. Use approved backend secret configuration.
+
+Acceptance: consecutive new instances of each adapter must show different eligible subjects and premises; actual draggable/tappable objects, instruction nouns, clues and illustration agree. Test seed reproducibility, Previous/resume, New numbers, rotation, fallback, async races and all semantic restrictions. A changed story alone does NOT satisfy this requirement.
+
+Implementation status at this policy update: existing shared story writer only returns title/story/imagePrompt and locks original names; per-instance manipulatives are not yet a completed shared feature. This policy is an implementation requirement, NOT a claim that current previews already support it. Do not mark complete until functional previews demonstrate it.
+
+<!-- DYNAMIC-CONTENT:END -->
