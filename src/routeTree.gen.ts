@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PlayRouteImport } from './routes/play'
+import { Route as RobotRouteImport } from './routes/robot'
 import { Route as StoryWorldRouteImport } from './routes/story-world'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as ApiGenerateImageRouteImport } from './routes/api/generate-image'
@@ -29,6 +30,11 @@ const McpRoute = McpRouteImport.update({
 const PlayRoute = PlayRouteImport.update({
   id: '/play',
   path: '/play',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotRoute = RobotRouteImport.update({
+  id: '/robot',
+  path: '/robot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StoryWorldRoute = StoryWorldRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
+  '/robot': typeof RobotRoute
   '/story-world': typeof StoryWorldRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
+  '/robot': typeof RobotRoute
   '/story-world': typeof StoryWorldRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/mcp': typeof McpRoute
   '/play': typeof PlayRoute
+  '/robot': typeof RobotRoute
   '/story-world': typeof StoryWorldRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/'
     | '/mcp'
     | '/play'
+    | '/robot'
     | '/story-world'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/'
     | '/mcp'
     | '/play'
+    | '/robot'
     | '/story-world'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/mcp'
     | '/play'
+    | '/robot'
     | '/story-world'
     | '/.well-known/oauth-protected-resource'
     | '/api/generate-image'
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   McpRoute: typeof McpRoute
   PlayRoute: typeof PlayRoute
+  RobotRoute: typeof RobotRoute
   StoryWorldRoute: typeof StoryWorldRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiGenerateImageRoute: typeof ApiGenerateImageRoute
@@ -130,6 +143,13 @@ declare module '@tanstack/react-router' {
       path: '/play'
       fullPath: '/play'
       preLoaderRoute: typeof PlayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robot': {
+      id: '/robot'
+      path: '/robot'
+      fullPath: '/robot'
+      preLoaderRoute: typeof RobotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/story-world': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   McpRoute: McpRoute,
   PlayRoute: PlayRoute,
+  RobotRoute: RobotRoute,
   StoryWorldRoute: StoryWorldRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
