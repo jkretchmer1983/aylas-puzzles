@@ -115,10 +115,13 @@ export function fitLoomPlane({
     }
     return { min, max };
   };
+  // Keep the painted cloth centre fixed; do not trade centring for a larger tile.
+  const midY = (topLimit + bottom) / 2 / (naturalH * scale);
+  const preferredCentre = (toX(edgeAt(art.left, midY)) + toX(edgeAt(art.right, midY))) / 2;
   const fits = (p: number) => {
     if (blockH(p) > maxH) return false;
     const c = centres(blockW(p), blockH(p));
-    return c.min <= c.max;
+    return c.min <= preferredCentre && preferredCentre <= c.max;
   };
   let patch = LOOM_MIN_PATCH;
   if (fits(LOOM_MIN_PATCH)) {
@@ -135,7 +138,7 @@ export function fitLoomPlane({
   // Dense sequences at the minimum size scroll inside the cloth.
   const height = Math.min(blockH(patch), Math.max(maxH, patch + LOOM_LABEL));
   const c = centres(width, height);
-  const centre = c.min <= c.max ? (c.min + c.max) / 2 : (leftAt(bottom) + rightAt(bottom)) / 2;
+  const centre = c.min <= c.max ? Math.min(c.max, Math.max(c.min, preferredCentre)) : preferredCentre;
   return {
     patch,
     rows,
