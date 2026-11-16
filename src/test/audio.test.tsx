@@ -123,6 +123,7 @@ describe('music track lifecycle', () => {
       createOscillator() { return Object.assign(src(), { type: 'sine', frequency: param() }); }
       createBufferSource() { return Object.assign(src(), { buffer: null }); }
       createBiquadFilter() { return { type: '', frequency: param(), Q: param(), connect() {}, disconnect() {} }; }
+      createAnalyser() { return { fftSize: 2048, connect() {}, getFloatTimeDomainData() {} }; }
       createBuffer(_c: number, n: number) { return { getChannelData: () => new Float32Array(n) }; }
       resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); }
     }

@@ -20,3 +20,9 @@ Shared modules — never add a game-local `speechSynthesis` or `AudioContext`:
 5. Verify in a browser: speaker taps call speak with current text, music schedules after a tap, no page errors. Mocked tests are not audible verification.
 
 Drafts and remixed projects do not inherit these files; copy `src/lib/audio/*`, `ReadAloud.tsx`, `AudioSettings.tsx`, `forest-audio.ts` shim and the styles block "Shared audio controls" explicitly.
+
+## Unlock, recovery and honest status (required for every adapter)
+- iOS/WebKit only treats `click`, `touchend` and `keydown` as user activation; `pointerdown`/`touchstart` are NOT. The mixer installs a repeatable global unlock on those events that retries until `AudioContext.state === 'running'` (including after iOS `interrupted`), plays a one-sample silent buffer, and sets `navigator.audioSession.type = 'playback'` where supported (Safari 17+ Audio Session API).
+- `getAudioStatus()` (`unsupported|locked|running|error`) drives the UI; never show "on" unless the context is confirmed running.
+- `AudioSettings` must stay reachable in every game: Enable sound (shown while locked), Test sound (plays a chime and measures real rendered output via an AnalyserNode on the master bus, `testSound()`), and Test voice (shared narrator). Saved mute is respected; tests report muted/effects-off instead of playing.
+- Real-output check: `python3 scripts/check-sound-output.py` (Playwright, real Web Audio, no mocks). Headless Chromium proves rendered PCM energy; the sandbox WebKit has no audio device, so it only proves the blocked state is reported honestly. Neither replaces listening on a real iPad.

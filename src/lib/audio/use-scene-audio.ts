@@ -15,10 +15,11 @@ export function useSceneAudio(template: string | undefined, sceneKey: string) {
   }, [profile.id, sceneKey]);
   useEffect(() => () => releaseMusic(), []);
   useEffect(() => {
-    const first = () => { gestured.current = true; unlockAudio(); startMusic(ref.current); };
-    window.addEventListener('pointerdown', first, { once: true, capture: true });
-    window.addEventListener('keydown', first, { once: true, capture: true });
-    return () => { window.removeEventListener('pointerdown', first, true); window.removeEventListener('keydown', first, true); };
+    // iOS only treats click/touchend/keydown as user activation (not pointerdown), so unlock there.
+    const evs = ['touchend', 'click', 'keydown'] as const;
+    const first = () => { gestured.current = true; void unlockAudio(); startMusic(ref.current); evs.forEach((e) => window.removeEventListener(e, first, true)); };
+    evs.forEach((e) => window.addEventListener(e, first, true));
+    return () => evs.forEach((e) => window.removeEventListener(e, first, true));
   }, []);
   const effect = useCallback((kind: EffectKind) => playEffect(ref.current, kind), []);
   /** Click-capture: a soft action sound for real button taps inside the game (never pointer moves). */
