@@ -14,7 +14,7 @@ describe('Taking Away interaction contract', () => {
     }
     expect(objects).toEqual(new Set(['🎈','🍪','🧁','🍬']));
   });
-  it('releases any selected quantity without inventing a correctness gate, and undo recalls a batch', () => {
+  it('releases any selected quantity without inventing a correctness gate, and undo recalls the last balloon', () => {
     let state = playReducer(emptyPlay(), {type:'select',id:0});
     state = playReducer(state, {type:'select',id:1});
     state = playReducer(state, {type:'release',ids:[0,1,1,99],total:8});
@@ -24,6 +24,8 @@ describe('Taking Away interaction contract', () => {
     state = playReducer(state, {type:'release',ids:[2],total:8});
     state = playReducer(state, {type:'undo'});
     expect(state.released).toEqual([0,1]);
+    state = playReducer(state, {type:'undo'});
+    expect(state.released).toEqual([0]);
     state = playReducer(state, {type:'undo'});
     expect(state.released).toEqual([]);
   });
@@ -50,7 +52,7 @@ describe('Taking Away interaction contract', () => {
     const zone = {left:45,top:10,right:348,bottom:65};
     const finger = {x:160,y:120};
     const center = balloonCenter(finger, stage);
-    expect(center).toEqual({x:160,y:46});
+    expect(center).toEqual({x:160,y:56});
     expect(inReleaseZone(center, zone)).toBe(true);
     expect(inReleaseZone(finger, zone)).toBe(false);
     expect(inReleaseZone(balloonCenter({x:160,y:350}, stage),zone)).toBe(false);
