@@ -1537,7 +1537,7 @@ html, body { overflow-x: clip; }
 .forest-spatial .forest-number-tile:active:not(:disabled) { translate:0 4px;filter:brightness(.95); }
 .forest-spatial .puzzle-hint:has(.hint-open) { animation:hint-nod .45s ease-out;transform-origin:50% 72px; }
 .forest-spatial .forest-hint-plaque { animation:hint-unfold .35s ease-out both;transform-origin:bottom right; }
-.forest-spatial .forest-sound-toggle { display:flex;align-items:center;gap:8px;padding:10px 12px;border:0;border-radius:10px;background:#f6dba3;color:#493012;font:800 14px var(--font-sans); }
+.forest-spatial .forest-sound-toggle { display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px;border:0;border-radius:10px;background:#f6dba3;color:#493012;font:800 14px var(--font-sans); }
 .forest-spatial .forest-sound-toggle svg { width:20px;height:20px; }
 /* A moving mask cuts the complete engraved glyph; existing entries stay still. */
 .forest-spatial .carved-fresh .engraving-cut-path { stroke-dasharray:1;animation:forest-carve .62s linear both !important; }
@@ -1793,3 +1793,24 @@ html, body { overflow-x: clip; }
  mask-position:left top,center top,right top,left center,right center,left bottom,center bottom,right bottom,center center;
  mask-repeat:no-repeat;mask-mode:alpha;mask-composite:add;
 }
+
+/* Shared audio controls (narration speaker + sound settings) */
+.read-aloud { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:44px; min-height:44px; padding:0 12px; border:0; border-radius:999px; background:var(--secondary); color:var(--secondary-foreground); font:700 14px var(--font-sans); cursor:pointer; box-shadow:var(--shadow-sm, 0 1px 2px color-mix(in oklab, var(--foreground) 20%, transparent)); }
+.read-aloud svg { width:20px; height:20px; }
+.read-aloud:disabled { opacity:.5; cursor:default; }
+.read-aloud:focus-visible { outline:3px solid var(--ring); outline-offset:2px; }
+.puzzle-task { display:flex; align-items:center; gap:8px; }
+.puzzle-task > .forest-read-aloud { width:40px; height:40px; }
+.scene-read-aloud { margin-top:6px; }
+.sw-task-row { display:flex; align-items:center; gap:8px; }
+.sw-read-aloud { margin-top:4px; }
+.audio-menu { position:relative; }
+.audio-menu > summary { list-style:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; }
+.audio-menu > summary::-webkit-details-marker { display:none; }
+.audio-menu > .audio-settings { position:absolute; right:0; top:calc(100% + 6px); z-index:60; width:230px; padding:10px; border-radius:16px; background:var(--popover); color:var(--popover-foreground); box-shadow:0 10px 30px color-mix(in oklab, var(--foreground) 25%, transparent); }
+.audio-settings { display:flex; flex-direction:column; gap:4px; }
+.audio-switch { display:flex; justify-content:space-between; align-items:center; min-height:44px; padding:0 10px; border:0; border-radius:10px; background:transparent; color:inherit; font:700 14px var(--font-sans); cursor:pointer; text-align:left; }
+.audio-switch[aria-checked=true] .audio-switch-state { color:var(--primary); }
+.audio-switch:focus-visible { outline:3px solid var(--ring); }
+.audio-volume { display:flex; flex-direction:column; gap:4px; padding:6px 10px; font:700 13px var(--font-sans); }
+.audio-volume input { accent-color:var(--primary); min-height:32px; }

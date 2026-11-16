@@ -1,0 +1,154 @@
+/** Shared audio mixer: one AudioContext, separate music/effects buses, persistent settings, ducking. */
+import { AUDIO_PROFILES, type AudioProfile, type EffectVoice } from './profiles';
+
+export interface AudioSettings { muted: boolean; voice: boolean; effects: boolean; music: boolean; musicVolume: number }
+const KEY = 'aylas-audio-v1';
+export const DEFAULT_SETTINGS: AudioSettings = { muted: false, voice: true, effects: true, music: true, musicVolume: .35 };
+let settings: AudioSettings = { ...DEFAULT_SETTINGS };
+let loaded = false;
+const listeners = new Set<() => void>();
+
+function load() {
+  if (loaded || typeof window === 'undefined') return;
+  loaded = true;
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) settings = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    else if (localStorage.getItem('forest-sound') === 'off') settings = { ...settings, effects: false };
+  } catch { /* private mode */ }
+}
+export function getAudioSettings(): AudioSettings { load(); return settings; }
+export function setAudioSettings(patch: Partial<AudioSettings>) {
+  load();
+  settings = { ...settings, ...patch };
+  try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch { /* private mode */ }
+  applyGains();
+  if (!settings.music || settings.muted) stopMusic(); else if (wanted) startMusic(wanted);
+  listeners.forEach((l) => l());
+}
+export function subscribeAudio(l: () => void) { listeners.add(l); return () => { listeners.delete(l); }; }
+
+let ctx: AudioContext | undefined, master: GainNode | undefined, musicBus: GainNode | undefined, fxBus: GainNode | undefined;
+let ducked = false;
+function context(): AudioContext | undefined {
+  if (typeof window === 'undefined') return;
+  if (ctx) return ctx;
+  const A = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!A) return;
+  try {
+    ctx = new A();
+    master = ctx.createGain(); musicBus = ctx.createGain(); fxBus = ctx.createGain();
+    musicBus.connect(master); fxBus.connect(master); master.connect(ctx.destination);
+    applyGains();
+    document.addEventListener('visibilitychange', () => {
+      if (!ctx) return;
+      if (document.hidden) void ctx.suspend().catch(() => {}); else if (wanted && musicOn()) void ctx.resume().catch(() => {});
+    });
+  } catch { ctx = undefined; }
+  return ctx;
+}
+const musicOn = () => settings.music && !settings.muted;
+function applyGains() {
+  if (!ctx || !master || !musicBus || !fxBus) return;
+  const t = ctx.currentTime;
+  master.gain.setTargetAtTime(settings.muted ? 0 : 1, t, .05);
+  musicBus.gain.setTargetAtTime(settings.music ? settings.musicVolume * .5 * (ducked ? .25 : 1) : 0, t, .15);
+  fxBus.gain.setTargetAtTime(settings.effects ? (ducked ? .4 : 1) : 0, t, .05);
+}
+/** Lower music and effects while narration speaks; restore after. */
+export function setDucked(value: boolean) { ducked = value; applyGains(); }
+export const isDucked = () => ducked;
+
+/** Must be called from a user gesture at least once (iOS unlock). */
+export function unlockAudio() { load(); const c = context(); if (c && c.state !== 'running' && !document.hidden) void c.resume().catch(() => {}); }
+
+function voice(c: AudioContext, v: EffectVoice, out: AudioNode) {
+  const now = c.currentTime;
+  v.notes.forEach((f, i) => {
+    const at = now + i * v.step, g = c.createGain();
+    g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(v.vol, at + .008); g.gain.exponentialRampToValueAtTime(.0001, at + v.dur);
+    g.connect(out);
+    let src: AudioScheduledSourceNode;
+    if (v.wave === 'noise') {
+      const buf = c.createBuffer(1, Math.max(1, Math.floor(c.sampleRate * v.dur)), c.sampleRate), d = buf.getChannelData(0);
+      for (let n = 0; n < d.length; n++) d[n] = (Math.random() * 2 - 1) * (1 - n / d.length) ** 2;
+      const b = c.createBufferSource(); b.buffer = buf;
+      const flt = c.createBiquadFilter(); flt.type = 'bandpass'; flt.frequency.value = v.filter ?? f; flt.Q.value = .8;
+      b.connect(flt); flt.connect(g); src = b;
+    } else {
+      const o = c.createOscillator(); o.type = v.wave; o.frequency.setValueAtTime(f, at);
+      o.frequency.exponentialRampToValueAtTime(f * (v.glide ?? .97), at + v.dur);
+      o.connect(g); src = o;
+    }
+    src.start(at); src.stop(at + v.dur + .02);
+    src.onended = () => { src.disconnect(); g.disconnect(); };
+  });
+}
+export type EffectKind = keyof AudioProfile['effects'];
+/** Play a profile effect for a real game event. Silent when effects are off or audio is unavailable. */
+export function playEffect(profile: AudioProfile | string, kind: EffectKind) {
+  load();
+  if (settings.muted || !settings.effects) return;
+  const p = typeof profile === 'string' ? AUDIO_PROFILES[profile as keyof typeof AUDIO_PROFILES] : profile;
+  const c = context(); if (!c || !p || !fxBus) return;
+  try { if (c.state !== 'running') void c.resume().catch(() => {}); voice(c, p.effects[kind], fxBus); } catch { /* restricted browser */ }
+}
+
+// ---------- Procedural music: a lookahead scheduler, one track at a time ----------
+let wanted: AudioProfile | undefined, playing: AudioProfile | undefined, timer: ReturnType<typeof setInterval> | undefined;
+let step = 0, nextAt = 0;
+const hz = (p: AudioProfile, degree: number, octave: number) => {
+  const s = p.music.scale, o = Math.floor(degree / s.length), i = ((degree % s.length) + s.length) % s.length;
+  return p.music.root * 2 ** (octave + o + s[i] / 12);
+};
+function note(c: AudioContext, out: AudioNode, wave: OscillatorType, f: number, at: number, dur: number, vol: number, attack = .01) {
+  const o = c.createOscillator(), g = c.createGain(), flt = c.createBiquadFilter();
+  o.type = wave; o.frequency.value = f; flt.type = 'lowpass'; flt.frequency.value = wave === 'sine' ? 6000 : 1800;
+  g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(vol, at + attack); g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+  o.connect(flt); flt.connect(g); g.connect(out); o.start(at); o.stop(at + dur + .05);
+  o.onended = () => { o.disconnect(); flt.disconnect(); g.disconnect(); };
+}
+function drum(c: AudioContext, out: AudioNode, kind: string, at: number) {
+  if (kind === 'k') { const o = c.createOscillator(), g = c.createGain(); o.frequency.setValueAtTime(160, at); o.frequency.exponentialRampToValueAtTime(60, at + .12);
+    g.gain.setValueAtTime(.12, at); g.gain.exponentialRampToValueAtTime(.0001, at + .15); o.connect(g); g.connect(out); o.start(at); o.stop(at + .16); o.onended = () => { o.disconnect(); g.disconnect(); }; return; }
+  const len = kind === 's' ? .06 : .025, buf = c.createBuffer(1, Math.floor(c.sampleRate * len), c.sampleRate), d = buf.getChannelData(0);
+  for (let n = 0; n < d.length; n++) d[n] = (Math.random() * 2 - 1) * (1 - n / d.length);
+  const b = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); b.buffer = buf; f.type = 'highpass'; f.frequency.value = kind === 's' ? 5000 : 2500; g.gain.value = kind === 's' ? .03 : .05;
+  b.connect(f); f.connect(g); g.connect(out); b.start(at); b.onended = () => { b.disconnect(); f.disconnect(); g.disconnect(); };
+}
+function schedule() {
+  const c = ctx, p = playing; if (!c || !p || !musicBus) return;
+  const m = p.music, eighth = 30 / m.bpm;
+  while (nextAt < c.currentTime + .3) {
+    const pos = step % 8, bar = Math.floor(step / 8) % m.chords.length, chord = m.chords[bar];
+    const at = nextAt + (pos % 2 ? (m.swing ?? 0) * eighth : 0);
+    if (pos === 0) {
+      [0, 2, 4].forEach((d) => note(c, musicBus!, m.pad, hz(p, chord + d, 0), at, eighth * 8, .035, .4));
+      note(c, musicBus!, m.bass, hz(p, chord, -1), at, eighth * 3, .09);
+    }
+    if (pos === 4) note(c, musicBus!, m.bass, hz(p, chord + 4, -1), at, eighth * 2, .06);
+    const mel = m.melody[(pos + (bar % 2 ? 0 : 0)) % 8];
+    if (mel !== null && mel !== undefined) note(c, musicBus!, m.lead, hz(p, mel + (bar === 3 ? 1 : 0), m.leadOctave - 1), at, eighth * 1.6, .05);
+    const dk = m.drums[pos]; if (dk && dk !== '.') drum(c, musicBus!, dk, at);
+    nextAt += eighth; step++;
+  }
+}
+/** Start the profile's loop (call after a user gesture). Replaces any current track; never overlaps. */
+export function startMusic(profile: AudioProfile) {
+  load(); wanted = profile;
+  if (!musicOn()) return;
+  const c = context(); if (!c) return;
+  if (playing?.id === profile.id && timer) return;
+  stopMusic(true);
+  playing = profile; step = 0; nextAt = c.currentTime + .1;
+  if (c.state !== 'running' && !document.hidden) void c.resume().catch(() => {});
+  timer = setInterval(schedule, 100); schedule();
+}
+export function stopMusic(keepWanted = false) {
+  if (timer) clearInterval(timer);
+  timer = undefined; playing = undefined;
+  if (!keepWanted && !musicOn()) { /* keep wanted so re-enabling resumes */ }
+}
+/** Route unmount: forget the scene entirely. */
+export function releaseMusic(profile?: AudioProfile) { if (!profile || wanted?.id === profile.id) { wanted = undefined; stopMusic(); } }
+export const currentTrack = () => playing?.id;

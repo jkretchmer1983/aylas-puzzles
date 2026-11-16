@@ -12,7 +12,7 @@ import { imagePrompt } from "@/gen/drawing";
 import { ensureArt, subscribeArt } from "@/lib/art-cache";
 import { ensureStory, subscribeStory } from "@/lib/story-cache";
 import { DRAWING_THEMES } from "@/gen/drawing";
-import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, BookOpen, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Lightbulb, RotateCcw, Settings, BookOpen, Volume2 } from "lucide-react";
 import { WoodenActionButton, WoodenTitleSign } from "@/gen/ForestObjects";
 import { StoryIllustrationFrame } from "@/gen/StoryIllustrationFrame";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,10 @@ import { QuestLoader } from "@/components/QuestLoader";
 import { VictoryRibbon } from "@/components/VictoryRibbon";
 import { ReadAloud } from "@/components/ReadAloud";
 import { readPuzzleSession, savePuzzleSession } from "@/lib/puzzle-session";
-import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
+import { playForestSound } from "@/lib/forest-audio";
+import { stopNarration } from "@/lib/audio/narrator";
+import { useSceneAudio } from "@/lib/audio/use-scene-audio";
+import { AudioSettings } from "@/components/AudioSettings";
 import { watchForestViewport } from "@/lib/forest-viewport";
 import { fitForestLayout } from "@/lib/forest-layout";
 import landscapeForest from "@/assets/forest-game/forest-landscape.jpg";
@@ -129,17 +132,7 @@ function Play() {
   const [started, setStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  useEffect(() => {
-    let value = true;
-    try { value = localStorage.getItem('forest-sound') !== 'off'; } catch { /* private mode */ }
-    setSoundEnabled(value); setForestSoundEnabled(value);
-  }, []);
-  const toggleSound = () => {
-    const value = !soundEnabled;
-    setSoundEnabled(value); setForestSoundEnabled(value);
-    try { localStorage.setItem('forest-sound', value ? 'on' : 'off'); } catch { /* private mode */ }
-  };
+  const audio = useSceneAudio(t, key);
   useEffect(() => () => { if (transitionTimer.current) clearTimeout(transitionTimer.current); }, []);
   useEffect(() => {
     if (transitionTimer.current) clearTimeout(transitionTimer.current);
@@ -155,20 +148,20 @@ function Play() {
     setStoryOpen(!saved.started);
     setResult(saved.result === undefined ? null : { ok: saved.result, n: 1 });
     setHint(false);
-    window.speechSynthesis?.cancel();
+    stopNarration();
   }, [key]);
   const beginPuzzle = () => {
     if (transitioning) return;
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     setTransitioning(!reduced);
     if (!reduced) transitionTimer.current = setTimeout(() => setTransitioning(false), 1200);
-    playForestSound('grow');
+    audio.effect('begin');
     savePuzzleSession(key, { started: true });
     setStarted(true);
     setStoryOpen(false);
-    window.speechSynthesis?.cancel();
+    stopNarration();
   };
-  useEffect(() => { window.speechSynthesis?.cancel(); window.dispatchEvent(new Event("forest-speech-stop")); }, [storyOpen]);
+  useEffect(() => { stopNarration(); }, [storyOpen]);
   const [loading, setLoading] = useState(true);
   const [art, setArt] = useState<{ src: string; final: boolean } | null>(null);
   const [artSettled, setArtSettled] = useState(false);
@@ -241,7 +234,7 @@ function Play() {
   }, [key]);
 
   const report = useCallback((ok: boolean) => {
-    if (t === "sudoku") playForestSound(ok ? "correct" : "retry");
+    audio.effect(ok ? "success" : "retry");
     setResult((r) => ({ ok, n: (r?.n ?? 0) + 1 }));
     const wasSolved = readPuzzleSession(boardSessionKey).awarded === true;
     if (t === "sudoku") {
@@ -289,9 +282,9 @@ function Play() {
   const game = (
     <main ref={mainRef} onClickCapture={spatial ? (event) => {
       const control = (event.target as HTMLElement).closest('button,a,summary');
-      if (!control || control.hasAttribute('disabled') || control.closest('.forest-read-aloud') || control.closest('.forest-sound-toggle') || control.closest('.pz-check') || control.closest('.adventure-begin')) return;
+      if (!control || control.hasAttribute('disabled') || control.closest('[data-audio-ignore]') || control.closest('.forest-sound-toggle') || control.closest('.pz-check') || control.closest('.adventure-begin')) return;
       playForestSound(control.classList.contains('forest-number-tile') ? 'carve' : 'tap');
-    } : undefined} className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", spec.kind.type === "sudoku" && spec.kind.symbols.length === 6 && "forest-six", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving", spatial && storyOpen && "adventure-open", spatial && transitioning && "adventure-transition", spatial && loaderDone && "forest-motion-ready")} style={{ ["--scene-hue" as string]: hue }}>
+    } : audio.onClickCapture} className={cn("puzzle-screen forest-game-scene mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-4", spec.template === "sudoku" && "forest-spatial", spec.kind.type === "sudoku" && spec.kind.symbols.length === 6 && "forest-six", `tier-${tierFor(band)}`, `age-step-${band}`, celebrating && "is-celebrating", spatial && !celebrating && "is-solving", spatial && storyOpen && "adventure-open", spatial && transitioning && "adventure-transition", spatial && loaderDone && "forest-motion-ready")} style={{ ["--scene-hue" as string]: hue }}>
       <div className="play-bg" aria-hidden />
       <WorldBackdrop template={spec.template} />
       <Confetti burst={party} forest={spatial} />
@@ -308,7 +301,7 @@ function Play() {
             <div className="forest-settings-menu">
               <Button asChild variant="game"><Link to="/" search={{ pick: 1 }}>Choose age range</Link></Button>
               <WoodenActionButton onClick={replay}>New numbers</WoodenActionButton>
-              <button type="button" className="forest-sound-toggle" aria-pressed={soundEnabled} onClick={toggleSound}>{soundEnabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}Sound effects {soundEnabled ? 'on' : 'off'}</button>
+              <AudioSettings className="forest-sound-toggle" />
             </div>
           </details>
           <ScorePlaceholder />
@@ -316,7 +309,7 @@ function Play() {
       </header> : <header className="puzzle-header mb-3 flex items-center justify-between gap-2">
         <Link to="/" search={{ pick: 1 }} className={cn("pill", spec.template === "sudoku" && "forest-round-control")} aria-label={`Choose age range, ${BANDS[band]?.label}`} title="Choose age range">{spec.template === "sudoku" ? <ArrowLeft aria-hidden="true" /> : `← ${BANDS[band]?.label}`}</Link>
         <div className="flex items-center gap-2">
-          {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <ScorePlaceholder className="pill" />}
+          {spec.template === "sudoku" ? <WoodenActionButton className="forest-round-control" label="New numbers" onClick={replay}><RotateCcw aria-hidden="true" /></WoodenActionButton> : <><details className="audio-menu"><summary className="pill" aria-label="Sound settings" data-audio-ignore><Volume2 aria-hidden="true" /></summary><AudioSettings /></details><ScorePlaceholder className="pill" /></>}
         </div>
       </header>}
       {spatial && <StoryIllustrationFrame title={title}>
@@ -334,9 +327,10 @@ function Play() {
         {!spatial && <div className={cn("scene", celebrating && "scene-party")}>
           <div className="scene-text">
             <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
+            <ReadAloud text={`${title}. ${story}`} label="story" className="scene-read-aloud">Read story</ReadAloud>
           </div>
         </div>}
-        <div className="puzzle-task"><span>{spec.task}</span>{spatial && <ReadAloud text={spec.task} />}</div>
+        <div className="puzzle-task"><span>{spec.task}</span><ReadAloud text={spec.task} /></div>
         <PuzzleStage spatial={spec.template === "sudoku"}>
           <PuzzleBody key={spatial ? boardSessionKey : key} spec={boardSpec ?? spec} report={report} sessionKey={spatial ? boardSessionKey : undefined} />
         </PuzzleStage>
