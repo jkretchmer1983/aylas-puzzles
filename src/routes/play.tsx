@@ -105,7 +105,7 @@ function Play() {
   }, [t, s]);
 
   // Rich AI storyline: the loader waits for it, then the text is frozen for the whole puzzle.
-  const storyInput = (sp: NonNullable<typeof spec>) => ({ age: band + 4, theme: DRAWING_THEMES[sp.template as keyof typeof DRAWING_THEMES] ?? sp.template, title: sp.title, story: sp.story, task: sp.task });
+  const storyInput = (sp: NonNullable<typeof spec>) => ({ age: band + 4, theme: sp.template === "pattern" ? "a warm sunlit weaving loft where a child maker needs the next embroidered patch for a repeating cloth pattern" : DRAWING_THEMES[sp.template as keyof typeof DRAWING_THEMES] ?? sp.template, title: sp.title, story: sp.template === "pattern" ? `At the loom, a new cloth is being woven with ${sp.scene.join(" ")} patches. The maker needs help continuing the repeating design. This cloth belongs to workshop order ${s}. Tell a short unique funny gentle story about the maker and this cloth, without revealing which patch comes next.` : sp.story, task: sp.task });
   const [storySettled, setStorySettled] = useState(false);
   const [shown, setShown] = useState<{ key: string; title: string; story: string } | null>(null);
   useEffect(() => {

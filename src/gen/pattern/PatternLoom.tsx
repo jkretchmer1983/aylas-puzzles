@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { PuzzleSpec } from "../types";
 import "./pattern-loom.css";
+import { Embroidery } from "./LoomArt";
 
 export type LoomState = { placed: number | null; result: "ready" | "wrong" | "correct" };
 export const patchOverPocket = (
@@ -14,7 +15,9 @@ export function PatternLoom({
   check,
   saved,
   save,
+  sound = false,
 }: {
+  sound?: boolean | undefined;
   spec: PuzzleSpec;
   check: (index: number) => boolean;
   saved?: LoomState | undefined;
@@ -75,6 +78,32 @@ export function PatternLoom({
       window.removeEventListener("keydown", escape);
     };
   }, []);
+  const chime = (success: boolean) => {
+    if (!sound) return;
+    try {
+      const ctx = new AudioContext();
+      [0, 0.11, 0.22].slice(0, success ? 3 : 1).forEach((delay, i) => {
+        const oscillator = ctx.createOscillator(),
+          gain = ctx.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = success ? [523, 659, 784][i]! : 220;
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.2);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(ctx.currentTime + delay);
+        oscillator.stop(ctx.currentTime + delay + 0.22);
+      });
+      timers.current.push(
+        setTimeout(() => {
+          void ctx.close();
+        }, 650),
+      );
+    } catch {
+      /* Audio may be unavailable; gameplay remains usable. */
+    }
+  };
   const place = (index: number) => {
     if (result === "correct") return;
     setPlaced(index);
@@ -125,10 +154,16 @@ export function PatternLoom({
   return (
     <section
       className={`pattern-loom ${weaving ? "loom-weaving" : ""} ${result === "correct" ? "loom-solved" : ""}`}
+      style={
+        {
+          "--loom-rows": Math.ceil((sequence.length + 1) / 3),
+          "--loom-wide-rows": Math.ceil((sequence.length + 1) / 5),
+        } as CSSProperties
+      }
       aria-label="Interactive pattern loom"
     >
       <p className="loom-direction">
-        Start at 1 · read left to right → <span>Slide the cloth to see more</span>
+        Start at 1 · read across → <span>Then follow the next numbered row ↓</span>
       </p>
       <div className="loom-workspace">
         <div className="loom-frame">
@@ -138,14 +173,19 @@ export function PatternLoom({
             ref={rail}
             tabIndex={0}
             role="region"
-            aria-label="Pattern cloth, scroll left and right"
+            aria-label="Pattern cloth, numbered rows read left to right"
           >
             <ol className="loom-cloth">
               {sequence.map((symbol, i) => (
-                <li key={i}>
+                <li
+                  key={i}
+                  style={
+                    { "--row": Math.floor(i / 3), "--wide-row": Math.floor(i / 5) } as CSSProperties
+                  }
+                >
                   <small>{i + 1}</small>
                   <span className="loom-patch" aria-label={`Position ${i + 1}: ${symbol}`}>
-                    {symbol}
+                    <Embroidery symbol={symbol} />
                   </span>
                 </li>
               ))}
@@ -173,7 +213,7 @@ export function PatternLoom({
                     <span>{picked === null ? "?" : "Place here"}</span>
                   ) : (
                     <span className="loom-patch loom-placed" key={placed}>
-                      {options[placed]}
+                      <Embroidery symbol={options[placed]!} />
                     </span>
                   )}
                   <i className="loom-stitches" aria-hidden="true" />
@@ -227,7 +267,9 @@ export function PatternLoom({
                 if (!suppressClick.current) setPicked(picked === index ? null : index);
               }}
             >
-              <span className="loom-patch">{symbol}</span>
+              <span className="loom-patch">
+                <Embroidery symbol={symbol} />
+              </span>
             </button>
           ))}
         </div>
@@ -244,7 +286,7 @@ export function PatternLoom({
         }}
       >
         <button
-          className={`loom-check ${placed !== null && result === "ready" ? "loom-check-ready" : ""}`}
+          className={`loom-check ${result === "wrong" ? "loom-check-wrong" : ""} ${placed !== null && result === "ready" ? "loom-check-ready" : ""}`}
           disabled={placed === null || result === "correct"}
           onClick={() => {
             if (result === "wrong") {
@@ -254,6 +296,7 @@ export function PatternLoom({
             }
             if (placed === null) return;
             const ok = check(placed);
+            chime(ok);
             setResult(ok ? "correct" : "wrong");
             if (ok) {
               setWeaving(true);
@@ -286,7 +329,7 @@ export function PatternLoom({
           style={{ left: carry.x, top: carry.y }}
           aria-hidden="true"
         >
-          {options[carry.index]}
+          <Embroidery symbol={options[carry.index]!} />
         </span>
       )}
       <button

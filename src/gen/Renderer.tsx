@@ -182,8 +182,8 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   );
 }
 
-export function PatternInteraction({ spec, report, saved, save }: { spec: PuzzleSpec; report: Report; saved?: LoomState | undefined; save?: ((state: LoomState) => void) | undefined }) {
-  return <PatternLoom spec={spec} saved={saved} save={save} check={index => {
+export function PatternInteraction({ spec, report, saved, save, sound }: { spec: PuzzleSpec; sound?: boolean | undefined; report: Report; saved?: LoomState | undefined; save?: ((state: LoomState) => void) | undefined }) {
+  return <PatternLoom spec={spec} saved={saved} save={save} sound={sound} check={index => {
     const ok = spec.kind.type === "choice" && index === spec.kind.answer;
     report(ok);
     return ok;
