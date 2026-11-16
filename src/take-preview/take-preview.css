@@ -79,3 +79,9 @@
 
 /* Focus and rotation must never scroll artwork inside the fixed scene. */
 .take-preview{overflow:clip}
+
+/* Success belongs on the hanging canvas, clear of the suitcase and navigation. */
+.take-banner-guidance.is-correct{color:#285331;font-weight:900;font-size:14px;text-shadow:0 1px #fff3d6}
+.take-feedback.is-correct{clip-path:inset(50%);width:1px;height:1px;overflow:hidden;padding:0;border:0;white-space:nowrap}
+@media(min-width:700px) and (min-height:600px){.take-banner-guidance.is-correct{font-size:16px}}
+@media(orientation:landscape) and (max-height:599px){.take-banner-guidance.is-correct{font-size:12px}}
