@@ -1,0 +1,1 @@
+- Pattern Loom keeps scene and atlas imagery in public/loom with scoped scene geometry, and session-scoped placement keyed by seeded puzzle identity; Renderer remains the sole answer checker. Artwork and rotation must not alter or duplicate puzzle truth.

@@ -4,6 +4,7 @@ import type { Kind, PuzzleSpec, ShapeName, Visual } from "./types";
 import { Button } from "@/components/ui/button";
 import { CarvedMark, PuzzleWorld } from "./PuzzleWorld";
 import { BalanceClues, SceneClues } from "./SceneMechanics";
+import { PatternLoom, type LoomState } from "./pattern/PatternLoom";
 import { EngravedNumber } from "./ForestObjects";
 
 type Report = (ok: boolean) => void;
@@ -181,8 +182,17 @@ function Nim({ k, report }: { k: Extract<Kind, { type: "nim" }>; report: Report 
   );
 }
 
+export function PatternInteraction({ spec, report, saved, save, sound }: { spec: PuzzleSpec; sound?: boolean | undefined; report: Report; saved?: LoomState | undefined; save?: ((state: LoomState) => void) | undefined }) {
+  return <PatternLoom spec={spec} saved={saved} save={save} sound={sound} check={index => {
+    const ok = spec.kind.type === "choice" && index === spec.kind.answer;
+    report(ok);
+    return ok;
+  }} />;
+}
+
 export function PuzzleBody({ spec, report }: { spec: PuzzleSpec; report: Report }) {
   const k = spec.kind;
+  if (spec.template === "pattern") return <PatternInteraction spec={spec} report={report} />;
   return (
     <PuzzleWorld template={spec.template}><div className="flex flex-col gap-4">
       <SceneClues spec={spec} />
