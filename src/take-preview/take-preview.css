@@ -241,3 +241,10 @@
 /* A wider portrait must reveal sky as well as foreground; the old 1.3x zoom
    cropped the blue sky down to a sliver behind the top navigation. */
 @media(orientation:portrait){.take-preview .take-landscape{transform:scale(1.05);transform-origin:center bottom}}
+/* Portrait leaves a clear lane for the explorer instead of spanning her body. */
+@media(orientation:portrait){
+  .take-preview .take-console{width:min(70%,560px);max-width:none;left:64%;right:auto;transform:translateX(-50%)}
+}
+@media(orientation:portrait) and (max-width:479px){
+  .take-preview .take-console{width:82%;left:58%}
+}
