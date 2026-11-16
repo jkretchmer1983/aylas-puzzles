@@ -141,7 +141,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     if(g.active&&stage.current&&releaseZone.current){
       const rect=stage.current.getBoundingClientRect(),center=balloonCenter({x:e.clientX,y:e.clientY},dragBounds());
       const moved=Math.hypot(e.clientX-g.start.x,e.clientY-g.start.y)>9;
-      if(moved&&e.clientY<g.start.y-18&&inReleaseZone(center,releaseBounds(),8))release([g.id],{id:g.id,left:center.x-rect.left,top:center.y-rect.top});
+      if(moved&&inReleaseZone(center,releaseBounds(),8))release([g.id],{id:g.id,left:center.x-rect.left,top:center.y-rect.top});
       else {returnToAnchor(g.id,{x:(center.x-rect.left)/rect.width*100,y:(center.y-rect.top)/rect.height*100});setNotice('Back on its anchor. You can also tap, then Release.');}
     }
     cancelGesture();
