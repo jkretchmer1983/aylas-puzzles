@@ -31,6 +31,7 @@ export function TakePreview() {
   const [speaking, setSpeaking] = useState(false);
   const [speechAvailable, setSpeechAvailable] = useState(false);
   const [announcement, setAnnouncement] = useState('');
+  const [notice,setNotice]=useState('Hold a balloon to lift it · or tap to select');
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const storyDialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -102,9 +103,9 @@ export function TakePreview() {
       <div className="take-progress" role="img" aria-label="Partly filled progress placeholder"><i /></div>
       <button className="take-icon" onClick={() => { stopSpeech(); setSettingsOpen(v => !v); }} aria-label="Game settings" aria-expanded={settingsOpen}><Settings /></button>
     </header>
-    <section className="take-task" aria-label="Instructions"><p>{spec.task}</p><button className="take-icon" onClick={speak} disabled={muted || !speechAvailable} aria-label={speaking ? 'Stop spoken instructions' : 'Hear instructions'} aria-pressed={speaking}><Volume2 /></button></section>
+    <section className="take-task" aria-label="Instructions"><div className="take-banner-copy"><p>{spec.task}</p><span className="take-banner-guidance">{notice}</span></div><button className="take-icon" onClick={speak} disabled={muted || !speechAvailable} aria-label={speaking ? 'Stop spoken instructions' : 'Hear instructions'} aria-pressed={speaking}><Volume2 /></button></section>
     {settingsOpen && <section className="take-settings" aria-label="Game settings"><strong>Game settings</strong><label><input type="checkbox" checked={muted} onChange={e => { setMuted(e.target.checked); stopSpeech(); try { localStorage.setItem('ayla-take-muted', String(e.target.checked)); } catch {} }} />Mute spoken instructions</label><label><input type="checkbox" checked={softSound} onChange={e=>{setSoftSound(e.target.checked);try{localStorage.setItem('ayla-take-soft-sound',String(e.target.checked))}catch{}}}/>Soft release sounds</label><label><input type="checkbox" checked={reduced} onChange={e => setReduced(e.target.checked)} />Reduce motion</label>{!speechAvailable && <p>Spoken instructions aren’t available in this browser.</p>}<button onClick={() => setSettingsOpen(false)}>Done</button></section>}
-    <TakePreviewPuzzle started={!!adventure.started} onReleaseSound={()=>{if(softSound&&!muted)releaseSound()}} spec={spec} play={adventure.play} onPlayChange={patchPlay} reduced={reduced} onAnnounce={setAnnouncement} onNext={next} onPrevious={() => { stopSpeech(); setSession(s => ({ ...s, index: Math.max(0, s.index - 1) })); }} previousDisabled={session.index === 0} onNew={newBoard} onStory={() => { stopSpeech(); setStoryOpen(v => !v); }} onHint={() => setHintOpen(v => !v)} hintOpen={hintOpen} sessionKey={String(adventure.boardSeed)} />
+    <TakePreviewPuzzle onNotice={setNotice} started={!!adventure.started} onReleaseSound={()=>{if(softSound&&!muted)releaseSound()}} spec={spec} play={adventure.play} onPlayChange={patchPlay} reduced={reduced} onAnnounce={setAnnouncement} onNext={next} onPrevious={() => { stopSpeech(); setSession(s => ({ ...s, index: Math.max(0, s.index - 1) })); }} previousDisabled={session.index === 0} onNew={newBoard} onStory={() => { stopSpeech(); setStoryOpen(v => !v); }} onHint={() => setHintOpen(v => !v)} hintOpen={hintOpen} sessionKey={String(adventure.boardSeed)} />
     <section className="take-story-intro" aria-label="Your balloon adventure" aria-hidden={!!adventure.started} inert={adventure.started?true:undefined}>
       <img src="/take-airfield/flight-log.webp" alt="" className="take-intro-book"/>
       <span className="take-story-kicker">YOUR FLIGHT LOG</span><h1>{flightLog.title}</h1><p>{flightLog.story}</p>

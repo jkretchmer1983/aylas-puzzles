@@ -8,7 +8,7 @@ export type BalloonInteractionProps = {
   onCheck: (answer: string) => boolean; reduced: boolean; sessionKey: string;
   onAnnounce: (message: string) => void; onNext: () => void; onPrevious: () => void;
   previousDisabled: boolean; onNew: () => void; onStory: () => void; onHint: () => void; hintOpen: boolean;
-  onReleaseSound?: () => void; started?: boolean;
+  onReleaseSound?: () => void; started?: boolean; onNotice?: (notice:string)=>void;
 };
 type Drag = { id: number; center: Point; over: boolean };
 type Gesture = { id: number; pointerId: number; start: Point; last: Point; active: boolean; target: HTMLButtonElement; timer: ReturnType<typeof setTimeout> | null };
@@ -25,6 +25,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const [flights, setFlights] = useState<Moving[]>([]);
   const [celebrationFlights, setCelebrationFlights] = useState<Moving[]>([]);
   const [returns, setReturns] = useState<Moving[]>([]);
+  const [launchStyle,setLaunchStyle]=useState<CSSProperties>();
   const [notice, setNotice] = useState('Hold a balloon to lift it · or tap to select');
   const [celebrated, setCelebrated] = useState(false);
   const [recalled, setRecalled] = useState<number[]>([]);
@@ -60,10 +61,19 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     const timer=setTimeout(()=>setCelebrated(true),reduced?0:2800);
     return()=>clearTimeout(timer);
   },[play.result,reduced,props.sessionKey]);
+  useEffect(()=>{props.onNotice?.(notice)},[notice,props.onNotice]);
+  useEffect(()=>{
+    const field=stage.current,root=field?.closest('.take-preview'),banner=root?.querySelector('.take-task');
+    if(!field||!banner)return;
+    const align=()=>{const a=field.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-a.left,top:b.bottom+6-a.top,width:b.width*.84,height:44});};
+    align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);
+    window.addEventListener('resize',align);return()=>{observer.disconnect();window.removeEventListener('resize',align)};
+  },[props.started]);
+  function dragBounds(){return stage.current?.closest('.take-preview')?.getBoundingClientRect()||stage.current!.getBoundingClientRect()}
   function position(g: Gesture, finger: Point) {
     if (!stage.current || !releaseZone.current) return;
     const rect = stage.current.getBoundingClientRect();
-    const center = balloonCenter(finger, rect);
+    const center = balloonCenter(finger, dragBounds());
     setDrag({ id:g.id,center:{x:center.x-rect.left,y:center.y-rect.top},over:inReleaseZone(center,releaseZone.current.getBoundingClientRect(),8) });
   }
   function activate(g: Gesture) {
@@ -109,7 +119,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     const g=gesture.current;if(!g||g.pointerId!==e.pointerId)return;
     if(g.timer)clearTimeout(g.timer);
     if(g.active&&stage.current&&releaseZone.current){
-      const rect=stage.current.getBoundingClientRect(),center=balloonCenter({x:e.clientX,y:e.clientY},rect);
+      const rect=stage.current.getBoundingClientRect(),center=balloonCenter({x:e.clientX,y:e.clientY},dragBounds());
       const moved=Math.hypot(e.clientX-g.start.x,e.clientY-g.start.y)>9;
       if(moved&&inReleaseZone(center,releaseZone.current.getBoundingClientRect(),8))release([g.id],{id:g.id,left:center.x-rect.left,top:center.y-rect.top});
       else {returnToAnchor(g.id,{x:(center.x-rect.left)/rect.width*100,y:(center.y-rect.top)/rect.height*100});setNotice('Back on its anchor. You can also tap, then Release.');}
@@ -133,7 +143,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const moveStyle=(m:Moving)=>({'--from-x':`${m.x}%`,'--from-y':`${m.y}%`,'--to-x':`${m.endX}%`,'--to-y':`${m.endY}%`,'--flight-tilt':`${(m.id%2?1:-1)*8}deg`} as CSSProperties);
   return <div className={`take-game ${play.result===true?'is-celebrating':''} ${play.result===false?'has-error':''}`} data-result={play.result===true?'correct':play.result===false?'incorrect':'editing'} inert={props.started===false?true:undefined}>
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>
-      <button ref={releaseZone} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length} selected`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift above this line to release'}</span><ArrowRight aria-hidden="true" /></button>
+      <button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift above this line to release'}</span><ArrowRight aria-hidden="true" /></button>
       <div className="take-launch-task">Take away {clues.removed}{clues.balloon?' balloons':` ${clues.object}`}</div>
       <div className="take-balloon-grid" aria-label="Tethered balloons">
       {Array.from({length:count},(_,id)=>{
@@ -161,8 +171,8 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     </section>
     <img className="take-explorer" src={`${art}${play.result===true?'explorer-cheer':'explorer'}.webp`} alt="A young weather explorer watching the balloons" draggable={false}/>
     <div className="take-windsock-rig" aria-hidden="true"><span className="take-windsock-pole"/><img className="take-windsock" src={`${art}windsock.webp`} alt="" draggable={false}/></div>
-    <div className="take-action-rail"><button onClick={()=>{cancelGesture();dispatch({type:'count-mode'})}} aria-pressed={play.countMode}><Hand/><span>{play.countMode?'Counting marks on':'Mark to count'}</span></button><button className="take-release-button" disabled={!play.selected.length} onClick={()=>release(play.selected)}>Release{play.selected.length?` ${play.selected.length}`:''}<ArrowRight/></button></div>
-    <p className="take-gesture-tip" aria-live="polite">{notice}</p>
+    <div className="take-action-rail"><button onClick={()=>{cancelGesture();dispatch({type:'count-mode'})}} aria-pressed={play.countMode}><Hand/><span>{play.countMode?'Counting marks on':'Mark to count'}</span></button></div>
+    <p className="take-sr-only" aria-live="polite">{props.onNotice?'':notice}</p>
     <section className="take-console" aria-label="Answer controls">
       <div className="take-answer-row"><button className="take-undo" onClick={undo} disabled={!play.released.length}><Undo2/><span>Undo</span></button><label className="take-sr-only" htmlFor="take-answer">How many are left?</label><div className="take-answer-window"><input ref={answerInput} id="take-answer" aria-label="Your answer" inputMode="none" value={play.answer} placeholder="?" onChange={e=>props.onPlayChange({...play,answer:e.target.value.replace(/\D/g,'').slice(0,4),result:null})} onKeyDown={e=>{if(e.key==='Enter'&&play.answer)check()}}/><button className="take-erase" aria-label="Erase last digit" onClick={()=>{replaceAnswer.current=false;dispatch({type:'erase'})}}><CornerUpLeft/></button></div><button className={`take-check ${ready?'is-ready':''} ${play.result===false?'is-retry':''}`} disabled={!play.answer} onClick={check} aria-label={play.result===false?'Try again':'Check my answer'}>{play.result===false?'Try again':'Check'}</button></div>
       <div className="take-number-keys" aria-label="Number keys">{['1','2','3','4','5','6','7','8','9','0'].map(d=><button key={d} aria-label={d} onClick={()=>{dispatch({type:'digit',digit:d,replace:replaceAnswer.current});replaceAnswer.current=false}}>{d}</button>)}</div>
