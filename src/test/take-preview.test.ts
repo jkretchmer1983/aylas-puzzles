@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generate } from '../gen/templates';
-import { balloonCenter, emptyPlay, inReleaseZone, playReducer, takeClues } from '../take-preview/model';
+import { balloonCenter, emptyPlay, inReleaseZone, skyReleaseBounds, playReducer, takeClues } from '../take-preview/model';
 
 describe('Taking Away interaction contract', () => {
   it('uses the exact seeded public task for all enabled bands and object variants', () => {
@@ -58,4 +58,13 @@ describe('Taking Away interaction contract', () => {
     expect(inReleaseZone(balloonCenter({x:160,y:350}, stage),zone)).toBe(false);
     expect(balloonCenter({x:-30,y:120},stage).x).toBe(28);
   });
+});
+
+it('accepts the displayed balloon beside and below the banner while excluding the meadow',()=>{
+  const scene={left:0,top:0,right:393,bottom:852},banner={left:10,top:56,right:383,bottom:156};
+  const zone=skyReleaseBounds(scene,banner);
+  expect(inReleaseZone({x:30,y:100},zone,0)).toBe(true);
+  expect(inReleaseZone({x:365,y:240},zone,0)).toBe(true);
+  expect(inReleaseZone(balloonCenter({x:365,y:304},scene),zone,0)).toBe(true);
+  expect(inReleaseZone({x:160,y:360},zone,0)).toBe(false);
 });

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CornerUpLeft, Hand, HelpCircle, RotateCcw, Undo2 } from 'lucide-react';
-import { balloonCenter, inReleaseZone, playReducer, takeClues, type PlayAction, type PlayState, type Point } from './model';
+import { balloonCenter, inReleaseZone, skyReleaseBounds, playReducer, takeClues, type PlayAction, type PlayState, type Point } from './model';
 import type { PuzzleSpec } from '../gen/types';
 
 export type BalloonInteractionProps = {
@@ -26,6 +26,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const [flights, setFlights] = useState<Moving[]>([]);
   const [celebrationFlights, setCelebrationFlights] = useState<Moving[]>([]);
   const [returns, setReturns] = useState<Moving[]>([]);
+  const [meadowLift,setMeadowLift]=useState(0);
   const [launchHost,setLaunchHost]=useState<Element|null>(null);
   const [launchStyle,setLaunchStyle]=useState<CSSProperties>();
   const [notice, setNotice] = useState('Hold a balloon to lift it · or tap to select');
@@ -68,20 +69,36 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     const field=stage.current,root=field?.closest('.take-preview'),banner=root?.querySelector('.take-task');
     if(!field||!banner||!root)return;
     setLaunchHost(root);
-    const align=()=>{const r=root!.getBoundingClientRect(),b=banner.getBoundingClientRect();setLaunchStyle({left:b.left+b.width*.08-r.left,top:b.bottom+6-r.top,width:b.width*.84,height:44});};
-    align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);
+    const align=()=>{
+      const r=root.getBoundingClientRect(),b=banner.getBoundingClientRect();
+      setLaunchStyle({left:12,top:b.bottom+6-r.top,width:r.width-24,height:44});
+      const grid=field.querySelector('.take-balloon-grid'),suitcase=root.querySelector('.take-console');
+      if(!grid||!suitcase)return;
+      const c=suitcase.getBoundingClientRect(),unshift=field.getBoundingClientRect().top-grid.getBoundingClientRect().top;
+      const bottoms=Array.from(grid.querySelectorAll('.take-balloon-slot')).flatMap(slot=>{
+        const s=slot.getBoundingClientRect(),anchor=slot.querySelector('.take-anchor');
+        return anchor&&s.right>c.left-16&&s.left<c.right+16?[anchor.getBoundingClientRect().bottom+unshift]:[];
+      });
+      const clearance=Math.max(80,Math.min(110,r.height*.105));
+      setMeadowLift(bottoms.length?Math.max(0,Math.ceil(Math.max(...bottoms)-c.top+clearance)):0);
+    };
+    align();const observer=new ResizeObserver(align);observer.observe(field);observer.observe(banner);const suitcase=root.querySelector('.take-console');if(suitcase)observer.observe(suitcase);field.querySelectorAll('.take-anchor').forEach(anchor=>observer.observe(anchor));
     window.addEventListener('resize',align);return()=>{observer.disconnect();window.removeEventListener('resize',align)};
-  },[props.started]);
+  },[props.started,props.sessionKey,clues.total]);
+  function releaseBounds(){
+    const root=stage.current?.closest('.take-preview'),banner=root?.querySelector('.take-task');
+    return root&&banner?skyReleaseBounds(root.getBoundingClientRect(),banner.getBoundingClientRect()):releaseZone.current!.getBoundingClientRect();
+  }
   function dragBounds(){return stage.current?.closest('.take-preview')?.getBoundingClientRect()||stage.current!.getBoundingClientRect()}
   function position(g: Gesture, finger: Point) {
     if (!stage.current || !releaseZone.current) return;
     const rect = stage.current.getBoundingClientRect();
     const center = balloonCenter(finger, dragBounds());
-    setDrag({ id:g.id,center:{x:center.x-rect.left,y:center.y-rect.top},over:inReleaseZone(center,releaseZone.current.getBoundingClientRect(),8) });
+    setDrag({ id:g.id,center:{x:center.x-rect.left,y:center.y-rect.top},over:inReleaseZone(center,releaseBounds(),8) });
   }
   function activate(g: Gesture) {
     if (gesture.current !== g || latest.current.play.countMode) return;
-    g.active=true;suppressClick.current=g.id;setNotice('Lift into the sky. Let go when the line lights up.');position(g,g.last);
+    g.active=true;suppressClick.current=g.id;setNotice('Lift toward the sign. Let go anywhere in the glowing sky.');position(g,g.last);
   }
   function pointerDown(e: ReactPointerEvent<HTMLButtonElement>, id: number) {
     if (play.result===true || !e.isPrimary || e.button !== 0 || gesture.current || play.countMode) return;
@@ -124,7 +141,7 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
     if(g.active&&stage.current&&releaseZone.current){
       const rect=stage.current.getBoundingClientRect(),center=balloonCenter({x:e.clientX,y:e.clientY},dragBounds());
       const moved=Math.hypot(e.clientX-g.start.x,e.clientY-g.start.y)>9;
-      if(moved&&inReleaseZone(center,releaseZone.current.getBoundingClientRect(),8))release([g.id],{id:g.id,left:center.x-rect.left,top:center.y-rect.top});
+      if(moved&&e.clientY<g.start.y-18&&inReleaseZone(center,releaseBounds(),8))release([g.id],{id:g.id,left:center.x-rect.left,top:center.y-rect.top});
       else {returnToAnchor(g.id,{x:(center.x-rect.left)/rect.width*100,y:(center.y-rect.top)/rect.height*100});setNotice('Back on its anchor. You can also tap, then Release.');}
     }
     cancelGesture();
@@ -144,12 +161,12 @@ export function BalloonInteraction(props: BalloonInteractionProps) {
   const retry=()=>{dispatch({type:'retry'});replaceAnswer.current=true;answerInput.current?.focus();answerInput.current?.select();props.onAnnounce('Try again. Your balloons and answer are still here.');};
   const check=()=>{if(play.result===false){retry();return}const ok=props.onCheck(play.answer);setNotice(ok?'Up and away! You did it.':'Your balloons and work are safe. Try again.');dispatch({type:'checked',ok})};
   const moveStyle=(m:Moving)=>({'--from-x':`${m.x}%`,'--from-y':`${m.y}%`,'--to-x':`${m.endX}%`,'--to-y':`${m.endY}%`,'--flight-tilt':`${(m.id%2?1:-1)*8}deg`} as CSSProperties);
-  const launchButton=<button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift above this line to release'}</span><ArrowRight aria-hidden="true" /></button>;
+  const launchButton=<button ref={releaseZone} style={launchStyle} className={`take-launch ${drag?.over?'is-over':''} ${drag||play.selected.length?'is-visible':''} ${drag?'has-drag':''}`} disabled={!play.selected.length&&!drag} onClick={()=>release(play.selected)} aria-label={play.selected.length?`Release ${play.selected.length}`:'Select a balloon, then release here'}><span>{drag?.over?'Let go — up and away!':play.selected.length?`Release ${play.selected.length} to the sky`:'Lift near the sign to release'}</span><ArrowRight aria-hidden="true" /></button>;
   return <div className={`take-game ${play.result===true?'is-celebrating':''} ${play.result===false?'has-error':''}`} data-result={play.result===true?'correct':play.result===false?'incorrect':'editing'} inert={props.started===false?true:undefined}>
     <section className={`take-airfield ${drag?'is-dragging':''}`} aria-label="Balloon airfield" data-rows={rows} ref={stage}>
       {props.started!==false&&(launchHost?createPortal(launchButton,launchHost):launchButton)}
       <div className="take-launch-task">Take away {clues.removed}{clues.balloon?' balloons':` ${clues.object}`}</div>
-      <div className="take-balloon-grid" aria-label="Tethered balloons">
+      <div className="take-balloon-grid" aria-label="Tethered balloons" style={{transform:`translateY(-${meadowLift}px)`}}>
       {Array.from({length:count},(_,id)=>{
         const released=play.released.includes(id),selected=play.selected.includes(id),marked=play.marked.includes(id);
         const returning=returns.some(f=>f.id===id);

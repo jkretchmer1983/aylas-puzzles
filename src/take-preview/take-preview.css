@@ -107,3 +107,10 @@
 .take-preview .take-check.is-ready{color:#fffbea;text-shadow:0 1px 2px #23462d;animation:take-check-beacon 1.6s ease-in-out infinite;filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}
 @keyframes take-check-beacon{0%,100%{filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}50%{filter:brightness(1.36) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 5px #fff8dc) drop-shadow(0 0 16px #ffdd8fee)}}
 .take-preview[data-reduced=true] .take-check.is-ready{animation:none;filter:brightness(1.2) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 4px #fff3cbe6) drop-shadow(0 0 10px #ffd577bb)}
+
+/* Keep foreground grass behind the higher play area; background scales uniformly. */
+@media(orientation:portrait){.take-landscape{transform:scale(1.3)}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-landscape{background-position:center 62%}}
+.take-preview .take-launch{isolation:isolate}
+.take-launch.has-drag:after{content:'';position:absolute;inset:-48px -12px -80px;z-index:-1;pointer-events:none;border:1px dashed #fff4cfb3;border-radius:24px;background:radial-gradient(ellipse,#fff2cc70,#fff6d91a);box-shadow:inset 0 0 24px #fff6d94d}
+.take-launch.has-drag.is-over:after{border-color:#d5f8ba;background:radial-gradient(ellipse,#e2f8ce7a,#e5fad71a)}
