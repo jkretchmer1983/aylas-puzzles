@@ -1,6 +1,6 @@
 import { useState, useSyncExternalStore } from 'react';
 import { getAudioStatus, testSound, unlockAudio, getAudioSettings, setAudioSettings, subscribeAudio, DEFAULT_SETTINGS, type AudioSettings as S } from '@/lib/audio/mixer';
-import { getNarration, speak, stopNarration, subscribeNarration } from '@/lib/audio/narrator';
+import { englishVoices, getNarration, selectedVoice, setVoice, speak, stopNarration, subscribeNarration, subscribeVoices } from '@/lib/audio/narrator';
 import { cn } from '@/lib/utils';
 
 /** Persistent master mute + separate voice / effects / music controls. */
@@ -12,6 +12,8 @@ export function AudioSettings({ className }: { className?: string }) {
   const engine = useSyncExternalStore(subscribeAudio, getAudioStatus, () => 'locked' as const);
   const narration = useSyncExternalStore(subscribeNarration, getNarration, getNarration);
   const [test, setTest] = useState<string>('');
+  const voiceKey = useSyncExternalStore(subscribeVoices, () => `${englishVoices().length}:${selectedVoice()?.voiceURI ?? ''}`, () => '0:');
+  const voices = voiceKey.startsWith('0:') ? [] : englishVoices();
   const runTest = () => {
     setTest('Testing…');
     void testSound().then((r) => setTest(
@@ -31,6 +33,10 @@ export function AudioSettings({ className }: { className?: string }) {
       <button type="button" data-audio-ignore className="audio-action" onClick={() => speak('voice-test', 'Hello Ayla! This is your puzzle voice.')}>Test voice</button>
     </div>
     <p className="audio-status" role="status" aria-live="polite">{voiceMsg || test || (engine === 'running' ? 'Sound is on.' : engine === 'unsupported' ? 'This browser can’t play game sounds.' : s.muted ? 'All sound is muted.' : 'Sound is waiting for a tap.')}</p>
+    {voices.length > 1 && <label className="audio-volume"><span>Reading voice</span>
+      <select data-audio-ignore value={selectedVoice()?.voiceURI ?? ''} onChange={(e) => { setVoice(e.target.value); speak('voice-test', 'Hello Ayla! This is your puzzle voice.'); }}>
+        {voices.map((v) => <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>)}
+      </select></label>}
     {row('muted', 'Mute all sound', s.muted)}
     {row('voice', 'Read-aloud voice', s.voice)}
     {row('effects', 'Sound effects', s.effects)}

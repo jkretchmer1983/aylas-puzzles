@@ -5,12 +5,14 @@ import { AUDIO_PROFILES, TEMPLATE_AUDIO, profileFor } from '@/lib/audio/profiles
 import { speechText } from '@/lib/audio/speech-text';
 import { getAudioSettings, setAudioSettings, isDucked } from '@/lib/audio/mixer';
 import { ReadAloud } from '@/components/ReadAloud';
+import { chunkSpeech, getNarration, narrationPayload, setVoice, stopNarration } from '@/lib/audio/narrator';
 
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); localStorage.clear(); setAudioSettings({ muted: false, voice: true, effects: true, music: true }); });
 
-function stubSpeech() {
-  const synth = { speak: vi.fn(), cancel: vi.fn(), resume: vi.fn(), getVoices: () => [], addEventListener: vi.fn(), speaking: false };
-  class U { text: string; onstart?: () => void; onend?: () => void; onerror?: (e: { error: string }) => void; lang = ''; rate = 1; pitch = 1; voice = null; constructor(t: string) { this.text = t; } }
+function stubSpeech(getVoices: () => unknown[] = () => []) {
+  stopNarration();
+  const synth = { speak: vi.fn(), cancel: vi.fn(), resume: vi.fn(), getVoices, addEventListener: vi.fn(), speaking: false, pending: false, paused: false };
+  class U { text: string; onstart?: () => void; onend?: () => void; onerror?: (e: { error: string }) => void; lang = ''; rate = 1; pitch = 1; voice: unknown = null; constructor(t: string) { this.text = t; } }
   vi.stubGlobal('speechSynthesis', synth); vi.stubGlobal('SpeechSynthesisUtterance', U);
   return synth;
 }
@@ -40,39 +42,87 @@ describe('spoken text', () => {
   });
 });
 
-describe('shared narrator', () => {
-  it('speaks current text, ducks music, and switching speakers stops the previous one', () => {
-    const synth = stubSpeech();
-    const { rerender } = render(<><ReadAloud text="Story one" label="story" /><ReadAloud text="Task 🍎" /></>);
-    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
-    expect(synth.speak.mock.calls[0][0].text).toBe('Story one');
-    expect(isDucked()).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
-    expect(synth.cancel).toHaveBeenCalled();
-    expect(synth.speak.mock.calls[1][0].text).toBe('Task apple');
-    expect(screen.getByRole('button', { name: 'Read story aloud' })).toHaveAttribute('aria-pressed', 'false');
-    act(() => synth.speak.mock.calls[1][0].onend());
-    expect(isDucked()).toBe(false);
-    rerender(<><ReadAloud text="Story two" label="story" /><ReadAloud text="Task 🍎" /></>);
-    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
-    expect(synth.speak.mock.calls[2][0].text).toBe('Story two');
+describe('combined story + instructions narration', () => {
+  const content = { title: 'Fox Market', story: 'Fox sells 5 🍎 at the market.', task: 'How many 🍎 are left?' };
+  const both = (c: { title?: string; story?: string; task?: string } = content, g = 'p1') => <><ReadAloud group={g} content={c} label="story" /><ReadAloud group={g} content={c} label="instructions" /></>;
+  const expected = 'Fox Market. Fox sells 5 apples at the market. Here is your puzzle. How many apples are left?';
+  const spoken = (synth: ReturnType<typeof stubSpeech>) => synth.speak.mock.calls.map((c) => c[0].text).join(' ');
+  it('payload is title, story, then task; never anything else', () => {
+    expect(narrationPayload(content)).toBe('Fox Market. Fox sells 5 🍎 at the market. Here is your puzzle. How many 🍎 are left?');
+    expect(narrationPayload({ title: 'A', story: 'A day out.', task: 'Count' })).toBe('A day out. Here is your puzzle. Count.');
   });
-  it('reports an honest error when voice is off instead of a fake playing state', () => {
+  it('story and instructions buttons speak the SAME full text', () => {
+    const synth = stubSpeech();
+    render(both());
+    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
+    expect(spoken(synth)).toBe(expected);
+    expect(isDucked()).toBe(true);
+    // Tapping the other control while speaking stops the shared sequence.
+    fireEvent.click(screen.getByRole('button', { name: 'Stop reading instructions' }));
+    expect(synth.cancel).toHaveBeenCalled();
+    expect(isDucked()).toBe(false);
+    synth.speak.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    expect(spoken(synth)).toBe(expected);
+  });
+  it('reads refreshed story/puzzle text and cancels on new puzzle', () => {
+    const synth = stubSpeech();
+    const { rerender } = render(both());
+    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
+    synth.cancel.mockClear();
+    const next = { title: 'Owl Night', story: 'Owl counts 3 🌟.', task: 'Which is 3rd?' };
+    rerender(both(next, 'p2'));
+    expect(synth.cancel).toHaveBeenCalled();
+    synth.speak.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    expect(spoken(synth)).toBe('Owl Night. Owl counts 3 stars. Here is your puzzle. Which is third?');
+  });
+  it('long stories are chunked in order with one pinned voice', () => {
+    const v1 = { name: 'Samantha', lang: 'en-US', voiceURI: 'sam', localService: true };
+    const v2 = { name: 'Daniel', lang: 'en-GB', voiceURI: 'dan', localService: true };
+    let voices = [v1];
+    const synth = stubSpeech(() => voices);
+    setVoice('sam');
+    const story = Array.from({ length: 12 }, (_, i) => `Sentence number ${i + 1} is about a happy fox.`).join(' ');
+    render(both({ story, task: 'Count the foxes.' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
+    voices = [v2, v1]; setVoice('dan'); // a voice change mid-sequence must not switch voices
+    for (let i = 0; i < 40 && synth.speak.mock.calls.length > i; i++) act(() => { const u = synth.speak.mock.calls[i][0]; u.onstart?.(); u.onend?.(); });
+    const calls = synth.speak.mock.calls.map((c) => c[0]);
+    expect(calls.length).toBeGreaterThan(2);
+    expect(calls.every((u) => u.text.length <= 180)).toBe(true);
+    expect(calls.every((u) => u.voice === v1)).toBe(true);
+    expect(calls.map((u) => u.text).join(' ')).toBe(`${story} Here is your puzzle. Count the foxes.`);
+    expect(getNarration().status).toBe('idle');
+    expect(chunkSpeech('Hi. There.')).toEqual(['Hi. There.']);
+  });
+  it('shows an honest error beside the button when voice is off', () => {
     const synth = stubSpeech();
     setAudioSettings({ voice: false });
-    render(<ReadAloud text="Hello" />);
+    render(both());
     fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
     expect(synth.speak).not.toHaveBeenCalled();
-    expect(screen.getByRole('alert')).toHaveTextContent('Voice is turned off');
+    expect(screen.getAllByRole('alert')[0]).toHaveTextContent('Voice is off');
+  });
+  it('shows an error when the engine never starts', () => {
+    vi.useFakeTimers();
+    try {
+      stubSpeech();
+      render(both());
+      fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
+      act(() => { vi.advanceTimersByTime(4100); });
+      expect(screen.getAllByRole('alert')[0]).toHaveTextContent('didn’t start');
+    } finally { vi.useRealTimers(); }
   });
   it('stops on hidden tab', () => {
     const synth = stubSpeech();
-    render(<ReadAloud text="Hello" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    render(both());
+    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
-    document.dispatchEvent(new Event('visibilitychange'));
+    act(() => { document.dispatchEvent(new Event('visibilitychange')); });
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
     expect(synth.cancel).toHaveBeenCalled();
+    expect(getNarration().status).toBe('idle');
   });
 });
 
@@ -85,28 +135,25 @@ describe('settings', () => {
 });
 
 describe('narrator cancellation', () => {
-  it('mute and voice-off cancel the active utterance even outside the settings menu', () => {
+  it('mute and voice-off cancel the active sequence even outside the settings menu', () => {
     const synth = stubSpeech();
-    render(<ReadAloud text="Hello" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    render(<ReadAloud group="g" content={{ story: 'Hello' }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Read story and instructions aloud' }));
     synth.cancel.mockClear();
     act(() => setAudioSettings({ muted: true }));
     expect(synth.cancel).toHaveBeenCalledTimes(1);
     expect(isDucked()).toBe(false);
     act(() => setAudioSettings({ muted: false }));
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read story and instructions aloud' }));
     synth.cancel.mockClear();
     act(() => setAudioSettings({ voice: false }));
     expect(synth.cancel).toHaveBeenCalledTimes(1);
   });
-  it('text change cancels only its own speaker', () => {
+  it('unmount cancels speech', () => {
     const synth = stubSpeech();
-    const { rerender } = render(<><ReadAloud text="Story" label="story" /><ReadAloud text="Task A" /></>);
-    fireEvent.click(screen.getByRole('button', { name: 'Read story aloud' }));
-    synth.cancel.mockClear();
-    rerender(<><ReadAloud text="Story" label="story" /><ReadAloud text="Task B" /></>);
-    expect(synth.cancel).not.toHaveBeenCalled();
-    rerender(<><ReadAloud text="Story 2" label="story" /><ReadAloud text="Task B" /></>);
+    const { unmount } = render(<ReadAloud group="g" content={{ task: 'Task' }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Read story and instructions aloud' }));
+    synth.cancel.mockClear(); unmount();
     expect(synth.cancel).toHaveBeenCalled();
   });
 });
@@ -162,5 +209,19 @@ describe('music track lifecycle', () => {
     m.setAudioSettings({ music: false });
     again.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
     m.setAudioSettings({ music: true });
+  });
+  it('train scene has NO music: stops the existing track and never schedules a loop, even with music on', async () => {
+    const { m, P, sources } = await freshMixer();
+    m.setAudioSettings({ music: true, muted: false });
+    m.startMusic(P.forest); const old = [...sources];
+    m.startMusic(P.train);
+    old.forEach((s) => expect(Math.min(...s.stops)).toBeLessThanOrEqual(0.06));
+    expect(m.currentTrack()).toBeUndefined();
+    expect(sources.length).toBe(old.length);
+    m.setAudioSettings({ musicVolume: .5 }); m.setAudioSettings({ music: false }); m.setAudioSettings({ music: true });
+    expect(m.currentTrack()).toBeUndefined();
+    expect(m.liveMusicSources()).toBe(0);
+    m.playEffect(P.train, 'success');
+    expect(sources.length).toBeGreaterThan(old.length);
   });
 });

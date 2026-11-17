@@ -17,6 +17,8 @@ export interface EffectVoice { wave: Wave | 'noise'; notes: number[]; step: numb
 export interface AudioProfile {
   id: string; label: string; instruments: string;
   music: MusicProfile;
+  /** When true the scene plays NO background music at all (effects + narration only). */
+  noMusic?: boolean;
   effects: { action: EffectVoice; place: EffectVoice; success: EffectVoice; retry: EffectVoice; begin: EffectVoice };
 }
 const major = [0, 2, 4, 5, 7, 9, 11], minorPent = [0, 3, 5, 7, 10], majorPent = [0, 2, 4, 7, 9], dorian = [0, 2, 3, 5, 7, 9, 10], lydian = [0, 2, 4, 6, 7, 9, 11];
@@ -54,6 +56,10 @@ export const AUDIO_PROFILES = {
   balloon: { id: 'balloon', label: 'Balloon airfield', instruments: 'accordion-like reed, breezy whistle, tuba bass',
     music: { bpm: 108, root: 294, scale: major, chords: [0, 3, 4, 4], melody: [0, 4, 4, null, 5, 4, 2, 0], lead: 'sawtooth', pad: 'triangle', bass: 'square', drums: 'k.s.k.ss', leadOctave: 1, swing: .08 },
     effects: { action: fx('sine', [700], 0, .15, .04, { glide: 1.5 }), place: fx('noise', [900], 0, .2, .04, { filter: 900 }), success: fx('triangle', [587, 740, 880, 1175], .08, .4, .045), retry: fx('sine', [500], 0, .3, .04, { glide: .5 }), begin: fx('noise', [600], 0, .5, .03, { filter: 600 }) } },
+  // Trains: music intentionally removed for now (user request). Effects + narration only.
+  train: { id: 'train', label: 'Train yard', instruments: 'no music; whistle, rail clack, bell effects', noMusic: true,
+    music: { bpm: 0, root: 0, scale: major, chords: [0], melody: [null], lead: 'sine', pad: 'sine', bass: 'sine', drums: '.', leadOctave: 1 },
+    effects: { action: fx('noise', [2400], 0, .05, .04, { filter: 2400 }), place: fx('square', [330, 247], .07, .08, .03), success: fx('triangle', [784, 988, 1175], .12, .45, .04, { glide: .98 }), retry: fx('sawtooth', [220, 196], .14, .18, .025), begin: fx('triangle', [659, 784], .18, .5, .04) } },
 } satisfies Record<string, AudioProfile>;
 export type AudioProfileId = keyof typeof AUDIO_PROFILES;
 

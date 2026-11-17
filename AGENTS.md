@@ -73,4 +73,4 @@ Implementation status at this policy update: existing shared story writer only r
 - V2 Logic Adventures Beta project c7960d92-dee8-4b06-b59c-5a53fe272e8c remains a distinct track; this V1 release direction does not authorize redirecting, overwriting or publishing that project.
 <!-- SCENE-RELEASE:END -->
 
-- Audio only via src/lib/audio + ReadAloud; register templates in TEMPLATE_AUDIO and unlock only on click/touchend/keydown with confirmed running status (see AUDIO.md). Why: one narrator/track; iOS ignores pointerdown as activation.
+- Audio only via src/lib/audio + ReadAloud (both speakers read story+task, see AUDIO.md); register templates in TEMPLATE_AUDIO and unlock only on click/touchend/keydown with confirmed running status (see AUDIO.md). Why: one narrator/track; iOS ignores pointerdown as activation.

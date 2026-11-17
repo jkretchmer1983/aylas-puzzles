@@ -271,6 +271,8 @@ function Play() {
   const spatial = spec.template === "sudoku";
   const story = shown?.key === key ? shown.story : spec.story;
   const title = shown?.key === key ? shown.title : spec.title;
+  const readGroup = spatial ? boardSessionKey : key;
+  const readContent = { title, story, task: (boardSpec ?? spec).task };
   const illustration = <>
     {spatial ? <div key={`${key}-fallback`} className={cn("forest-fallback-wash scene-watercolor", loaderDone && "scene-watercolor-reveal")}><img className="forest-offline-illustration" src={offlineIllustration} alt="A young explorer, a monkey and a bird discovering treasure tiles in the forest" /></div> : <PuzzleDrawing template={spec.template} seed={s ?? 1} ornament />}
     {art && <div key={`${key}-art`} className={cn("scene-watercolor", imageReady && loaderDone && "scene-watercolor-reveal")}>
@@ -319,7 +321,7 @@ function Play() {
       {spatial && (storyOpen || transitioning) && <section className="forest-adventure" aria-label="Your adventure">
         <p className="adventure-eyebrow">Your adventure</p>
         <div className="adventure-story" tabIndex={0} aria-label="Puzzle story"><p>{story}</p></div>
-        <ReadAloud text={story} label="story">Read aloud</ReadAloud>
+        <ReadAloud group={readGroup} content={readContent}>Read aloud</ReadAloud>
         <WoodenActionButton className="adventure-begin" disabled={!loaderDone} onClick={beginPuzzle}>{started ? 'Back to puzzle' : 'Let’s help!'}<ArrowRight aria-hidden="true" /></WoodenActionButton>
       </section>}
 
@@ -327,10 +329,10 @@ function Play() {
         {!spatial && <div className={cn("scene", celebrating && "scene-party")}>
           <div className="scene-text">
             <WoodenTitleSign title={shown?.key === key ? shown.title : spec.title} story={shown?.key === key ? shown.story : spec.story} spatial={spec.template === "sudoku"} />
-            <ReadAloud text={`${title}. ${story}`} label="story" className="scene-read-aloud">Read story</ReadAloud>
+            <ReadAloud group={readGroup} content={readContent} className="scene-read-aloud">Read story</ReadAloud>
           </div>
         </div>}
-        <div className="puzzle-task"><span>{spec.task}</span><ReadAloud text={spec.task} /></div>
+        <div className="puzzle-task"><span>{spec.task}</span><ReadAloud group={readGroup} content={readContent} /></div>
         <PuzzleStage spatial={spec.template === "sudoku"}>
           <PuzzleBody key={spatial ? boardSessionKey : key} spec={boardSpec ?? spec} report={report} sessionKey={spatial ? boardSessionKey : undefined} />
         </PuzzleStage>

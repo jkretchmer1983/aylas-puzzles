@@ -4,18 +4,19 @@ Shared modules — never add a game-local `speechSynthesis` or `AudioContext`:
 
 | Module | Role |
 | --- | --- |
-| `src/lib/audio/narrator.ts` | One narrator. `speak(id, text)` inside a tap handler; `stopNarration()`. Picks an English voice, re-picks on `voiceschanged`, stops on hidden tab/pagehide, 4 s honest-error watchdog, ducks mixer. |
+| `src/lib/audio/narrator.ts` | One narrator. `speak(id, text)` inside a tap handler; `stopNarration()`. `narrationPayload({title, story, task})` builds the combined text; long text is chunked by sentence (≤180 chars) and every chunk is pinned to the voice selected at tap time. Saved voice choice (`setVoice`), re-picks on `voiceschanged` only between sequences, stops on hidden tab/pagehide, 4 s honest-error watchdog, ducks mixer. Never cancels before speak unless something is queued (Safari drops speak after cancel). |
 | `src/lib/audio/speech-text.ts` | Verbalizes visible text only: emoji nouns, `¢`/`$`, ordinals, `×` `+` `=` `?` blanks, `…`. Never adds facts or answers. |
 | `src/lib/audio/mixer.ts` | One AudioContext; master / music / effects buses; persisted settings (`aylas-audio-v1`: muted, voice, effects, music, musicVolume); ducking; one procedural music track at a time; suspend on hidden tab. |
 | `src/lib/audio/profiles.ts` | **Registry.** `AUDIO_PROFILES` (music motif + action/place/success/retry/begin effects) and `TEMPLATE_AUDIO` (template → profile). |
 | `src/lib/audio/use-scene-audio.ts` | Per-screen hook: music starts on first pointerdown/keydown, scene switch replaces the track, unmount releases it; click-capture action sounds. |
-| `src/components/ReadAloud.tsx` | The only speaker button. Pass the exact current visible text. |
+| `src/components/ReadAloud.tsx` | The only speaker button: `<ReadAloud group={instanceKey} content={{title, story, task}} />`. Errors render visibly beside the button. |
 | `src/components/AudioSettings.tsx` | Master mute + voice/effects/music + music volume. |
 
 ## Required for every new game adapter
 1. Add the template id to `TEMPLATE_AUDIO` (or add a new profile with its own tempo, scale, instruments, drum pattern and effects). `src/test/audio.test.tsx` fails when a template is missing or two profiles share a music signature.
 2. Use `useSceneAudio(template, instanceKey)`; call `effect('success'|'retry')` from the generator-checked result and `effect('place')` on real piece actions. Never sound on pointermove.
-3. Every story/instruction/clue speaker is `<ReadAloud text={currentVisibleText} />`.
+3. Every story AND instructions speaker for one puzzle is `<ReadAloud group={instanceKey} content={{ title, story, task }} />` with the SAME group and content, so either button reads the current story, then the current instructions ("Here is your puzzle. …"). Tapping again stops; a new instance/group cancels. Never put answers or hidden solution data in `content`.
+3b. A scene with music removed sets `noMusic: true` on its profile (currently `train`): `startMusic` stops any existing track and schedules nothing, even when music is enabled; effects and narration stay.
 4. Expose `<AudioSettings />` somewhere on the screen.
 5. Verify in a browser: speaker taps call speak with current text, music schedules after a tap, no page errors. Mocked tests are not audible verification.
 

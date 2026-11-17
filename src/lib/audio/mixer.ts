@@ -204,6 +204,8 @@ function schedule() {
 /** Start the profile's loop (call after a user gesture). Replaces any current track; never overlaps. */
 export function startMusic(profile: AudioProfile) {
   load(); wanted = profile;
+  // Scenes with music removed: stop whatever was playing and never schedule a loop.
+  if (profile.noMusic) { stopMusic(true); return; }
   if (!musicOn()) return;
   const c = context(); if (!c) return;
   if (playing?.id === profile.id && timer) return;

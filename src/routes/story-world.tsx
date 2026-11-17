@@ -151,11 +151,11 @@ function StoryRound({ spec, search, puzzleKey, pickNext, progress, update }: Rou
         <span className="sw-kicker"><BookOpen size={16} /> {tpl?.icon} Story Worlds</span>
         <h1>{story.title}</h1>
         <p>{story.story}</p>
-        <ReadAloud text={`${story.title}. ${story.story}`} label="story" className="sw-read-aloud">Read story</ReadAloud>
+        <ReadAloud group={puzzleKey} content={{ title: story.title, story: story.story, task: spec.task }} className="sw-read-aloud">Read story</ReadAloud>
         {entry?.error && <details className="sw-art-notice"><summary>Illustration update unavailable</summary><p>{entry.error}</p></details>}
       </section>
       <section className="sw-game-area" aria-label="Puzzle">
-        <div className="sw-task-row"><h2 className="sw-task">{spec.task}</h2><ReadAloud text={spec.task} className="sw-read-aloud" /></div>
+        <div className="sw-task-row"><h2 className="sw-task">{spec.task}</h2><ReadAloud group={puzzleKey} content={{ title: story.title, story: story.story, task: spec.task }} className="sw-read-aloud" /></div>
         <div className="sw-game-scroll" tabIndex={0} aria-label="Puzzle pieces">
           <PuzzleBody spec={spec} report={report} storyWorld checkTarget={checkTarget} completed={result === true} />
         </div>

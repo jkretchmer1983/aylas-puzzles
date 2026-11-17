@@ -18,12 +18,12 @@ describe('read aloud', () => {
     const synth = { speak: vi.fn(), cancel: vi.fn() };
     vi.stubGlobal('speechSynthesis', synth);
     vi.stubGlobal('SpeechSynthesisUtterance', class { constructor(public text: string) {} });
-    const { unmount } = render(<ReadAloud text="Each row needs one of each." />);
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
-    expect(synth.speak.mock.calls[0]?.[0].text).toBe('Each row needs one of each.');
-    fireEvent.click(screen.getByRole('button', { name: 'Stop reading instructions' }));
+    const { unmount } = render(<ReadAloud group="f" content={{ task: "Each row needs one of each." }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Read story and instructions aloud' }));
+    expect(synth.speak.mock.calls[0]?.[0].text).toBe('Here is your puzzle. Each row needs one of each.');
+    fireEvent.click(screen.getByRole('button', { name: 'Stop reading story and instructions' }));
     expect(synth.cancel).toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'Read instructions aloud' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read story and instructions aloud' }));
     const calls = synth.cancel.mock.calls.length;
     unmount();
     expect(synth.cancel.mock.calls.length).toBe(calls + 1);
@@ -31,7 +31,7 @@ describe('read aloud', () => {
   it('keeps an unavailable speech control disabled', () => {
     vi.stubGlobal('speechSynthesis', undefined);
     // The property can exist but be unavailable in some browser shells.
-    render(<ReadAloud text="Task" />);
+    render(<ReadAloud group="f" content={{ task: "Task" }} />);
     expect(screen.getByRole('button')).toBeDisabled();
   });
 });
