@@ -10,6 +10,6 @@ export const Route = createFileRoute('/take-preview')({
     { property: 'og:description', content: 'Review the Taking Away balloon interaction for ages 4–5.' },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary' },
-  ], links: [{ rel: 'stylesheet', href: previewCss }] }),
+  ], links: [{ rel: 'stylesheet', href: previewCss }, ...['landscape','balloon','anchor','explorer','explorer-cheer','windsock','banner','suitcase'].map(name=>({rel:'preload',as:'image',href:`/take-airfield/${name}.webp`}))] }),
   component: TakePreview,
 });

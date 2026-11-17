@@ -1,115 +1,260 @@
-/* Deliberately isolated from the existing /play and Sudoku artwork. */
-.take-preview { --take-ink:#29434b; --take-paper:#f5efdf; --take-orange:#bc583a; --take-blue:#315f6e; --take-edge:#b5beb0; color:var(--take-ink); font-family:'Nunito',Arial,sans-serif; font-size:16px; line-height:1.3; width:100%; height:100dvh; min-height:620px; display:grid; grid-template-rows:auto auto auto minmax(0,1fr); background:#e6eee7; padding:env(safe-area-inset-top) max(0px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(0px,env(safe-area-inset-left)); overflow:hidden; isolation:isolate; }
-.take-preview * { box-sizing:border-box; }
-.take-preview button,.take-preview a.take-icon { font:inherit; font-weight:700; color:var(--take-ink); border:1px solid var(--take-edge); background:var(--take-paper); border-radius:7px; min-width:44px; min-height:44px; padding:8px 12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
-.take-preview button:not(:disabled):active { box-shadow:inset 0 2px 3px #29434b22; }
-.take-preview button:disabled { opacity:.45; }
-.take-preview button:focus-visible,.take-preview a:focus-visible,.take-preview input:focus-visible { outline:3px solid #315f6e; outline-offset:3px; }
-.take-preview svg { width:19px; height:19px; flex-shrink:0; }
-.take-preview .take-icon { padding:9px; border:0; background:transparent; }
-.take-topbar { display:flex; align-items:center; gap:10px; padding:6px 14px; background:#f2eddd; z-index:5; }
-.take-brand { display:flex;flex-direction:column;flex:1; }
-.take-brand>span { font-size:9px; letter-spacing:1.6px; font-weight:800; }
-.take-brand strong { font-size:23px; font-weight:800; line-height:1.15; }
-.take-age { font-size:12px; white-space:nowrap; }
-.take-progress { width:42px;height:4px;background:#d0d5c5; }
-.take-progress i { display:block;width:40%;height:100%;background:#66857a; }
-.take-review-label { text-align:center;background:#f2eddd;font-size:9px;letter-spacing:1.7px;padding:3px 6px 5px;color:#536a68; }
-.take-task { display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 18px 8px; background:#e6eee7; }
-.take-task p { margin:0;max-width:680px;font-size:18px; font-weight:800;text-align:center; }
-.take-game { display:grid;min-height:0;grid-template-rows:minmax(160px,1fr) auto auto auto 40px auto; }
-.take-airfield { min-height:0;position:relative;overflow:hidden; background:linear-gradient(#d3e7e9,#eff0df 95%); }
-.take-launch { position:absolute; top:6px; left:12%;right:12%; height:48px;z-index:2; }
-.take-preview .take-launch { border:1.5px dashed #7f9e9c;background:#ecf3e477; border-radius:42% / 70%; font-size:13px; padding:4px;transition:background .12s, border-color .12s; }
-.take-preview .take-launch:disabled { opacity:1; }
-.take-preview .take-launch svg { transform:rotate(-90deg); }
-.take-preview .take-launch.is-over { background:#d9e9bc;border:2px solid #547852; }
-.take-launch-task { position:absolute;top:61px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.25px;z-index:2; }
-.take-balloon-grid { position:absolute;inset:88px 9% 26px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));row-gap:9px;column-gap:12px;z-index:3; }
-.take-balloon-slot { position:relative;display:flex;align-items:flex-start;justify-content:center;min-width:0;min-height:0; }
-.take-preview .take-balloon-target { position:relative;width:52px;height:68px; min-width:48px;min-height:60px;background:transparent;border:0;padding:0;touch-action:none;display:flex;align-items:flex-start;transition:opacity .1s; border-radius:50%;user-select:none;-webkit-user-select:none; }
-.take-preview .take-balloon-target:active { box-shadow:none; }
-.take-balloon-art { position:relative;display:block;flex:none;width:44px;height:55px; border-radius:51% 51% 48% 48%; background:radial-gradient(ellipse at 32% 23%,#efb47e 0%,#d58457 42%,#b96745 95%); box-shadow:inset -4px -3px 7px #8a42222b; }
-.take-balloon-shine { position:absolute; width:7px;height:17px;border-radius:50%;left:10px;top:9px; background:#ffe5be55;transform:rotate(22deg); }
-.take-balloon-knot { position:absolute;width:7px;height:6px;bottom:-4px;left:19px;clip-path:polygon(50% 0,100% 100%,0 100%);background:#b96745; }
-.take-tether { position:absolute;top:58px;left:50%;width:1px;height:18px;background:#8a8d75; }
-.take-peg { position:absolute;top:75px;left:calc(50% - 5px);width:10px;height:4px;background:#7a8670;border-radius:2px; }
-.take-preview .take-balloon-target.is-selected .take-balloon-art { outline:2px solid #315f6e;outline-offset:4px; }
-.take-selection-tick { position:absolute;bottom:4px;right:0;width:20px;height:20px;border-radius:50%;background:#315f6e;color:#fff9e9;line-height:20px;font-size:12px; }
-.take-count-dot { position:absolute;top:15px;left:20px;color:#fff8dc;font-size:25px;line-height:1;text-shadow:0 1px 3px #29434b; }
-.take-balloon-target.is-carried { opacity:0; }
-.take-parcel { position:absolute;left:10px;top:58px;width:26px;height:26px;background:#eee4c8;border-radius:3px;font-size:21px;line-height:26px;box-shadow:0 1px 2px #29434b33; }
-.take-balloon-target:has(.take-parcel) .take-peg { top:85px; }
-.take-carried,.take-flight { position:absolute;z-index:10;pointer-events:none;transform:translate(-50%,-50%);width:44px;height:55px; }
-.take-carried { filter:drop-shadow(0 6px 5px #29434b2b); }
-.take-carried.is-over .take-balloon-art { outline:3px solid #547852;outline-offset:3px; }
-.take-flight { animation:take-fly-away .85s ease-in both; }
-@keyframes take-fly-away { from { transform:translate(-50%,-50%) scale(1);opacity:1; } to { transform:translate(-30%,-400px) scale(.7);opacity:0; } }
-.take-hills { position:absolute;bottom:-45px;left:-20%;width:150%;height:90px;border-radius:50% 50% 0 0;background:#bdcca8;transform:rotate(-4deg); }
-.take-hills:after { content:'';position:absolute;bottom:0;left:12%;height:60px;width:100%;background:#a7bd96;border-radius:50% 50% 0 0;transform:rotate(8deg); }
-.take-hut { position:absolute;right:8px;bottom:14px;width:50px;height:39px;background:#b8bda1;border-top:9px solid #8d9e8a;transform:rotate(2deg); }
-.take-hut span { display:block;text-align:center;font-size:6px;letter-spacing:.5px;margin-top:6px;color:#516957; }
-.take-windsock { position:absolute;left:16px;bottom:18px;width:2px;height:52px;background:#8c9c86; }
-.take-windsock i { display:block;width:24px;height:12px;background:repeating-linear-gradient(90deg,#bf704d 0 8px,#f1dfbd 8px 15px);clip-path:polygon(0 0,100% 22%,100% 82%,0 100%); }
-.take-action-rail { display:flex;align-items:center;justify-content:center;gap:7px;padding:5px 10px;background:#e1e7d1;z-index:4; }
-.take-action-rail button { font-size:12px;padding:6px 10px; }
-.take-preview button[aria-pressed=true] { background:#315f6e;color:#fff8e8;border-color:#315f6e; }
-.take-preview .take-balloon-target[aria-pressed=true] { background:transparent; }
-.take-preview .take-release-button:not(:disabled) { background:#315f6e;color:#fff8e8;border-color:#315f6e; }
-.take-gesture-tip { margin:0;padding:3px 10px;text-align:center;font-size:11px;background:#e1e7d1;min-height:22px; }
-.take-console { padding:7px 14px 5px;background:#f2ebd9; }
-.take-answer-row { display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px; }
-.take-answer-row label { font-size:12px;font-weight:800; }
-.take-preview .take-answer-row input { font-family:inherit;color:var(--take-ink);width:54px;min-height:44px;text-align:center;font-size:23px;background:#faf6e9;border:1px solid #a5b2a6;border-radius:4px;padding:2px; }
-.take-preview .take-check { font-size:14px;min-height:44px;flex:1;max-width:220px;background:#e7dcc2;transition:background .15s; }
-.take-preview .take-check.is-ready { background:#bb5e3e;color:#fff8e8;border-color:#a24e32;animation:take-check-pulse 2s ease-in-out infinite; }
-@keyframes take-check-pulse { 50% { box-shadow:0 0 0 3px #bd694724; } }
-.take-number-keys { display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;max-width:480px;margin:auto; }
-.take-preview .take-number-keys button { min-width:44px;min-height:44px;padding:2px;font-size:19px;box-shadow:0 2px 0 #b4baa5; }
-.take-number-keys .take-erase { grid-column:span 2; }
-.take-feedback { display:flex;align-items:center;justify-content:center;gap:8px;padding:0 10px;background:#f2ebd9;font-size:13px;text-align:center;overflow:hidden; }
-.take-feedback.is-correct { color:#386542; }
-.take-preview .take-feedback button { min-height:32px;font-size:12px;padding:4px 8px; }
-.take-success-mark { display:inline-block;animation:take-success .4s ease-out; }
-@keyframes take-success { from{transform:scale(.5)}to{transform:scale(1)} }
-.take-navigation { display:flex;justify-content:center;align-items:center;gap:5px;background:#e1e4cf;padding:6px 9px; }
-.take-preview .take-navigation button { padding:6px 8px;font-size:11px; }
-.take-navigation button svg { width:15px;height:15px; }
-.take-preview .take-navigation .take-next-primary { background:#4d7755;color:#fff8e8;border-color:#4d7755; }
-.take-settings { position:absolute;top:62px;right:12px;width:min(310px,calc(100% - 24px));z-index:30;border:1px solid #a2b1a3;border-radius:9px;padding:16px;background:#f5efdf;box-shadow:0 10px 30px #29434b26;display:grid;gap:12px; }
-.take-settings label { display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px; }
-.take-settings input { width:22px;height:22px;accent-color:#315f6e; }
-.take-modal { border:0;padding:0;background:transparent;color:var(--take-ink);max-width:calc(100% - 32px);max-height:calc(100% - 32px); }
-.take-modal::backdrop { background:#29434b70; }
-.take-modal>section { position:relative;padding:36px 26px;max-width:420px;border-radius:12px;background:#f5efdf;box-shadow:0 15px 40px #29434b33; }
-.take-modal h2 { font:800 24px 'Nunito',Arial,sans-serif;margin:12px 0; }
-.take-modal p { margin:12px 0; }
-.take-modal .take-close { position:absolute;right:6px;top:6px; }
-.take-modal .take-fine { font-size:12px;color:#5d706a; }
-.take-sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%); }
-.take-preview[data-reduced=true] *, .take-preview[data-reduced=true] *:before,.take-preview[data-reduced=true] *:after { animation:none!important;transition:none!important; }
-@media (min-width:700px) { .take-topbar{padding:10px 28px;gap:18px}.take-task{padding:16px 28px}.take-task p{font-size:22px}.take-balloon-art{width:54px;height:68px}.take-balloon-knot{left:24px}.take-preview .take-balloon-target{width:68px;height:86px}.take-tether{top:72px;height:30px}.take-peg{top:101px}.take-balloon-grid{inset:110px 16% 50px;row-gap:24px}.take-launch-task{top:72px;font-size:14px}.take-launch{top:10px;height:52px}.take-action-rail{gap:16px;padding:8px}.take-action-rail button{font-size:14px}.take-console{padding:12px 22px 5px}.take-answer-row{max-width:480px;margin:0 auto 8px}.take-number-keys{gap:8px}.take-navigation{gap:14px;padding:10px}.take-preview .take-navigation button{font-size:14px;padding:8px 16px}.take-parcel{left:12px;top:71px}.take-balloon-target:has(.take-parcel) .take-peg{top:105px}.take-carried,.take-flight{width:54px;height:68px} }
-@media (orientation:landscape) and (min-width:600px) { .take-preview{min-height:360px}.take-topbar{padding:5px 18px}.take-brand strong{font-size:21px}.take-task{padding:7px 20px}.take-task p{font-size:18px}.take-game{grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:minmax(140px,1fr) auto 40px auto}.take-airfield{grid-column:1;grid-row:1/4}.take-action-rail{grid-column:2;grid-row:2;gap:4px;padding:5px}.take-action-rail button{padding:5px;font-size:11px}.take-action-rail button svg{width:15px}.take-gesture-tip{grid-column:1;grid-row:4;display:flex;align-items:center;justify-content:center}.take-console{grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:center;padding:10px 16px}.take-answer-row{flex-wrap:wrap;gap:8px;width:100%;margin:0 auto 10px}.take-answer-row label{font-size:14px}.take-preview .take-check{flex-basis:100%;max-width:none;order:3}.take-number-keys{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;margin:0 auto}.take-number-keys .take-erase{grid-column:span 2}.take-feedback{grid-column:2;grid-row:3}.take-navigation{grid-column:2;grid-row:4;gap:4px;padding:5px}.take-preview .take-navigation button{font-size:11px;padding:4px;flex:1;min-width:44px}.take-navigation button svg{display:none}.take-navigation .take-story-button span{font-size:10px}.take-balloon-grid{inset:90px 12% 32px}.take-launch-task{top:64px}.take-launch{height:46px}.take-hut{right:20px;width:65px;height:49px}.take-hut span{font-size:8px}.take-gesture-tip{min-height:44px}.take-review-label{font-size:9px} }
-@media (orientation:landscape) and (max-height:540px) { .take-preview{grid-template-rows:auto auto auto minmax(0,1fr)}.take-topbar{padding:0 12px}.take-brand strong{font-size:18px}.take-topbar .take-icon{min-height:40px}.take-review-label{display:none}.take-task{padding:5px 15px;grid-row:2}.take-game{grid-row:3/5;grid-template-columns:minmax(0,1fr) 320px;grid-template-rows:minmax(110px,1fr) 48px 36px 48px}.take-console{padding:4px 12px}.take-answer-row{margin:0 0 5px}.take-preview .take-check{flex-basis:auto;order:0;font-size:11px;min-height:44px;padding:5px}.take-answer-row label{font-size:10px}.take-answer-row input{width:42px}.take-number-keys{grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}.take-number-keys button{font-size:16px}.take-preview .take-number-keys button{min-width:44px}.take-balloon-grid{inset:73px 14% 15px;row-gap:2px}.take-balloon-art{width:38px;height:47px}.take-balloon-knot{left:16px}.take-preview .take-balloon-target{width:46px;height:52px;min-height:44px}.take-tether{top:50px;height:8px}.take-peg{top:57px}.take-launch{height:42px;top:4px}.take-launch-task{top:49px;font-size:11px}.take-hut{width:40px;height:30px;bottom:8px;right:6px}.take-hut span{font-size:5px;margin-top:2px}.take-parcel{top:49px;left:8px;font-size:16px;width:22px;height:20px;line-height:20px}.take-balloon-target:has(.take-parcel) .take-peg{top:70px}.take-carried,.take-flight{width:38px;height:47px}.take-launch-task{pointer-events:none} }
-@media (max-width:360px) { .take-topbar{gap:6px;padding:4px 8px}.take-progress{display:none}.take-brand strong{font-size:20px}.take-task p{font-size:16px}.take-console{padding:6px 10px 4px}.take-navigation{gap:3px;padding:5px}.take-preview .take-navigation button{padding:4px;font-size:10px}.take-navigation button svg{display:none}.take-number-keys{gap:4px}.take-preview .take-number-keys button{min-width:44px}.take-action-rail{gap:5px;padding:5px}.take-action-rail button{padding:4px 7px;font-size:11px} }
+/* Reference-derived raster assets own materials; SVG and transforms own live geometry. */
+.take-preview{--ink:#442c18;--cream:#fff2d5;--body:clamp(52px,7.6vw,90px);font-family:'Nunito',Arial,sans-serif;color:var(--ink);font-weight:800;position:relative;width:100%;height:100dvh;min-height:640px;overflow:hidden;isolation:isolate;background:#84b4e4;}
+.take-preview *{box-sizing:border-box}.take-preview button,.take-preview a{font:inherit;color:var(--ink);-webkit-tap-highlight-color:transparent;touch-action:manipulation}.take-preview button{border:0;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 10px;background:transparent url('/take-airfield/nav-button.webp') center/100% 100% no-repeat;filter:drop-shadow(0 2px 2px #3a230b35);cursor:pointer}.take-preview button:disabled{opacity:.48;cursor:default}.take-preview button:not(:disabled):active{transform:translateY(2px);filter:brightness(.95)}.take-preview svg{width:19px;height:19px;flex:none}.take-preview button:focus-visible,.take-preview a:focus-visible,.take-preview input:focus-visible{outline:3px solid #1e6d94;outline-offset:3px}.take-preview img{user-select:none;-webkit-user-select:none;pointer-events:none}
+.take-landscape{position:absolute;inset:-1px;background:url('/take-airfield/landscape.webp') center center/cover no-repeat;z-index:-2;transition:transform 1.5s cubic-bezier(.22,.7,.2,1);transform:scale(1)}.take-preview[data-phase=story] .take-landscape{transform:scale(1.11) translateY(-2%)}
+.take-topbar{position:absolute;top:max(8px,env(safe-area-inset-top));left:12px;right:12px;height:44px;z-index:25;display:flex;align-items:center;gap:8px}.take-brand{display:none}.take-preview .take-icon{width:44px;height:44px;padding:11px;display:flex;align-items:center;justify-content:center;text-decoration:none;border:0;background:transparent url('/take-airfield/number-key.webp') center/100% 100% no-repeat;filter:drop-shadow(0 2px 2px #3a230b35)}.take-age{font-size:14px;background:url('/take-airfield/nav-button.webp') center/100% 100% no-repeat;padding:10px 15px;white-space:nowrap}.take-progress{margin-left:auto;width:88px;height:21px;border:4px solid #ecd6af;border-radius:12px;background:#dfcfb5;box-shadow:0 2px 3px #4a2c1430}.take-progress i{display:block;height:100%;width:40%;border-radius:8px;background:linear-gradient(#65c2df,#208bac)}
+.take-task{position:absolute;z-index:20;top:56px;left:10px;right:10px;height:100px;display:flex;align-items:center;justify-content:center;gap:4px;padding:21px 20px 11px;background:url('/take-airfield/banner.webp') center/100% 100% no-repeat;filter:drop-shadow(0 2px 3px #4a2c1430)}.take-task p{font-size:17px;font-weight:800;line-height:1.18;text-align:center;margin:0;max-width:650px;text-shadow:0 1px #fff4d955}.take-task .take-icon{background-image:url('/take-airfield/number-key.webp');color:#1c7292;flex:none;width:44px;min-width:44px}
+.take-game{position:absolute;inset:0;transition:transform 1.1s cubic-bezier(.2,.65,.25,1)}.take-preview[data-phase=story] .take-game{transform:translateY(120%)}
+.take-airfield{position:absolute;top:19%;bottom:36%;left:0;right:0;overflow:visible;z-index:4}.take-preview .take-launch{position:absolute;top:0;left:12%;width:80%;height:54px;min-height:44px;z-index:10;border:2px dashed transparent;background:transparent;border-radius:50% / 70%;font-size:12px;opacity:0;filter:none;transition:opacity .2s,background .2s,border-color .2s}.take-preview .take-launch.is-visible{opacity:1;background:#fff7de6e;border-color:#f5e8ca;color:#244e66}.take-preview .take-launch.is-over{background:#d8f0bed9;border:2px solid #477543;box-shadow:0 0 18px #f8f6c655}.take-launch svg{transform:rotate(-90deg)}.take-launch-task{position:absolute;top:64px;left:20%;right:4%;text-align:center;font-size:12px;color:#214862;text-shadow:0 1px 2px #fff3d3;background:#fff5d787;border-radius:3px;padding:3px}.take-balloon-grid{position:absolute;inset:0}.take-balloon-slot{position:absolute;width:var(--body);height:calc(var(--body)*1.9);transform:translate(-50%,-50%)}.take-preview .take-balloon-target{position:absolute;top:0;left:0;width:var(--body);height:calc(var(--body)*1.3);min-width:48px;min-height:62px;padding:0;border:0;background:none;filter:none;touch-action:none;user-select:none;-webkit-user-select:none;z-index:3;border-radius:50%;animation:take-assemble .75s both;animation-delay:var(--assemble-delay)}.take-preview .take-balloon-target:active{transform:none;filter:none}.take-balloon-art{display:block;position:relative;width:100%;height:100%;animation:take-bob 5.2s ease-in-out infinite;animation-delay:var(--bob-delay,0s);transform-origin:50% 100%;filter:drop-shadow(1px 2px 1px #63422125)}.take-balloon-art>img{display:block;width:100%;height:100%;object-fit:contain}.take-balloon-target.is-selected .take-balloon-art{filter:drop-shadow(0 0 3px #fff2a7) drop-shadow(0 0 2px #24566d)}.take-selection-tick,.take-count-dot{position:absolute;right:-5px;top:45%;width:22px;height:22px;border-radius:50%;background:#2e6b67;color:#fff3d7;border:2px solid #ead5ad;font-size:13px;display:grid;place-items:center;z-index:4}.take-count-dot{right:calc(50% - 11px);top:25%;background:#f8ecd4;color:#425d47}.take-preview .take-tether{position:absolute;left:10%;top:calc(var(--body)*1.22);width:80%;height:calc(var(--body)*.58);overflow:visible;filter:drop-shadow(1px 1px .6px #51371977)}.take-anchor{position:absolute;top:calc(var(--body)*1.72);left:20%;width:60%;height:auto;filter:drop-shadow(0 3px 2px #4a3c2960)}.take-balloon-target.is-carried{opacity:0}.take-parcel{position:absolute;bottom:-22px;left:calc(50% - 12px);height:24px;width:24px;line-height:24px;font-size:19px;border:1px solid #b49465;background:#e5cda3;border-radius:3px;box-shadow:0 2px 3px #49351c66}
+@keyframes take-bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-3px) rotate(1deg)}}@keyframes take-assemble{from{translate:0 75px}to{translate:0 0}}
+.take-released-fleet{position:absolute;inset:0;pointer-events:none}.take-flight,.take-return,.take-carried{position:absolute;width:var(--body);height:calc(var(--body)*1.3);z-index:12;pointer-events:none;transform:translate(-50%,-50%)}.take-flight{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.44);opacity:.9}.take-flight.is-new{animation:take-release 2.2s cubic-bezier(.45,.06,.62,1) both}.take-flight .take-balloon-art,.take-carried .take-balloon-art,.take-return .take-balloon-art{animation:none}.take-preview .take-loose-string{position:absolute;top:94%;left:8%;width:84%;height:80%;overflow:visible;filter:drop-shadow(1px 1px .5px #66513677)}.take-carried{filter:drop-shadow(0 6px 5px #3e4a4b40)}.take-carried.is-over .take-balloon-art{filter:drop-shadow(0 0 4px #fff4a9)}.take-return{left:var(--to-x);top:var(--to-y);animation:take-recall .44s cubic-bezier(.2,.7,.2,1) both}.take-flight .take-parcel{font-size:17px}
+@keyframes take-release{0%{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(1) rotate(0)}20%{left:var(--from-x);top:calc(var(--from-y) - 5%);transform:translate(-50%,-50%) scale(.95) rotate(-3deg)}100%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.44) rotate(var(--flight-tilt))}}@keyframes take-recall{from{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(.55)}to{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(1)}}
+.take-explorer{position:absolute;width:clamp(95px,24vw,240px);height:auto;left:-1%;bottom:25%;z-index:5;transform-origin:50% 85%;pointer-events:none;filter:drop-shadow(1px 4px 3px #4a341c35)}.take-windsock-rig{position:absolute;top:29%;left:2%;width:clamp(65px,14vw,150px);height:18%;z-index:2;pointer-events:none}.take-windsock-pole{position:absolute;left:3%;top:10%;height:145%;width:4px;border-radius:3px;background:linear-gradient(90deg,#745130,#c29b59,#76502f);box-shadow:1px 1px 2px #39261740}.take-windsock{position:absolute;width:100%;height:auto;left:0;top:0;transform-origin:8% 50%;animation:take-wind 6s ease-in-out infinite}@keyframes take-wind{0%,100%{transform:rotate(-2deg) scaleX(1)}50%{transform:rotate(2deg) scaleX(.97)}}
+.take-action-rail{position:absolute;bottom:36%;right:4%;left:28%;display:flex;justify-content:flex-end;gap:8px;z-index:8}.take-preview .take-action-rail button{font-size:11px;min-height:44px;padding:6px 10px}.take-action-rail button[aria-pressed=true]{filter:drop-shadow(0 0 3px #fff8b1);color:#275c45}.take-preview .take-release-button:disabled{visibility:hidden}.take-preview .take-release-button{background-image:url('/take-airfield/check-button.webp');color:#fff0d4}.take-gesture-tip{position:absolute;bottom:calc(280px + 1%);left:28%;right:4%;text-align:center;margin:0;padding:4px 6px;background:#fff1d0ba;border-radius:4px;line-height:1.15;font-size:10px;z-index:8}
+.take-console{position:absolute;bottom:90px;left:4%;right:4%;height:190px;padding:22px 19px 17px;background:url('/take-airfield/suitcase.webp') center/100% 100% no-repeat;filter:drop-shadow(0 6px 4px #33220b40);z-index:12;transition:transform .5s}.take-answer-row{display:flex;align-items:center;gap:7px;margin-bottom:9px;height:44px}.take-preview .take-undo{width:26%;font-size:12px;padding:6px 7px;min-width:44px;height:44px}.take-undo svg{width:15px}.take-answer-window{position:relative;width:30%;height:44px;display:flex;align-items:center;background:#f7ead0;border:2px solid #a58258;border-radius:7px;box-shadow:inset 0 1px 4px #79552a33;flex:1}.take-preview .take-answer-window input{font:800 22px 'Nunito',Arial,sans-serif;color:#4a3119;width:100%;height:40px;background:none;border:0;text-align:center;padding:0 23px 0 3px;min-width:0}.take-preview .take-answer-window .take-erase{position:absolute;right:-3px;top:0;width:26px;min-width:26px;height:40px;min-height:40px;padding:5px;background:none;box-shadow:none;filter:none;opacity:.7}.take-erase svg{width:15px;height:15px}.take-preview .take-check{font-size:16px;width:31%;height:49px;min-height:44px;background-image:url('/take-airfield/check-button.webp');color:#fff0d6;filter:drop-shadow(0 2px 2px #39251855);white-space:nowrap;transition:filter .18s}.take-preview .take-check.is-ready{animation:take-check-pulse 1.8s ease-in-out infinite;filter:brightness(1.16) drop-shadow(0 0 5px #fbe8ad55)}.take-preview .take-check.is-retry{background-image:url('/take-airfield/nav-button.webp');background-color:#9f3c1b;background-blend-mode:multiply;border-radius:10px;color:#fff2dc;font-size:14px;animation:take-retry-pulse 1.2s ease-in-out infinite}.take-number-keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.take-preview .take-number-keys button{min-width:44px;min-height:44px;padding:1px;font-size:23px;height:44px;background-image:url('/take-airfield/number-key.webp');background-size:100% 100%;text-shadow:0 1px #fff8e8}.take-feedback{position:absolute;z-index:14;left:7%;right:7%;bottom:52px;height:38px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;text-align:center;line-height:1.2;padding:3px 9px;color:#46301b;text-shadow:0 1px #fff3da;background:transparent;border-radius:5px}.take-feedback:empty{pointer-events:none}.take-feedback.is-correct{color:#264b2a;background:#f4e6b9ed}.take-feedback.is-incorrect{color:#7e2519;background:#fff0d7f5;border:2px solid #ac5736;font-size:14px;box-shadow:0 2px 8px #4a2c1933;animation:take-friendly-nudge .4s both}.take-navigation{position:absolute;bottom:max(4px,env(safe-area-inset-bottom));left:26%;right:3%;height:48px;display:grid;grid-template-columns:1.3fr .85fr 1.2fr;gap:4px;z-index:15}.take-preview .take-navigation button{font-size:12px;padding:7px 6px;min-width:44px;height:44px}.take-navigation svg{width:13px;height:13px}.take-next-long{display:none}.take-preview .take-next-primary{background-image:url('/take-airfield/check-button.webp');color:#fff1d3;animation:take-check-pulse 1.8s ease-in-out infinite;filter:brightness(1.16) drop-shadow(0 0 5px #f9e7a8)}
+.take-books{position:absolute;left:2%;bottom:6px;display:flex;gap:4px;z-index:16}.take-preview .take-story-button,.take-preview .take-hint-button{width:52px;height:62px;min-height:44px;background-image:url('/take-airfield/flight-log.webp');padding:13px 6px 8px;color:#ffedb9;font-size:9px;line-height:1.05;display:flex;flex-direction:column;gap:1px;transform:rotate(-7deg);filter:drop-shadow(0 3px 2px #32200c55)}.take-preview .take-hint-button{width:41px;height:54px;background-image:url('/take-airfield/check-button.webp');transform:rotate(4deg);align-self:flex-end;font-size:10px}.take-books svg{width:16px;height:16px}.take-hint-note{position:absolute;right:4%;bottom:31%;width:min(280px,72%);z-index:30;background:#f9ebcb;border:2px solid #b18a57;border-radius:4px;padding:16px;font-size:14px;box-shadow:0 6px 15px #35220b44}.take-hint-note p{margin:10px 0}
+@keyframes take-check-pulse{50%{filter:brightness(1.22) drop-shadow(0 0 5px #fff0b4)}}@keyframes take-retry-pulse{50%{filter:brightness(1.2) drop-shadow(0 0 6px #ffe7ac)}}@keyframes take-friendly-nudge{25%{translate:-4px 0}75%{translate:4px 0}}.take-game.is-celebrating .take-flight{animation:take-formation 1.6s ease-in-out both}.take-game.is-celebrating .take-windsock{animation:take-wind-cheer .32s ease-in-out 5}.take-game.is-celebrating .take-explorer{animation:take-explorer-cheer .5s ease-in-out 3}.take-game.is-celebrating .take-success-mark{font-size:20px}@keyframes take-formation{0%{transform:translate(-50%,-50%) scale(.44) rotate(-5deg)}40%{left:calc(var(--to-x) - 8%);top:calc(var(--to-y) + 5%);transform:translate(-50%,-50%) scale(.57) rotate(12deg)}75%{left:calc(var(--to-x) + 5%);top:calc(var(--to-y) - 4%);transform:translate(-50%,-50%) scale(.48) rotate(-9deg)}100%{transform:translate(-50%,-50%) scale(.44)}}@keyframes take-wind-cheer{50%{transform:rotate(9deg) scaleX(.92)}}@keyframes take-explorer-cheer{50%{transform:translateY(-7px) rotate(-3deg)}}
+.take-story-intro{position:absolute;z-index:22;top:27%;left:8%;right:8%;margin:auto;max-width:450px;padding:32px 24px 24px;background:#f8e8c5 url('/take-airfield/banner.webp') center/100% 100% no-repeat;border:1px solid #af8553;border-radius:12px;box-shadow:0 10px 35px #46311444;text-align:center;transition:transform 1.1s cubic-bezier(.22,.7,.3,1);transform:translateY(0) rotate(-1deg)}.take-intro-book{width:75px;height:80px;object-fit:contain;margin:auto}.take-story-intro h1{font:800 28px 'Nunito',Arial,sans-serif;line-height:1.1;margin:10px 0}.take-story-intro p{font-size:17px;line-height:1.4;font-weight:700;margin:12px 0}.take-story-kicker{display:block;letter-spacing:2px;font-size:10px;margin-top:12px}.take-story-loading{display:block;font-size:11px;font-weight:600;min-height:30px}.take-preview .take-begin{background-image:url('/take-airfield/check-button.webp');color:#fff1d3;font-size:20px;min-width:180px;min-height:64px}.take-preview[data-phase=play] .take-story-intro{transform:translate(-100vw,65vh) scale(.15);pointer-events:none}.take-settings{position:absolute;top:60px;right:12px;width:min(310px,calc(100% - 24px));z-index:40;background:#f8ebcc;border:2px solid #ad8351;border-radius:9px;padding:16px;box-shadow:0 10px 30px #40260c44;display:grid;gap:8px}.take-settings label{display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px}.take-settings input{width:22px;height:22px;accent-color:#356449}.take-settings p{font-size:12px}.take-modal{border:2px solid #ac8553;padding:0;background:#f8e9c9;color:var(--ink);max-width:calc(100% - 32px);max-height:calc(100% - 32px);border-radius:12px;box-shadow:0 15px 40px #37220b55}.take-modal::backdrop{background:#29434b70}.take-modal>section{position:relative;padding:35px 25px;max-width:420px}.take-modal h2{font-size:25px;margin:12px 0}.take-modal p{line-height:1.5;margin:12px 0}.take-modal .take-close{position:absolute;right:6px;top:6px}.take-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.take-preview[data-reduced=true] *, .take-preview[data-reduced=true] *:before,.take-preview[data-reduced=true] *:after{animation:none!important;transition:none!important}.take-preview[data-reduced=true] .take-game.is-celebrating .take-flight{transform:translate(-50%,-50%) scale(.44)}
+@media(min-width:700px) and (min-height:600px){.take-preview{--body:clamp(72px,8.5vw,112px);min-height:700px}.take-topbar{top:12px;left:16px;right:16px;gap:14px}.take-age{font-size:18px}.take-progress{width:160px;height:26px}.take-task{top:8px;left:24%;right:24%;height:120px;padding:25px 28px 14px}.take-task p{font-size:21px}.take-task .take-icon{width:48px;min-width:48px;height:48px}.take-airfield{top:17%;bottom:32%;left:8%;right:2%}.take-balloon-slot{--body:clamp(72px,8.5vw,112px)}.take-launch-task{font-size:14px;left:8%;right:8%;top:70px;background:#fff5d787}.take-preview .take-launch{font-size:15px;height:60px}.take-explorer{width:26%;max-width:250px;bottom:24%;left:0}.take-windsock-rig{top:29%;left:2%;width:145px}.take-console{width:610px;max-width:74%;left:50%;right:auto;transform:translateX(-50%);bottom:116px;height:210px;padding:29px 36px}.take-answer-row{height:56px;gap:18px;margin-bottom:13px}.take-preview .take-undo{height:53px;font-size:18px}.take-preview .take-check{height:58px;font-size:22px}.take-preview .take-check.is-retry{font-size:20px}.take-answer-window{height:54px}.take-preview .take-answer-window input{font-size:30px;height:50px}.take-preview .take-answer-window .take-erase{height:50px;min-width:30px}.take-number-keys{grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}.take-preview .take-number-keys button{height:50px;min-height:50px;min-width:44px;font-size:27px}.take-action-rail{bottom:35%;left:30%;right:13%;gap:14px}.take-preview .take-action-rail button{font-size:14px;min-height:48px}.take-gesture-tip{bottom:32.5%;left:31%;right:12%;font-size:12px}.take-feedback{bottom:73px;left:24%;right:10%;height:40px;font-size:16px}.take-feedback.is-incorrect{font-size:17px}.take-navigation{left:22%;right:3%;bottom:12px;gap:15px;height:56px;grid-template-columns:1.1fr .9fr 1.6fr}.take-preview .take-navigation button{height:56px;font-size:20px;padding:10px 15px}.take-navigation svg{width:20px;height:20px}.take-next-short{display:none}.take-next-long{display:inline}.take-preview .take-next-primary{font-size:22px}.take-books{left:2%;bottom:10px;gap:9px}.take-preview .take-story-button{width:90px;height:100px;font-size:15px}.take-preview .take-hint-button{width:64px;height:80px;font-size:16px}.take-books svg{width:25px;height:25px}.take-story-intro{top:26%;padding:32px;left:25%;right:25%;max-width:520px}.take-story-intro h1{font-size:34px}.take-story-intro p{font-size:21px}.take-intro-book{width:100px;height:110px}.take-hint-note{bottom:35%;font-size:17px}}
+@media(min-width:700px) and (max-width:900px) and (min-height:600px){.take-console{max-width:82%;padding-left:28px;padding-right:28px}.take-number-keys{gap:3px}.take-preview .take-number-keys button{min-width:44px}.take-task{left:21%;right:21%;height:140px;padding:30px 19px 15px}.take-task p{font-size:18px}.take-console{height:206px}.take-explorer{bottom:27%}.take-navigation{left:23%;gap:10px}.take-preview .take-navigation button{font-size:17px}.take-books{left:1%}.take-preview .take-story-button{width:75px;height:90px}.take-preview .take-hint-button{width:54px;height:70px}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-preview{--body:clamp(68px,6.5vw,95px);min-height:600px}.take-landscape{background-position:center 56%}.take-task{left:25%;right:25%;height:105px}.take-task p{font-size:20px}.take-airfield{top:17%;bottom:34%;left:12%;right:1%}.take-balloon-slot{--body:clamp(68px,6.5vw,95px)}.take-balloon-slot:nth-child(n){top:66%!important;left:calc(8% + (var(--slot-i) + .5) / var(--total) * 84%)!important}.take-balloon-grid{display:flex;align-items:center}.take-launch-task{top:63px;left:10%}.take-preview .take-launch{height:48px}.take-console{width:580px;max-width:56%;height:195px;padding:27px 32px;bottom:104px}.take-action-rail{bottom:34%;left:38%;right:14%;}.take-gesture-tip{bottom:31%;left:38%;right:14%}.take-explorer{max-width:200px;width:19%;bottom:16%}.take-windsock-rig{width:125px;top:31%}.take-feedback{bottom:64px;left:32%;right:18%;height:38px;font-size:14px}.take-navigation{left:22%;right:2%;bottom:8px;gap:18px}.take-preview .take-navigation button{height:52px}.take-preview .take-story-button{width:84px;height:96px}.take-preview .take-hint-button{width:64px;height:74px}.take-books{bottom:8px}.take-story-intro{top:23%;left:30%;right:30%;max-width:480px;padding:24px}.take-story-intro h1{font-size:30px}.take-story-intro p{font-size:18px}.take-intro-book{width:75px;height:80px}}
+@media(orientation:landscape) and (max-height:599px){.take-preview{min-height:360px;--body:44px}.take-topbar{left:8px;right:8px;top:4px;gap:6px}.take-task{left:22%;right:22%;top:0;height:90px;padding:18px 16px 8px}.take-task p{font-size:13px}.take-age{font-size:12px;padding:10px}.take-progress{width:68px;height:18px}.take-airfield{top:25%;bottom:20%;left:5%;right:42%}.take-preview .take-launch{height:44px;left:10%;width:90%;font-size:10px}.take-launch-task{top:47px;font-size:10px;left:15%;right:0}.take-balloon-slot{--body:44px}.take-explorer{width:90px;bottom:4%;left:0}.take-windsock-rig{top:28%;width:70px;left:1%}.take-console{left:auto;right:2%;bottom:66px;width:39%;height:196px;padding:18px 14px}.take-answer-row{gap:4px}.take-preview .take-undo{font-size:10px;padding:4px;}.take-undo svg{display:none}.take-preview .take-check{font-size:13px}.take-preview .take-check.is-retry{font-size:11px}.take-preview .take-number-keys button{min-height:44px;height:44px;min-width:44px;font-size:18px}.take-number-keys{gap:3px}.take-feedback{left:59%;right:2%;bottom:39px;height:30px;font-size:10px}.take-feedback.is-incorrect{font-size:11px}.take-navigation{left:47%;right:2%;bottom:2px;height:40px;gap:5px}.take-preview .take-navigation button{height:40px;min-height:40px;font-size:11px}.take-action-rail{left:15%;right:46%;bottom:8%;gap:7px}.take-preview .take-action-rail button{font-size:10px;min-height:36px;padding:4px}.take-gesture-tip{left:15%;right:45%;bottom:1%;font-size:9px}.take-books{left:1%;bottom:2px;gap:3px}.take-preview .take-story-button{width:42px;height:48px;font-size:8px}.take-preview .take-hint-button{width:34px;min-width:34px;height:42px;font-size:9px}.take-books svg{width:12px;height:12px}.take-story-intro{top:22%;left:28%;right:28%;padding:18px}.take-intro-book{display:none}.take-story-intro h1{font-size:22px}.take-story-intro p{font-size:13px;line-height:1.3}.take-story-kicker{margin-top:0;font-size:9px}.take-preview .take-begin{font-size:17px;min-height:48px}.take-story-loading{min-height:20px;font-size:10px}.take-hint-note{bottom:25%;font-size:12px;padding:12px}}
+@media(max-width:360px){.take-topbar{left:7px;right:7px;gap:4px}.take-progress{width:65px}.take-age{font-size:12px;padding:10px}.take-task{height:98px;padding:21px 15px 10px}.take-task p{font-size:15px}.take-console{left:2%;right:2%;padding:22px 14px;height:190px}.take-preview .take-undo{font-size:11px}.take-preview .take-check{font-size:14px}.take-number-keys{gap:3px}.take-preview .take-number-keys button{min-width:44px}.take-navigation{left:28%;right:1%;gap:3px}.take-preview .take-navigation button{padding:5px;font-size:10px}.take-books{left:1%}.take-preview .take-story-button{width:46px;height:58px}.take-preview .take-hint-button{width:36px;min-width:36px;height:48px}.take-feedback{font-size:11px}}
 
-/* Tablets get a full-width navigation rail and a persistent, generous Next target. */
-.take-next-long { display:none; }
-@keyframes take-next-pulse {
-  0%,100% { box-shadow:0 3px 0 #34543c,0 0 0 0 #4d775500; }
-  50% { box-shadow:0 3px 0 #34543c,0 0 0 5px #4d77552e; }
+/* Keep the anchor footprints on foreground meadow and the counting aid out of it. */
+.take-launch-task{display:none}.take-action-rail{top:24%;bottom:auto;left:2%;right:auto;justify-content:flex-start;gap:6px}.take-action-rail>button:first-child{width:44px;padding:8px}.take-action-rail>button:first-child>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.take-gesture-tip{top:20%;bottom:auto;left:18%;right:5%;font-size:10px;background:#fff1d08c;pointer-events:none}.take-story-intro{background:#f5e6c8;background-image:none}
+@media(min-width:700px) and (min-height:600px){.take-action-rail{top:24%;bottom:auto;left:3%;right:auto}.take-gesture-tip{top:18%;bottom:auto;left:28%;right:18%;font-size:12px}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-balloon-slot:nth-child(n){top:75%!important}.take-gesture-tip{top:18%;bottom:auto}.take-action-rail{top:24%;left:3%;bottom:auto}}
+@media(orientation:landscape) and (max-height:599px){.take-balloon-slot:nth-child(n){top:calc(65% + var(--slot-row) * 24%)!important}.take-action-rail{top:24%;bottom:auto;left:4%;right:auto}.take-gesture-tip{top:25%;bottom:auto;left:18%;right:45%;font-size:9px}.take-preview .take-topbar .take-icon{min-height:44px}.take-preview .take-navigation button{min-height:44px;height:44px}.take-navigation{height:44px;bottom:1px}.take-preview .take-hint-button{width:44px;min-width:44px;min-height:44px}.take-preview .take-action-rail button{min-height:44px}}
+
+.take-preview .take-check.is-retry{position:relative;isolation:isolate;background:none;background-color:transparent;background-blend-mode:normal;border-radius:0}.take-check.is-retry:before{content:'';position:absolute;inset:0;z-index:-1;background:url('/take-airfield/check-button.webp') center/100% 100% no-repeat;filter:sepia(1) saturate(2.8) hue-rotate(315deg)}
+.take-game.is-celebrating .take-flight{left:var(--formation-x);top:var(--formation-y)}
+@keyframes take-formation{0%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.44) rotate(-5deg)}45%{left:calc(var(--formation-x) + 7%);top:calc(var(--formation-y) - 5%);transform:translate(-50%,-50%) scale(.57) rotate(12deg)}75%{left:calc(var(--formation-x) - 3%);top:calc(var(--formation-y) + 2%);transform:translate(-50%,-50%) scale(.48) rotate(-9deg)}100%{left:var(--formation-x);top:var(--formation-y);transform:translate(-50%,-50%) scale(.44)}}
+
+@media(orientation:portrait) and (min-width:700px) and (min-height:600px){.take-landscape{background-position:center bottom}.take-balloon-slot:nth-child(n){top:calc(65% + var(--slot-row) * 20%)!important;left:calc(var(--base-left) + var(--slot-row) * 8%)!important}.take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:82%!important}}
+.take-preview .take-launch:not(.is-visible){opacity:0;pointer-events:none}.take-gesture-tip{background:transparent;color:#244965;text-shadow:0 1px 2px #fff9df,0 0 4px #fff6d9}
+@media(orientation:portrait){.take-landscape{background-size:cover;background-position:center bottom;transform:scale(1.14);transform-origin:center bottom}}
+
+.take-age{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}
+
+.take-game.is-celebrating .take-explorer{animation:none}
+
+.take-game[data-result="correct"] .take-check{opacity:.6;filter:saturate(.45)}
+@media(max-width:699px) and (orientation:portrait){.take-navigation:has(.take-next-primary){grid-template-columns:1fr .65fr 1.65fr}.take-preview .take-navigation .take-next-primary{font-size:14px}.take-next-primary .take-next-short{display:none}.take-next-primary .take-next-long{display:inline}.take-navigation:has(.take-next-primary)>button:nth-child(2)>svg{display:none}}
+
+/* Keep the painted world full bleed even on wide portrait displays. */
+@media(orientation:portrait){.take-preview[data-phase="story"] .take-landscape{transform:scale(1.25) translateY(-2%)}}
+/* The live answer occupies the artwork's single ivory recess (470 × 243 source). */
+.take-preview .take-answer-row{position:absolute;inset:0;height:auto;margin:0;pointer-events:none}
+.take-preview .take-answer-row>button,.take-preview .take-answer-window{pointer-events:auto;position:absolute;top:13%;height:27%;min-height:44px}
+.take-preview .take-answer-row>.take-undo{left:5%;width:27%}
+.take-preview .take-answer-row>.take-check{right:4%;width:28%}
+.take-preview .take-answer-window{left:34%;top:14%;width:31%;height:24%;min-height:44px;flex:none;background:transparent;border:0;border-radius:0;box-shadow:none}
+.take-preview .take-number-keys{position:absolute;left:6%;right:6%;top:45%}
+.take-game[data-result="correct"] .take-balloon-target,.take-game[data-result="correct"] .take-tether,.take-game[data-result="correct"] .take-released-fleet{visibility:hidden;pointer-events:none}
+.take-celebration-fleet{position:absolute;inset:0;pointer-events:none}
+.take-celebration-flight{position:absolute;width:var(--body);height:calc(var(--body)*1.3);left:var(--from-x);top:var(--from-y);animation:take-depart 2.4s cubic-bezier(.45,.02,.62,.8) var(--departure-delay) both}
+.take-celebration-flight.was-released{animation-name:take-depart-small}
+@keyframes take-depart{0%{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}18%{transform:translate(-50%,-50%) scale(.98) rotate(var(--flight-tilt))}85%{opacity:1}100%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.12) rotate(-12deg);opacity:0}}
+@keyframes take-depart-small{0%{left:var(--from-x);top:var(--from-y);transform:translate(-50%,-50%) scale(.44);opacity:1}85%{opacity:1}100%{left:var(--to-x);top:var(--to-y);transform:translate(-50%,-50%) scale(.08) rotate(12deg);opacity:0}}
+
+.take-preview .take-answer-row>.take-check.is-retry{position:absolute}
+
+/* Keep navigation artwork at its native proportions, including after success. */
+.take-preview .take-navigation button{background-size:contain;background-repeat:no-repeat;background-position:center;justify-self:center;width:100%;max-width:157px}
+.take-preview .take-navigation button:first-child{justify-self:start}
+.take-preview .take-navigation button:last-child{justify-self:end}
+.take-preview .take-navigation .take-next-primary{background-image:url('/take-airfield/nav-button.webp');color:#fff5d8;filter:sepia(.7) saturate(1.3) hue-rotate(65deg) brightness(.86);text-shadow:0 1px 2px #24482b;font-size:14px}
+@media(min-width:700px) and (min-height:600px){.take-navigation{grid-template-columns:1fr 1fr 1fr}.take-preview .take-navigation button{width:157px;height:56px;font-size:16px;padding:8px}.take-preview .take-navigation .take-next-primary{font-size:16px}.take-navigation svg{width:16px;height:16px}}
+
+.take-banner-copy{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.take-banner-guidance{font-size:10px;line-height:1.15;text-align:center;color:#31556a}
+.take-preview .take-launch{border-radius:12px;font-size:12px;padding:6px 10px}
+.take-preview .take-navigation .take-next-primary{animation-name:take-nav-pulse}
+@keyframes take-nav-pulse{50%{filter:sepia(.7) saturate(1.3) hue-rotate(65deg) brightness(1) drop-shadow(0 0 5px #fff0b4)}}
+@media(min-width:700px) and (min-height:600px){.take-banner-guidance{font-size:11px}.take-task p{font-size:18px}}
+@media(orientation:landscape) and (max-height:599px){.take-banner-guidance{font-size:9px}.take-task p{font-size:12px}}
+@media(max-width:699px) and (orientation:portrait){.take-task{padding:36px 20px 6px}.take-task p{font-size:15px}}
+
+/* Focus and rotation must never scroll artwork inside the fixed scene. */
+.take-preview{overflow:clip}
+
+/* Success belongs on the hanging canvas, clear of the suitcase and navigation. */
+.take-banner-guidance.is-correct{color:#285331;font-weight:900;font-size:14px;text-shadow:0 1px #fff3d6}
+.take-feedback.is-correct{clip-path:inset(50%);width:1px;height:1px;overflow:hidden;padding:0;border:0;white-space:nowrap}
+@media(min-width:700px) and (min-height:600px){.take-banner-guidance.is-correct{font-size:16px}}
+@media(orientation:landscape) and (max-height:599px){.take-banner-guidance.is-correct{font-size:12px}}
+
+/* Center copy on the painted cloth, excluding the rope area above it. */
+.take-preview .take-task .take-banner-copy{position:absolute;inset:34% 20% 8% 8%;justify-content:center;gap:4px}
+.take-preview .take-task>.take-icon{position:absolute;right:7%;top:64%;translate:0 -50%}
+
+/* Lift anchor footprints into the meadow and stagger the rows without hiding clues. */
+.take-preview .take-balloon-slot:nth-child(n){top:calc(48% + var(--slot-row) * 27% + var(--meadow-jitter,0%))!important;left:calc(var(--base-left) + var(--slot-row) * 3%)!important}
+.take-preview .take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:calc(64% + var(--meadow-jitter,0%))!important}
+@media(orientation:portrait) and (min-width:700px) and (min-height:600px){.take-preview .take-balloon-slot:nth-child(n){top:calc(57% + var(--slot-row) * 20% + var(--meadow-jitter,0%))!important}.take-preview .take-airfield[data-rows="1"] .take-balloon-slot:nth-child(n){top:calc(68% + var(--meadow-jitter,0%))!important}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-preview .take-airfield .take-balloon-slot:nth-child(n){top:calc(68% + var(--meadow-jitter,0%))!important;left:calc(8% + (var(--slot-i) + .5) / var(--total) * 84%)!important}}
+@media(orientation:landscape) and (max-height:599px){.take-preview .take-airfield .take-balloon-slot:nth-child(n){top:calc(46% + var(--slot-row) * 33% + var(--meadow-jitter,0%))!important}}
+
+@media(orientation:portrait){.take-landscape{transform:scale(1.2)}}
+
+/* Distant releases sit behind every anchored balloon and its tether. */
+.take-airfield>.take-released-fleet{z-index:1;isolation:isolate}
+.take-airfield>.take-balloon-grid{z-index:2;isolation:isolate}
+
+/* Make the next solving action clear without stretching the painted button. */
+.take-preview .take-check.is-ready{color:#fffbea;text-shadow:0 1px 2px #23462d;animation:take-check-beacon 1.6s ease-in-out infinite;filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}
+@keyframes take-check-beacon{0%,100%{filter:brightness(1.16) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 3px #fff3cbd9) drop-shadow(0 0 8px #ffd57799)}50%{filter:brightness(1.36) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 5px #fff8dc) drop-shadow(0 0 16px #ffdd8fee)}}
+.take-preview[data-reduced=true] .take-check.is-ready{animation:none;filter:brightness(1.2) drop-shadow(0 2px 2px #39251855) drop-shadow(0 0 4px #fff3cbe6) drop-shadow(0 0 10px #ffd577bb)}
+
+/* Keep foreground grass behind the higher play area; background scales uniformly. */
+@media(orientation:portrait){.take-landscape{transform:scale(1.3)}}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){.take-landscape{background-position:center 62%}}
+.take-preview .take-launch{isolation:isolate}
+.take-launch.has-drag:after{content:'';position:absolute;inset:-48px -12px -80px;z-index:-1;pointer-events:none;border:1px dashed #fff4cfb3;border-radius:24px;background:radial-gradient(ellipse,#fff2cc70,#fff6d91a);box-shadow:inset 0 0 24px #fff6d94d}
+.take-launch.has-drag.is-over:after{border-color:#d5f8ba;background:radial-gradient(ellipse,#e2f8ce7a,#e5fad71a)}
+
+/* A held balloon stays visible even when lifted over the sign. */
+.take-preview>.take-carried{z-index:32}
+
+/* The reference console is one registered painting: never stretch its leather,
+   answer recess or eight physical keys independently. All controls stay live. */
+.take-preview .take-console{
+  container-type:inline-size;width:96%;max-width:720px;left:50%;right:auto;
+  height:auto;aspect-ratio:1958/803;padding:0;bottom:82px;
+  transform:translateX(-50%);background-image:url('/take-airfield/suitcase-reference-v2.webp');
+  background-size:contain;background-position:center;background-repeat:no-repeat;
+  filter:drop-shadow(0 7px 4px #33220b45);
 }
-@media (min-width:700px) and (min-height:600px) {
-  .take-navigation { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1.8fr) minmax(0,.9fr) minmax(0,.9fr);gap:14px;padding:12px 24px; }
-  .take-preview .take-navigation button { min-height:56px;width:100%;padding:10px 12px;font-size:16px;gap:8px;flex:none; }
-  .take-navigation button svg { display:block;width:20px;height:20px; }
-  .take-navigation .take-story-button span { font-size:16px; }
-  .take-navigation .take-next-short { display:none; }
-  .take-navigation .take-next-long { display:inline; }
-  .take-preview .take-navigation .take-next-button { font-size:20px;font-weight:800; }
-  .take-preview .take-navigation .take-next-primary { background:#396b45;border-color:#315c3a;animation:take-next-pulse 1.8s ease-in-out infinite; }
+.take-preview .take-answer-row{inset:0;position:absolute;pointer-events:none}
+.take-preview .take-answer-row>.take-undo{
+  left:7.9%;top:8%;width:20.2%;height:31.5%;min-height:0;
+  background:none;padding:1% 0 0;font-size:clamp(11px,3.9cqw,28px);
+  color:#352511;filter:none;gap:2px;
 }
-@media (orientation:landscape) and (min-width:700px) and (min-height:600px) {
-  .take-navigation { grid-column:1 / -1;grid-row:4; }
-  .take-gesture-tip { grid-column:1;grid-row:3;z-index:4;background:#e1e7d1; }
+.take-preview .take-undo svg{display:block;width:clamp(12px,3cqw,22px);height:auto;stroke-width:3}
+.take-preview .take-answer-row>.take-check{
+  left:68%;right:auto;top:7.5%;width:28.3%;height:34.4%;min-height:0;
+  background:none;padding:0 0 2%;font-size:clamp(15px,4.5cqw,32px);
+  color:#fff5da;text-shadow:0 1px 2px #243b25;isolation:isolate;
+}
+.take-preview .take-answer-row>.take-check::before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:transparent;mask:url('/take-airfield/check-reference-v2.webp') center/contain no-repeat;
+}
+.take-preview .take-check.is-ready::before{background:#ffe58b55}
+.take-preview .take-check.is-retry::before{background:#c16b3dbb}
+.take-preview .take-answer-row>.take-check.is-retry{font-size:clamp(12px,3.5cqw,25px);background:none}
+.take-preview .take-answer-window{
+  left:36.5%;top:12.4%;width:26.4%;height:24.1%;min-height:0;
+  background:none;border:0;box-shadow:none;
+}
+.take-preview .take-answer-window input{
+  height:100%;padding:0 12% 0 3%;font-size:clamp(20px,5.2cqw,38px);
+  font-weight:800;color:#46301b;
+}
+.take-preview .take-answer-window input::placeholder{color:transparent}
+.take-preview .take-answer-window .take-erase{
+  right:0;top:0;width:22%;height:100%;min-width:0;min-height:0;
+  background:none;opacity:.55;padding:0;filter:none;
+}
+.take-preview .take-erase svg{width:clamp(12px,2.5cqw,18px);height:auto}
+.take-preview .take-number-keys{
+  position:absolute;left:10.9%;right:8.6%;top:45.5%;height:22.8%;
+  display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:1.1%;
+}
+.take-preview .take-number-keys button{
+  position:relative;width:100%;height:100%;min-width:0;min-height:0;padding:0 0 3%;
+  background:none;filter:none;font-size:clamp(20px,6.6cqw,46px);line-height:1;
+  color:#3a281b;font-weight:800;text-shadow:0 1px #fff3d9;
+}
+.take-preview .take-number-keys button::after{content:'';position:absolute;left:0;right:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}
+.take-preview .take-console button:disabled{opacity:.65}
+.take-preview .take-console button:not(:disabled):active{transform:translateY(1px);filter:brightness(.96)}
+.take-preview .take-check.is-ready{animation:take-check-beacon 1.6s ease-in-out infinite}
+.take-preview .take-navigation{
+  container-type:inline-size;left:auto;right:2%;bottom:8px;width:70%;height:auto;
+  aspect-ratio:1729/323;display:grid;grid-template-columns:1.78fr 1fr 1.78fr;
+  gap:1.2%;padding:2.3% 2.7%;background:url('/take-airfield/navigation-reference-v2.webp') center/100% 100% no-repeat;
+}
+.take-preview .take-navigation button{
+  width:100%;max-width:none;height:100%;min-height:36px;min-width:0;
+  justify-self:stretch;background:none;font-size:clamp(10px,4.3cqw,23px);padding:0;gap:3px;filter:none;
+}
+.take-preview .take-navigation button:first-child,.take-preview .take-navigation button:last-child{justify-self:stretch}
+.take-preview .take-navigation svg{width:clamp(12px,4cqw,21px);height:auto;stroke-width:3}
+.take-preview .take-navigation button:nth-child(2)>svg{display:none}
+.take-preview .take-navigation .take-next-short{display:inline}
+.take-preview .take-navigation .take-next-long{display:none}
+.take-preview .take-navigation .take-next-primary{
+  background:none;color:#28523c;text-shadow:0 1px #fff8df;
+  font-size:clamp(10px,4.3cqw,23px);animation:take-reference-next 1.6s ease-in-out infinite;
+}
+@keyframes take-reference-next{50%{filter:drop-shadow(0 0 5px #f9de82);color:#39744a}}
+.take-preview .take-books{left:1%;bottom:4px;gap:4px;align-items:flex-end}
+.take-preview .take-story-button{
+  background-image:url('/take-airfield/flight-log-reference-v2.webp');background-size:contain;
+  width:63px;height:74px;min-width:0;padding:34px 7px 10px 13px;
+  transform:none;font-size:9px;line-height:1.12;gap:0;
+}
+.take-preview .take-hint-button{
+  background-image:url('/take-airfield/hint-reference-v2.webp');background-size:contain;
+  width:47px;height:64px;min-width:0;padding:30px 4px 10px;
+  transform:none;font-size:11px;line-height:1.1;
+}
+.take-preview .take-books svg{display:none}
+@media(min-width:700px) and (min-height:600px){
+  .take-preview .take-console{width:min(78%,760px);max-width:none;bottom:122px}
+  .take-preview .take-navigation{left:32%;right:3%;width:auto;bottom:12px;max-width:650px;padding:1.25% 1.5%;height:auto}
+  .take-preview .take-navigation button{height:100%;min-height:44px}
+  .take-preview .take-books{left:2%;bottom:10px;gap:9px}
+  .take-preview .take-story-button{width:112px;height:130px;font-size:16px;padding:58px 12px 17px 23px}
+  .take-preview .take-hint-button{width:81px;height:108px;font-size:20px;padding:53px 7px 19px}
+}
+@media(orientation:landscape) and (min-width:900px) and (min-height:600px){
+  .take-preview .take-console{width:min(60%,760px);bottom:120px}
+  .take-preview .take-navigation{left:auto;width:47%;max-width:600px;right:3%;padding:1.05% 1.25%}
+}
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-console{left:auto;right:1%;bottom:66px;width:48%;max-width:500px;transform:none}
+  .take-preview .take-navigation{left:auto;right:1%;width:48%;bottom:5px;padding:1.05% 1.25%}
+  .take-preview .take-navigation button{min-height:36px}
+  .take-preview .take-story-button{width:50px;height:59px;font-size:8px;padding:27px 5px 8px 11px}
+  .take-preview .take-hint-button{width:39px;height:52px;font-size:9px;padding:25px 4px 9px}
+}
+/* Short landscape gives the wider case its own side of the meadow. */
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-airfield{right:53%}
+  .take-preview .take-feedback.is-incorrect{left:51%;right:1%;bottom:calc(70px + 48vw * 803 / 1958);height:30px}
+}
+.take-preview .take-airfield .take-balloon-grid.is-placed .take-balloon-slot:nth-child(n){left:var(--px)!important;top:var(--py)!important}
+
+/* Released balloons have scene-relative, collision-spaced sky destinations.
+   The meadow layout never controls their resting position or animation. */
+.take-preview .take-flight{left:var(--to-x);top:var(--to-y);animation:none;transform:translate(-50%,-50%) scale(.44);opacity:.92}
+.take-preview .take-flight.is-new{animation:take-release 2.2s cubic-bezier(.2,.5,.35,1) both}
+.take-preview .take-flight .take-balloon-art{animation:take-sky-sway 7s ease-in-out var(--drift-delay,0s) infinite}
+@keyframes take-sky-sway{0%,100%{transform:translate(-2px,-2px) rotate(-2deg)}50%{transform:translate(2px,2px) rotate(2deg)}}
+@media(orientation:landscape){.take-preview .take-landscape{background-image:url('/take-airfield/landscape-open-sky.webp');background-position:center 60%;transform:none}}
+@media(orientation:landscape) and (min-height:600px){.take-preview .take-landscape{transform:scale(1.5);transform-origin:center bottom;background-position:center bottom}}
+/* A wider portrait must reveal sky as well as foreground; the old 1.3x zoom
+   cropped the blue sky down to a sliver behind the top navigation. */
+@media(orientation:portrait){.take-preview .take-landscape{transform:scale(1.05);transform-origin:center bottom}}
+/* Portrait leaves a clear lane for the explorer instead of spanning her body. */
+@media(orientation:portrait){
+  .take-preview .take-console{width:min(70%,560px);max-width:none;left:64%;right:auto;transform:translateX(-50%)}
+}
+@media(orientation:portrait) and (max-width:479px){
+  .take-preview .take-console{width:82%;left:58%}
+}
+/* Leave visible sky on both sides of the hanging instruction canvas. */
+@media(orientation:portrait){.take-preview .take-task{top:96px}}
+@media(orientation:landscape) and (min-height:600px){
+  .take-preview .take-task{top:64px}
+  .take-preview .take-landscape{transform:scale(1.3)}
+}
+@media(orientation:landscape) and (max-height:599px){
+  .take-preview .take-task{top:42px}
+  .take-preview .take-landscape{background-position:center 50%}
 }
