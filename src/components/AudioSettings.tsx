@@ -1,6 +1,7 @@
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { getAudioStatus, testSound, unlockAudio, getAudioSettings, setAudioSettings, subscribeAudio, DEFAULT_SETTINGS, type AudioSettings as S } from '@/lib/audio/mixer';
-import { englishVoices, getNarration, selectedVoice, setVoice, speak, stopNarration, subscribeNarration, subscribeVoices } from '@/lib/audio/narrator';
+import { englishVoices, getNarration, setVoice, speak, stopNarration, subscribeNarration, subscribeVoices, voicePreference, STORYBOOK_VOICE } from '@/lib/audio/narrator';
+import { storybookAvailable } from '@/lib/audio/storybook-voice';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -13,8 +14,11 @@ export function AudioSettings({ className }: { className?: string }) {
   const engine = useSyncExternalStore(subscribeAudio, getAudioStatus, () => 'locked' as const);
   const narration = useSyncExternalStore(subscribeNarration, getNarration, getNarration);
   const [test, setTest] = useState<string>('');
-  const voiceKey = useSyncExternalStore(subscribeVoices, () => `${englishVoices().length}:${selectedVoice()?.voiceURI ?? ''}`, () => '0:');
+  const voiceKey = useSyncExternalStore(subscribeVoices, () => `${englishVoices().length}:${voicePreference()}`, () => '0:');
   const voices = voiceKey.startsWith('0:') ? [] : englishVoices();
+  const pref = voiceKey.slice(voiceKey.indexOf(':') + 1);
+  const [book, setBook] = useState(false);
+  useEffect(() => { setBook(storybookAvailable()); }, []);
   const runTest = () => {
     setTest('Testing…');
     void testSound().then((r) => setTest(
@@ -25,7 +29,7 @@ export function AudioSettings({ className }: { className?: string }) {
       : r.status === 'locked' ? 'The browser blocked sound. Tap “Test sound” again.'
       : 'Sound didn’t start. Tap “Test sound” again.'));
   };
-  const voiceMsg = narration.id === 'voice-test' ? (narration.status === 'error' ? narration.error : narration.status === 'speaking' ? 'Speaking…' : narration.status === 'loading' ? 'Starting voice…' : '') : '';
+  const voiceMsg = narration.id === 'voice-test' ? (narration.status === 'error' ? narration.error : narration.status === 'speaking' ? (narration.engine === 'storybook' ? 'Storybook voice is playing.' : 'Device voice started — if it’s silent, turn off silent mode.') : narration.status === 'loading' ? (narration.note ?? 'Starting voice…') : '') : '';
   return <div className={cn('audio-settings', className)} role="group" aria-label="Sound settings">
     {engine !== 'running' && !s.muted && <Button variant="game" size="game" type="button" data-audio-ignore className="audio-action audio-enable" onClick={() => { void unlockAudio(); }}>
       {engine === 'unsupported' ? 'Sound not supported here' : 'Enable sound'}</Button>}
@@ -34,9 +38,10 @@ export function AudioSettings({ className }: { className?: string }) {
       <Button variant="game" size="game" type="button" data-audio-ignore className="audio-action" onClick={() => speak('voice-test', 'Hello Ayla! This is your puzzle voice.')}>Test voice</Button>
     </div>
     <p className="audio-status" role="status" aria-live="polite">{voiceMsg || test || (engine === 'running' ? 'Sound is on.' : engine === 'unsupported' ? 'This browser can’t play game sounds.' : s.muted ? 'All sound is muted.' : 'Sound is waiting for a tap.')}</p>
-    {voices.length > 1 && <label className="audio-volume"><span>Reading voice</span>
-      <select data-audio-ignore value={selectedVoice()?.voiceURI ?? ''} onChange={(e) => { setVoice(e.target.value); speak('voice-test', 'Hello Ayla! This is your puzzle voice.'); }}>
-        {voices.map((v) => <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>)}
+    {(book || voices.length > 1) && <label className="audio-volume"><span>Reading voice</span>
+      <select data-audio-ignore value={pref === STORYBOOK_VOICE || voices.some((v) => v.voiceURI === pref) ? pref : STORYBOOK_VOICE} onChange={(e) => { setVoice(e.target.value); speak('voice-test', 'Hello Ayla! This is your puzzle voice.'); }}>
+        <option value={STORYBOOK_VOICE}>Storybook voice (recommended)</option>
+        {voices.map((v) => <option key={v.voiceURI} value={v.voiceURI}>Device: {v.name}</option>)}
       </select></label>}
     {row('muted', 'Mute all sound', s.muted)}
     {row('voice', 'Read-aloud voice', s.voice)}

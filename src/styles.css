@@ -1823,6 +1823,7 @@ html, body { overflow-x: clip; }
 /* Read-aloud: error shown right beside the speaker button */
 .read-aloud-wrap { display:inline-flex; flex-direction:column; align-items:center; gap:4px; position:relative; flex-shrink:0; }
 .read-aloud-error { max-width:200px; padding:4px 8px; border-radius:8px; background:var(--destructive); color:var(--destructive-foreground, #fff); font:700 12px/1.25 var(--font-sans); text-align:center; }
+.read-aloud-note { background:var(--secondary); color:var(--secondary-foreground); font-weight:600; }
 .forest-spatial .read-aloud-error { position:absolute; top:100%; right:0; z-index:5; width:180px; }
 .audio-volume select { min-height:36px; border-radius:8px; padding:4px 8px; max-width:100%; }
 

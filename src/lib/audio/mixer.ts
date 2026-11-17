@@ -34,6 +34,7 @@ export function setAudioSettings(patch: Partial<AudioSettings>) {
 export function subscribeAudio(l: () => void) { listeners.add(l); return () => { listeners.delete(l); }; }
 
 let ctx: AudioContext | undefined, master: GainNode | undefined, fxBus: GainNode | undefined, meter: AnalyserNode | undefined;
+let voiceBus: GainNode | undefined, voiceMeter: AnalyserNode | undefined;
 let ducked = false;
 /** Honest engine status for the UI: 'locked' until a real activation gesture has resumed the context. */
 export type AudioStatus = 'unsupported' | 'locked' | 'running' | 'error';
@@ -51,6 +52,9 @@ function context(): AudioContext | undefined {
     ctx = new A();
     master = ctx.createGain(); fxBus = ctx.createGain(); meter = ctx.createAnalyser(); meter.fftSize = 2048;
     fxBus.connect(master); master.connect(ctx.destination); master.connect(meter);
+    // Storybook narration bus: same unlocked context and playback session as the effects (never ducked).
+    voiceBus = ctx.createGain(); voiceMeter = ctx.createAnalyser(); voiceMeter.fftSize = 2048;
+    voiceBus.connect(master); voiceBus.connect(voiceMeter);
     applyGains(true);
     // iOS reports 'interrupted' after calls/Siri/backgrounding; every state change is surfaced and retried on the next gesture.
     ctx.onstatechange = syncStatus;
@@ -65,10 +69,11 @@ if (typeof document !== 'undefined') document.addEventListener('visibilitychange
 function applyGains(immediate = false) {
   if (!ctx || !master || !fxBus) return;
   const t = ctx.currentTime;
-  const m = settings.muted ? 0 : 1, fx = settings.effects ? (ducked ? .4 : 1) : 0;
-  if (immediate) { master.gain.value = m; fxBus.gain.value = fx; return; }
+  const m = settings.muted ? 0 : 1, fx = settings.effects ? (ducked ? .4 : 1) : 0, vo = settings.voice ? .78 : 0; // TTS is mastered near full scale; headroom avoids clipping after resampling
+  if (immediate) { master.gain.value = m; fxBus.gain.value = fx; if (voiceBus) voiceBus.gain.value = vo; return; }
   master.gain.setTargetAtTime(m, t, .05);
   fxBus.gain.setTargetAtTime(fx, t, .05);
+  voiceBus?.gain.setTargetAtTime(vo, t, .02);
 }
 /** Lower effects while narration speaks; restore after. */
 export function setDucked(value: boolean) { ducked = value; applyGains(); }
@@ -100,6 +105,17 @@ export function outputPeak(): number {
   const d = new Float32Array(meter.fftSize); meter.getFloatTimeDomainData(d);
   let p = 0; for (const v of d) p = Math.max(p, Math.abs(v)); return p;
 }
+/** Narration output on the shared context (created lazily; call after unlockAudio()). */
+export function voiceOutput(): { ctx: AudioContext; bus: GainNode } | undefined {
+  const c = context(); return c && voiceBus ? { ctx: c, bus: voiceBus } : undefined;
+}
+/** Peak absolute narration sample actually rendered on the voice bus (proves PCM output, not device audibility). */
+export function voicePeak(): number {
+  if (!voiceMeter) return 0;
+  const d = new Float32Array(voiceMeter.fftSize); voiceMeter.getFloatTimeDomainData(d);
+  let p = 0; for (const v of d) p = Math.max(p, Math.abs(v)); return p;
+}
+export const webAudioSupported = () => typeof window !== 'undefined' && !!audioCtor();
 export type SoundTestResult = { ok: boolean; status: AudioStatus | 'muted' | 'effects-off'; peak: number };
 /** Tap-triggered sound test: confirms resume, plays a chime, and measures the rendered output energy. */
 export async function testSound(): Promise<SoundTestResult> {

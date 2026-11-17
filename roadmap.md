@@ -1,4 +1,5 @@
 # Puzzle pictures
+- [x] Fix silent iPad narration: storybook voice through the shared sound path, honest start, one voice per reading; tests + real-browser check.
 - [x] Remove all local music scheduling/controls; preserve effects and combined narration.
 - [x] Audit and verify every local game adapter, real effects output, narration, regressions and preview build; list external draft blockers.
 - [ ] Apply effects-only update to isolated Loom/Balloon/Story Worlds drafts and external Train/V2/Scene Games sources — blocked: those source checkouts are not mounted here; no draft acceptance or refresh authorized.
