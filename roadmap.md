@@ -1,4 +1,7 @@
 # Puzzle pictures
+- [x] Remove all local music scheduling/controls; preserve effects and combined narration.
+- [x] Audit and verify every local game adapter, real effects output, narration, regressions and preview build; list external draft blockers.
+- [ ] Apply effects-only update to isolated Loom/Balloon/Story Worlds drafts and external Train/V2/Scene Games sources — blocked: those source checkouts are not mounted here; no draft acceptance or refresh authorized.
 - [ ] Build isolated Story Worlds alternative and age-selection entry; retain tree play.
 - [ ] Freeze Story Worlds stories before full-screen art; add isolated caches and bounded offline/failure fallback.
 - [ ] Validate all types, age tiers, phone/tablet layouts, solving/navigation and regression tests.

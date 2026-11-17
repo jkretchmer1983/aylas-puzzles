@@ -28,11 +28,12 @@ describe('read aloud', () => {
     unmount();
     expect(synth.cancel.mock.calls.length).toBe(calls + 1);
   });
-  it('keeps an unavailable speech control disabled', () => {
+  it('reports an unavailable speech engine honestly on tap', () => {
     vi.stubGlobal('speechSynthesis', undefined);
     // The property can exist but be unavailable in some browser shells.
     render(<ReadAloud group="f" content={{ task: "Task" }} />);
-    expect(screen.getByRole('button')).toBeDisabled();
+    fireEvent.click(screen.getByRole('button'));
+    expect(screen.getByRole('alert')).toHaveTextContent('isn’t available');
   });
 });
 

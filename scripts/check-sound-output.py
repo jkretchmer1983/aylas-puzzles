@@ -1,13 +1,15 @@
 import asyncio
+from pathlib import Path
 from playwright.async_api import async_playwright
 async def main():
+  Path("/tmp/browser/snd").mkdir(parents=True, exist_ok=True)
   async with async_playwright() as p:
     for name,b in [('chromium',p.chromium),('webkit',p.webkit)]:
       try: br=await b.launch(headless=True)
       except Exception as e: print(name,'launch fail',str(e)[:80]); continue
-      pg=await (await br.new_context(viewport={"width":393,"height":852},has_touch=True)).new_page()
+      pg=await (await br.new_context(viewport={"width":1280,"height":1800},has_touch=True)).new_page()
       errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
-      await pg.goto('http://localhost:8080/play?band=6-7&t=coins&s=5',wait_until='networkidle')
+      await pg.goto('http://localhost:8080/play?band=3&t=coins&s=5',wait_until='networkidle')
       await pg.wait_for_timeout(2500)
       s=pg.locator('summary').filter(has_text='').first
       for sel in ['.audio-menu summary','details summary']:

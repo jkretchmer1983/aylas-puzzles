@@ -96,12 +96,16 @@ function speakChunk(q: Seq) {
     finish(e.error === 'interrupted' || e.error === 'canceled' ? { id: null, status: 'idle' } : { id: q.id, status: 'error', error: 'Couldn’t read that aloud. Tap to try again.' });
   };
   current = u;
-  if (!q.started) {
+  {
     // Honest watchdog: if the engine never starts, show an error, never a fake "playing" state.
     if (watchdog) clearTimeout(watchdog);
-    watchdog = setTimeout(() => { if (seq === q && !q.started && !synth.speaking) { synth.cancel(); finish({ id: q.id, status: 'error', error: 'Read aloud didn’t start. Check the volume, then tap again.' }); } }, 4000);
+    watchdog = setTimeout(() => { if (seq === q && current === u && state.status !== 'speaking') { synth.cancel(); finish({ id: q.id, status: 'error', error: 'Read aloud didn’t start. Check the volume, then tap again.' }); } }, 4000);
   }
-  synth.speak(u);
+  // Each chunk needs its own start acknowledgement (a later chunk may also be blocked).
+  set({ id: q.id, status: 'loading' });
+  try { synth.speak(u); } catch {
+    synth.cancel(); finish({ id: q.id, status: 'error', error: 'Couldn’t read that aloud. Tap to try again.' });
+  }
 }
 /** Must be called directly inside a tap handler (iOS requires the gesture). */
 export function speak(id: string, text: string) {
