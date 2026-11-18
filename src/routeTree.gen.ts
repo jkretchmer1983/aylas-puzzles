@@ -10,19 +10,39 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as McpRouteImport } from './routes/mcp'
+import { Route as AirshipRouteImport } from './routes/airship'
+import { Route as CuriosityRouteImport } from './routes/curiosity'
+import { Route as OrderingRouteImport } from './routes/ordering'
 import { Route as PlayRouteImport } from './routes/play'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
-import { Route as ApiGenerateImageRouteImport } from './routes/api/generate-image'
+import { Route as RadioRouteImport } from './routes/radio'
+import { Route as RobotRouteImport } from './routes/robot'
+import { Route as SeasideScoopRouteImport } from './routes/seaside-scoop'
+import { Route as SeatingRouteImport } from './routes/seating'
+import { Route as SessionRouteImport } from './routes/session'
+import { Route as SofaRouteImport } from './routes/sofa'
+import { Route as StoryWorldRouteImport } from './routes/story-world'
+import { Route as TicketMachineRouteImport } from './routes/ticket-machine'
+import { Route as ApiReleaseRouteImport } from './routes/api/release'
+import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const AirshipRoute = AirshipRouteImport.update({
+  id: '/airship',
+  path: '/airship',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CuriosityRoute = CuriosityRouteImport.update({
+  id: '/curiosity',
+  path: '/curiosity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderingRoute = OrderingRouteImport.update({
+  id: '/ordering',
+  path: '/ordering',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayRoute = PlayRouteImport.update({
@@ -30,70 +50,179 @@ const PlayRoute = PlayRouteImport.update({
   path: '/play',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiGenerateImageRoute = ApiGenerateImageRouteImport.update({
-  id: '/api/generate-image',
-  path: '/api/generate-image',
+const RadioRoute = RadioRouteImport.update({
+  id: '/radio',
+  path: '/radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotRoute = RobotRouteImport.update({
+  id: '/robot',
+  path: '/robot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeasideScoopRoute = SeasideScoopRouteImport.update({
+  id: '/seaside-scoop',
+  path: '/seaside-scoop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatingRoute = SeatingRouteImport.update({
+  id: '/seating',
+  path: '/seating',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessionRoute = SessionRouteImport.update({
+  id: '/session',
+  path: '/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SofaRoute = SofaRouteImport.update({
+  id: '/sofa',
+  path: '/sofa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoryWorldRoute = StoryWorldRouteImport.update({
+  id: '/story-world',
+  path: '/story-world',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketMachineRoute = TicketMachineRouteImport.update({
+  id: '/ticket-machine',
+  path: '/ticket-machine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiReleaseRoute = ApiReleaseRouteImport.update({
+  id: '/api/release',
+  path: '/api/release',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
+  id: '/api/public/catalog',
+  path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mcp': typeof McpRoute
+  '/airship': typeof AirshipRoute
+  '/curiosity': typeof CuriosityRoute
+  '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/radio': typeof RadioRoute
+  '/robot': typeof RobotRoute
+  '/seaside-scoop': typeof SeasideScoopRoute
+  '/seating': typeof SeatingRoute
+  '/session': typeof SessionRoute
+  '/sofa': typeof SofaRoute
+  '/story-world': typeof StoryWorldRoute
+  '/ticket-machine': typeof TicketMachineRoute
+  '/api/release': typeof ApiReleaseRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mcp': typeof McpRoute
+  '/airship': typeof AirshipRoute
+  '/curiosity': typeof CuriosityRoute
+  '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/radio': typeof RadioRoute
+  '/robot': typeof RobotRoute
+  '/seaside-scoop': typeof SeasideScoopRoute
+  '/seating': typeof SeatingRoute
+  '/session': typeof SessionRoute
+  '/sofa': typeof SofaRoute
+  '/story-world': typeof StoryWorldRoute
+  '/ticket-machine': typeof TicketMachineRoute
+  '/api/release': typeof ApiReleaseRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/mcp': typeof McpRoute
+  '/airship': typeof AirshipRoute
+  '/curiosity': typeof CuriosityRoute
+  '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/radio': typeof RadioRoute
+  '/robot': typeof RobotRoute
+  '/seaside-scoop': typeof SeasideScoopRoute
+  '/seating': typeof SeatingRoute
+  '/session': typeof SessionRoute
+  '/sofa': typeof SofaRoute
+  '/story-world': typeof StoryWorldRoute
+  '/ticket-machine': typeof TicketMachineRoute
+  '/api/release': typeof ApiReleaseRoute
+  '/api/public/catalog': typeof ApiPublicCatalogRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mcp'
+    | '/airship'
+    | '/curiosity'
+    | '/ordering'
     | '/play'
-    | '/.well-known/oauth-protected-resource'
-    | '/api/generate-image'
+    | '/radio'
+    | '/robot'
+    | '/seaside-scoop'
+    | '/seating'
+    | '/session'
+    | '/sofa'
+    | '/story-world'
+    | '/ticket-machine'
+    | '/api/release'
+    | '/api/public/catalog'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/mcp'
+    | '/airship'
+    | '/curiosity'
+    | '/ordering'
     | '/play'
-    | '/.well-known/oauth-protected-resource'
-    | '/api/generate-image'
+    | '/radio'
+    | '/robot'
+    | '/seaside-scoop'
+    | '/seating'
+    | '/session'
+    | '/sofa'
+    | '/story-world'
+    | '/ticket-machine'
+    | '/api/release'
+    | '/api/public/catalog'
   id:
     | '__root__'
     | '/'
-    | '/mcp'
+    | '/airship'
+    | '/curiosity'
+    | '/ordering'
     | '/play'
-    | '/.well-known/oauth-protected-resource'
-    | '/api/generate-image'
+    | '/radio'
+    | '/robot'
+    | '/seaside-scoop'
+    | '/seating'
+    | '/session'
+    | '/sofa'
+    | '/story-world'
+    | '/ticket-machine'
+    | '/api/release'
+    | '/api/public/catalog'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  McpRoute: typeof McpRoute
+  AirshipRoute: typeof AirshipRoute
+  CuriosityRoute: typeof CuriosityRoute
+  OrderingRoute: typeof OrderingRoute
   PlayRoute: typeof PlayRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  ApiGenerateImageRoute: typeof ApiGenerateImageRoute
+  RadioRoute: typeof RadioRoute
+  RobotRoute: typeof RobotRoute
+  SeasideScoopRoute: typeof SeasideScoopRoute
+  SeatingRoute: typeof SeatingRoute
+  SessionRoute: typeof SessionRoute
+  SofaRoute: typeof SofaRoute
+  StoryWorldRoute: typeof StoryWorldRoute
+  TicketMachineRoute: typeof TicketMachineRoute
+  ApiReleaseRoute: typeof ApiReleaseRoute
+  ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -105,11 +234,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
+    '/airship': {
+      id: '/airship'
+      path: '/airship'
+      fullPath: '/airship'
+      preLoaderRoute: typeof AirshipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/curiosity': {
+      id: '/curiosity'
+      path: '/curiosity'
+      fullPath: '/curiosity'
+      preLoaderRoute: typeof CuriosityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ordering': {
+      id: '/ordering'
+      path: '/ordering'
+      fullPath: '/ordering'
+      preLoaderRoute: typeof OrderingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/play': {
@@ -119,18 +262,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/radio': {
+      id: '/radio'
+      path: '/radio'
+      fullPath: '/radio'
+      preLoaderRoute: typeof RadioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/generate-image': {
-      id: '/api/generate-image'
-      path: '/api/generate-image'
-      fullPath: '/api/generate-image'
-      preLoaderRoute: typeof ApiGenerateImageRouteImport
+    '/robot': {
+      id: '/robot'
+      path: '/robot'
+      fullPath: '/robot'
+      preLoaderRoute: typeof RobotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seaside-scoop': {
+      id: '/seaside-scoop'
+      path: '/seaside-scoop'
+      fullPath: '/seaside-scoop'
+      preLoaderRoute: typeof SeasideScoopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating': {
+      id: '/seating'
+      path: '/seating'
+      fullPath: '/seating'
+      preLoaderRoute: typeof SeatingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/session': {
+      id: '/session'
+      path: '/session'
+      fullPath: '/session'
+      preLoaderRoute: typeof SessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sofa': {
+      id: '/sofa'
+      path: '/sofa'
+      fullPath: '/sofa'
+      preLoaderRoute: typeof SofaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/story-world': {
+      id: '/story-world'
+      path: '/story-world'
+      fullPath: '/story-world'
+      preLoaderRoute: typeof StoryWorldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ticket-machine': {
+      id: '/ticket-machine'
+      path: '/ticket-machine'
+      fullPath: '/ticket-machine'
+      preLoaderRoute: typeof TicketMachineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/release': {
+      id: '/api/release'
+      path: '/api/release'
+      fullPath: '/api/release'
+      preLoaderRoute: typeof ApiReleaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/catalog': {
+      id: '/api/public/catalog'
+      path: '/api/public/catalog'
+      fullPath: '/api/public/catalog'
+      preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -138,11 +337,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  McpRoute: McpRoute,
+  AirshipRoute: AirshipRoute,
+  CuriosityRoute: CuriosityRoute,
+  OrderingRoute: OrderingRoute,
   PlayRoute: PlayRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
-  ApiGenerateImageRoute: ApiGenerateImageRoute,
+  RadioRoute: RadioRoute,
+  RobotRoute: RobotRoute,
+  SeasideScoopRoute: SeasideScoopRoute,
+  SeatingRoute: SeatingRoute,
+  SessionRoute: SessionRoute,
+  SofaRoute: SofaRoute,
+  StoryWorldRoute: StoryWorldRoute,
+  TicketMachineRoute: TicketMachineRoute,
+  ApiReleaseRoute: ApiReleaseRoute,
+  ApiPublicCatalogRoute: ApiPublicCatalogRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

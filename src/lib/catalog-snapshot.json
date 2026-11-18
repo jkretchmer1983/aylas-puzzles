@@ -1,0 +1,467 @@
+{
+  "version": 2,
+  "revision": "804dcd5872078c3485776ae0776000b7.seed",
+  "records": [
+    {
+      "id": "v1-count",
+      "name": "Counting",
+      "description": "Count the curious cargo and help the spaceship crew.",
+      "minAge": 4,
+      "maxAge": 5,
+      "thumbnail": "v1-count.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-odd",
+      "name": "Odd One Out",
+      "description": "Spot the one thing that does not belong.",
+      "minAge": 4,
+      "maxAge": 8,
+      "thumbnail": "v1-odd.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-groups",
+      "name": "Groups Of",
+      "description": "Sort sweet treats into equal groups.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v1-groups.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-sides",
+      "name": "Shape Sides",
+      "description": "Count sides and match each canyon carving.",
+      "minAge": 4,
+      "maxAge": 7,
+      "thumbnail": "v1-sides.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-riddle",
+      "name": "The Ticket Machine Is Being Difficult",
+      "description": "Untangle the clues and outwit a very fussy ticket machine.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": "v1-riddle.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-sudoku",
+      "name": "Forest Sudoku",
+      "description": "Fill the forest hollows so every number fits.",
+      "minAge": 5,
+      "maxAge": 10,
+      "thumbnail": "v1-sudoku.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-pattern",
+      "name": "The Pattern Loom",
+      "description": "Choose the next fabric patch and finish the loom’s pattern.",
+      "minAge": 4,
+      "maxAge": 9,
+      "thumbnail": "v1-pattern.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-add",
+      "name": "Adding Up",
+      "description": "Pack the greenhouse orders by adding the amounts.",
+      "minAge": 4,
+      "maxAge": 9,
+      "thumbnail": "v1-add.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-take",
+      "name": "Up and Away · Taking Away",
+      "description": "Release balloons and discover how many stay behind.",
+      "minAge": 4,
+      "maxAge": 7,
+      "thumbnail": "v1-take.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-size",
+      "name": "Smallest To Biggest",
+      "description": "Arrange the studio props from smallest to biggest.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v1-size.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-sequence",
+      "name": "Number Trail",
+      "description": "Follow the number trail up the mountain.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v1-sequence.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-lineup",
+      "name": "Everybody Says They Won",
+      "description": "Use the racers’ clues to work out who really won.",
+      "minAge": 5,
+      "maxAge": 10,
+      "thumbnail": "https://aylas-game-releases.coatedscarf3.chatgpt.site/thumbnails/v1-lineup/020dabd0b7e4aa0c2509ec826f42d8fe23a47f47e2651a3f2d8997e20931b353.png",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-coins",
+      "name": "Coin Counting",
+      "description": "Count the coins and help at the village post office.",
+      "minAge": 5,
+      "maxAge": 9,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-balance",
+      "name": "Balance Scale",
+      "description": "Balance the balloon cargo with the right weights.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v1-balance.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-magic",
+      "name": "Magic Square",
+      "description": "Place numbers so every courtyard line matches.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": "v1-magic.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-nim",
+      "name": "Stone Game",
+      "description": "Plan your moves in a seaside stone-taking game.",
+      "minAge": 5,
+      "maxAge": 10,
+      "thumbnail": "v1-nim.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-compare",
+      "name": "Which Is More?",
+      "description": "A new clever puzzle adventure is being prepared.",
+      "minAge": 4,
+      "maxAge": 5,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-clock",
+      "name": "Tell The Time",
+      "description": "Read the railway clocks and tell the time.",
+      "minAge": 5,
+      "maxAge": 9,
+      "thumbnail": "v1-clock.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-evenodd",
+      "name": "Number Detective",
+      "description": "Sort odd and even numbers in the robot’s laundromat.",
+      "minAge": 5,
+      "maxAge": 9,
+      "thumbnail": "v1-evenodd.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-cipher",
+      "name": "The Radio Has Opinions · Symbol Codes",
+      "description": "Decode the radio’s symbol clues to reveal its message.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v1-cipher.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-position",
+      "name": "The Seaside Scoop Stop",
+      "description": "Find the seaside friend standing in the place you are asked for.",
+      "minAge": 4,
+      "maxAge": 6,
+      "thumbnail": "v1-position.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-colors",
+      "name": "Color Mixing",
+      "description": "Mix colors to complete the artist’s ceramics.",
+      "minAge": 4,
+      "maxAge": 6,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-shapepick",
+      "name": "The Airship Shape Hunt",
+      "description": "Find the shapes hiding around the airship workshop.",
+      "minAge": 4,
+      "maxAge": 6,
+      "thumbnail": "v1-shapepick.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v1-double",
+      "name": "Doubles & Halves",
+      "description": "Use doubles and halves behind the theater stage.",
+      "minAge": 5,
+      "maxAge": 9,
+      "thumbnail": "v1-double.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-share",
+      "name": "Fair Shares",
+      "description": "Share the campsite feast fairly.",
+      "minAge": 4,
+      "maxAge": 9,
+      "thumbnail": "v1-share.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-missing",
+      "name": "Missing Number",
+      "description": "Find the missing numbers before the mole tram leaves.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v1-missing.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-days",
+      "name": "Days Of The Week",
+      "description": "Work out which day of the week it will be.",
+      "minAge": 4,
+      "maxAge": 7,
+      "thumbnail": "v1-days.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-legs",
+      "name": "Leg Count",
+      "description": "Count legs and help the farmyard inspector.",
+      "minAge": 4,
+      "maxAge": 8,
+      "thumbnail": "v1-legs.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-change",
+      "name": "The Till Is On Its Lunch Break",
+      "description": "Work out the right change while the till takes lunch.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "https://aylas-game-releases.coatedscarf3.chatgpt.site/thumbnails/v1-change/d788825130b60fe70e1c4d7eb476e08ec300512d7ea1e3ba02e7a4359bc6f6f4.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v1-fraction",
+      "name": "Fraction Feast",
+      "description": "Slice and share the kitchen’s fraction feast.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": "v1-fraction.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-trains",
+      "name": "The Train That Refused Monday",
+      "description": "Solve the station clues and get a stubborn train moving.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v2-trains.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-robot",
+      "name": "The Robot Took a Shortcut",
+      "description": "Program the postal robot’s route to deliver every parcel.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": "v2-robot.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v2-curiosity",
+      "name": "The Curiosity Trail",
+      "description": "Follow a trail of patterns, surprises and curious objects.",
+      "minAge": 4,
+      "maxAge": 9,
+      "thumbnail": "v2-curiosity.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v2-sofa",
+      "name": "The Sofa Has Had Enough",
+      "description": "Guide an oversized sofa through a very small escape.",
+      "minAge": 4,
+      "maxAge": 10,
+      "thumbnail": "v2-sofa.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v2-waterway",
+      "name": "Rotate the Waterway",
+      "description": "Turn the channels and guide water where it needs to go.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v2-waterway.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-suitcase",
+      "name": "Pack the Suitcase",
+      "description": "Pack every travel essential with clever logic.",
+      "minAge": 5,
+      "maxAge": 10,
+      "thumbnail": "v2-suitcase.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-seating",
+      "name": "Who Goes Where?",
+      "description": "Use the clues to seat everyone in the right place.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v2-seating.jpg",
+      "hidden": false,
+      "release": "available",
+      "nextAction": "Done"
+    },
+    {
+      "id": "v2-toast",
+      "name": "Emergency Toast Button",
+      "description": "A new clever puzzle adventure is being prepared.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-rooftop",
+      "name": "Extremely Thirsty Rooftop",
+      "description": "Help a thirsty rooftop garden catch enough water.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v2-rooftop.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-moon",
+      "name": "Moon Has Stage Fright",
+      "description": "Build the Moon’s courage for a sparkling performance.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v2-moon.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-one-sofa",
+      "name": "One Sofa Too Many",
+      "description": "Make room when one sofa too many arrives.",
+      "minAge": 5,
+      "maxAge": 10,
+      "thumbnail": "v2-one-sofa.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-bridge",
+      "name": "Wobbly Bridge",
+      "description": "Choose each step carefully across a wobbly bridge.",
+      "minAge": 6,
+      "maxAge": 10,
+      "thumbnail": "v2-bridge.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-cabbage",
+      "name": "Nobody Eats the Cabbage",
+      "description": "A new clever puzzle adventure is being prepared.",
+      "minAge": 6,
+      "maxAge": 9,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-harbour",
+      "name": "Harbour That Forgot the Time",
+      "description": "A new clever puzzle adventure is being prepared.",
+      "minAge": 7,
+      "maxAge": 10,
+      "thumbnail": null,
+      "hidden": true,
+      "release": "coming-soon"
+    },
+    {
+      "id": "v2-dinosaur",
+      "name": "Dinosaur Mix-Up",
+      "description": "Sort the mixed-up dinosaurs and solve their prehistoric puzzle.",
+      "minAge": 5,
+      "maxAge": 9,
+      "thumbnail": "v2-dinosaur.jpg",
+      "hidden": false,
+      "release": "coming-soon"
+    }
+  ]
+}

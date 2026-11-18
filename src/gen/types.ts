@@ -16,6 +16,7 @@ export type Kind =
   | { type: "nim"; stones: number; maxTake: number; icon: string };
 
 export type PuzzleSpec = {
+  airship?: import('./airship/geometry').AirshipData;
   template: string;
   /** Short neutral title used offline and as an AI hint. */
   title: string;

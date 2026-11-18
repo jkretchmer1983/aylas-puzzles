@@ -1,0 +1,6 @@
+- Airship is an isolated review route, excluded from the released game allowlist; the shapepick deep link redirects here without changing other games.
+- Geometry metadata and seeded generation own shape boundaries and the sole correct option; Renderer validates and the scene receives only a checking callback.
+- The shared versioned content binding freezes mission, compatible prop and geometry-safe narrative per instance; cached AI prose is accepted only after validation, with explicitly labeled curated fallback.
+- Use an independent front-facing felt board with a 2×2 shape grid, separate task plaque and labeled footer navigation; preserve intrinsic painted asset proportions and recompose short landscape without changing geometry or saved work.
+- Airship registers its local shapepick id to airship-shapes and uses the imported shared narrator/mixer/settings; preserve track and effect source ownership so route release cannot leave scheduled notes behind.
+- Landscape uses independent support and gameplay grid regions, with a container-height-fitted board and reserved task/check/navigation rows; never scale the whole scene or gate landscape reflow by a maximum height, so wide Safari views keep the board central and controls visible.

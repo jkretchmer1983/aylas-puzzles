@@ -18,9 +18,44 @@
 - Each template maps to one of a few real full-screen places (STAGES in PuzzleWorld); pieces are styled per `stage-*` as objects of that place. Keep local material surfaces and template-specific game treatments in PuzzleWorld, independent of streamed storyline art; Renderer retains generator-owned answers and uses the game Button variant so tactile styling never changes Apple navigation.
 - Play uses a continuous illustrated environment with cropped illustrated wooden objects and separate state-driven foreground controls; spatial puzzles prioritize the carved board, while story windows remain compact and expandable. Why: preserve reference artwork fidelity without baking dynamic puzzle values into images.
 - ForestObjects owns reusable wooden controls and layered SVG engraving; Renderer alone validates answers. Why: visual depth must not change puzzle correctness.
-- Forest Sudoku uses isolated wooden number pieces and round upper-corner controls, scoped to spatial play, so reference proportions do not alter other puzzles.
-- Forest Sudoku uses cleaned uploaded artwork through CDN pointers and sizes its board and bark rack from available stage height; decorations yield first so artwork alignment and touch targets survive shorter screens.
-- Sudoku board padding uses stage-relative bounded lengths, never percentages of its wider parent, and tablet decorations require sufficient viewport height; this prevents narrow distorted boards in short editor previews.
-- Forest Sudoku places cached story art in StoryIllustrationFrame below compact shared controls, with an overlapping dynamic title; height-aware board sizing reserves the hint, answer check, feedback and root navigation so decoration yields before touch targets.
 - SceneMechanics renders manipulatable visual clues from public task/visual data only; Renderer alone checks generator-owned answers, keeping physical play aids independent of correctness.
 - Agent integrations: public MCP server in src/lib/mcp/ reuses the seeded generator and never returns answers; why: assistants get the same puzzles without exposing solutions.
+- Story Worlds is an isolated /story-world alternative with scoped CSS; /play remains the tree experience. Why: alternatives must be reviewable without replacing existing play.
+- Story Worlds freezes story/title/imagePrompt before painting or prefetching full-screen art in its own cache namespace; loader deadlines dismiss waiting without cancelling live generation. Why: narrative and artwork must agree, and offline/failure play must remain available.
+- Renderer owns answers in both presentations; the optional Story Worlds presentation portals check controls into its reserved footer and uses tap-first pieces. Why: layout changes cannot duplicate or alter puzzle truth.
+
+
+
+<!-- DYNAMIC-CONTENT:BEGIN -->
+## Shared requirement: fresh stories AND playable subjects
+
+This latest requirement takes precedence over earlier notes that restrict AI to a rewritten caption. Mathematical facts remain immutable; presentation subjects can vary through validated structured bindings.
+
+# Dynamic stories and playable objects — applies to every game
+
+Every genuinely NEW puzzle instance must have fresh, coordinated narrative content and eligible playable object artwork, not merely different numbers or a rewritten caption over the same fixed fruit sprites. Friendly monsters, dinosaurs, robots, animals, fruit and other age-appropriate subjects can rotate independently of a game's approved setting. The loom, cockpit, airfield and other engineered environments and tested controls remain stable.
+
+Use one shared versioned content-generation policy consumed by all game adapters. Do not copy separate story prompts into each game. Generate a structured instance theme/subject binding, then derive the story, spoken instructions, illustration and actual manipulatives from that SAME binding. Persist the binding for the instance. A story about six monsters must show six playable monsters, not six apples beneath new text.
+
+Correctness is generator-owned. Preserve exact counts, arithmetic, sequence unit and ordering, clue relationships, answer indices, difficulty and validation. Keep raw tasks/clues immutable; if presentation nouns change, use controlled structured substitutions and validate consistency, never a free AI rewrite of mathematical facts. AI must not generate answers or determine validation. Render exact quantity using code from reusable object assets, never ask a scene illustration to establish quantity.
+
+Use game-specific semantic restrictions: coin denominations, clock hands, required shape sides/corners, color-mixing rules, animal leg counts and identity-based logic clues remain correct and visible. A monster may replace a counted apple, but cannot arbitrarily replace a triangle, 5-cent coin, or four-legged animal unless its required properties and all dependent clues are explicitly preserved. Repeated symbols use identical subject mappings across the entire pattern/equation.
+
+Stories should be genuinely varied, playful, clever, age-appropriate and connected to the selected objects and exact task. Vary premise, characters and situation; track recent themes to reduce immediate repeats. Keep stories short and avoid answer leaks. Match readable tactile art to each approved scene; new objects do not require rebuilding its geometry or controls.
+
+Fresh launch / Next creates a new instance ID and seed unless explicitly resuming or following a reproducible shared puzzle link. Refresh of an explicit instance, Previous, orientation changes, rerenders and animation never regenerate it or lose work. New numbers/board retains current story and subject theme as already specified. Theme/image caches key by instance/theme/policy version, never game type alone. Persist stable instance mappings so story, audio, images and pieces cannot disagree or race.
+
+Provide clear loading and bounded failure behavior. Offline or AI failure rotates through a curated compatible theme library rather than silently claiming a static sample is newly generated. Do not embed credentials in clients. Use approved backend secret configuration.
+
+Acceptance: consecutive new instances of each adapter must show different eligible subjects and premises; actual draggable/tappable objects, instruction nouns, clues and illustration agree. Test seed reproducibility, Previous/resume, New numbers, rotation, fallback, async races and all semantic restrictions. A changed story alone does NOT satisfy this requirement.
+
+Implementation status at this policy update: existing shared story writer only returns title/story/imagePrompt and locks original names; per-instance manipulatives are not yet a completed shared feature. This policy is an implementation requirement, NOT a claim that current previews already support it. Do not mark complete until functional previews demonstrate it.
+
+<!-- DYNAMIC-CONTENT:END -->
+
+## Hub + game hosts
+- This draft is a thin hub with no game engines; preserve courtyard art and project identity. Why: hosts publish independently.
+- Public allowlist + dashboard ages/hidden/release + registry govern launches; tested bands are informational. Why: dashboard eligibility is live.
+- Check public `/api/release` before preload promotion; changed builds reload only reserved identity, keeping game/seed/deck/current. Why: no hub redeploy per host update.
+- A game host on a published origin plays only with its own registry entry (url = self) and `available`; the unregistered-Done shortcut is private preview/dev only; decide after this load's manifest fetch and fail closed to the hub. Why: withdrawn games must not stay playable by direct URL.
+- Parent origins are exact (canonical hub + listed QA previews); both origin and source are checked and messages never carry navigable URLs. Why: no wildcard trust.
