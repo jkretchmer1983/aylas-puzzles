@@ -1,31 +1,7 @@
-# Puzzle pictures
-- [x] Fix silent iPad narration: storybook voice through the shared sound path, honest start, one voice per reading; tests + real-browser check.
-- [x] Remove all local music scheduling/controls; preserve effects and combined narration.
-- [x] Audit and verify every local game adapter, real effects output, narration, regressions and preview build; list external draft blockers.
-- [ ] Apply effects-only update to isolated Loom/Balloon/Story Worlds drafts and external Train/V2/Scene Games sources — blocked: those source checkouts are not mounted here; no draft acceptance or refresh authorized.
-- [ ] Build isolated Story Worlds alternative and age-selection entry; retain tree play.
-- [ ] Freeze Story Worlds stories before full-screen art; add isolated caches and bounded offline/failure fallback.
-- [ ] Validate all types, age tiers, phone/tablet layouts, solving/navigation and regression tests.
-- [x] Refine materials toward the uploaded dimensional, polished game reference rather than hyperreal photography.
-- [x] Add tactile, puzzle-specific play surfaces and dimensional game pieces while preserving storyline art and Apple navigation.
-- [x] Animate placing and carving answers; verify touch, answers and phone fit.
-- [x] Replace delayed AI pictures with instant, seeded animated drawings for every puzzle type.
-- [x] Keep puzzle title, story and instructions stable while playing.
-- [x] Verify answers, replay, celebration and phone layout.
-- [x] Layer richer AI-painted scenes over the drawings (streamed, blur preview → sharp final).
-- [x] Prefetch the next puzzle's picture while the current one is being solved.
-- [x] Reveal incoming pictures with a feathered watercolor wash; verify phone layout, next-puzzle transitions and reduced motion.
-- [x] Replace soft gradient backgrounds with real surfaces; color comes from painted objects
-- [x] Replace flat patterns with six real places (tree, river, workshop, picnic, market, temple); pieces made of each place (bark chips, pebbles, patches, tags, tablets)
-- [x] Add scene-integrated play moments beyond tree sudoku: river collections, workshop sockets, picnic serving, market weighing and temple inscriptions.
-- [x] Verify the new interactions, answers and phone/iPad fit; preserve tree sudoku and storyline art.
-- [x] Pass 1: illustrated forest Sudoku, carved board and wooden controls; phone/iPad screenshots and functional checks ready for user review.
-- [ ] Pass 2: physical interactions and animations — blocked until the user approves Pass 1.
-- [x] Refine forest Sudoku integration, align wooden signs and lettering to the reference, and verify phone/iPad fit.
-- [x] Match forest Sudoku button proportions and placement to the main reference; verify phone and iPad touch use.
-- [x] Correct Sudoku composition to the latest reference: cinematic story window, larger board, chunky root navigation, phone/iPad comparison.
-- [x] Fix the tiny Sudoku board in the shorter, wide preview; verify square cells, usable targets and wooden navigation at the reported size.
-- [x] Asset-pack Pass 1: clean prototype sprites, use supplied forest environment, correct proportions, and show phone screenshot for approval.
-- [x] Forest Sudoku cleanup: remove pale edge seams, separate full-leaf title plaque, align cells to carved recesses
-- [x] Extend forest scenery around the unchanged proportional Sudoku composition; validate phone, wide portrait, tablet and landscape.
-- [x] Repair forest scenery seams beside the tree and remove pale fringe under number tiles.
+# Hub installation
+
+- [x] Install supplied thin hub; retain project identity and exact courtyard menu.
+- [x] Add release alias and pre-promotion host freshness checks.
+- [x] Make dashboard ages the sole dynamic age gate.
+- [x] Run focused tests and preview checks; save without publishing.
+- [ ] Public cutover: blocked until all eleven hosts are public/registered and explicitly authorized.

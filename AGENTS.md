@@ -18,21 +18,12 @@
 - Each template maps to one of a few real full-screen places (STAGES in PuzzleWorld); pieces are styled per `stage-*` as objects of that place. Keep local material surfaces and template-specific game treatments in PuzzleWorld, independent of streamed storyline art; Renderer retains generator-owned answers and uses the game Button variant so tactile styling never changes Apple navigation.
 - Play uses a continuous illustrated environment with cropped illustrated wooden objects and separate state-driven foreground controls; spatial puzzles prioritize the carved board, while story windows remain compact and expandable. Why: preserve reference artwork fidelity without baking dynamic puzzle values into images.
 - ForestObjects owns reusable wooden controls and layered SVG engraving; Renderer alone validates answers. Why: visual depth must not change puzzle correctness.
-- Forest Sudoku uses isolated wooden number pieces and round upper-corner controls, scoped to spatial play, so reference proportions do not alter other puzzles.
-- Forest Sudoku uses cleaned uploaded artwork through CDN pointers and sizes its board and bark rack from available stage height; decorations yield first so artwork alignment and touch targets survive shorter screens.
-- Sudoku board padding uses stage-relative bounded lengths, never percentages of its wider parent, and tablet decorations require sufficient viewport height; this prevents narrow distorted boards in short editor previews.
-- Forest Sudoku places cached story art in StoryIllustrationFrame below compact shared controls, with an overlapping dynamic title; height-aware board sizing reserves the hint, answer check, feedback and root navigation so decoration yields before touch targets.
 - SceneMechanics renders manipulatable visual clues from public task/visual data only; Renderer alone checks generator-owned answers, keeping physical play aids independent of correctness.
 - Agent integrations: public MCP server in src/lib/mcp/ reuses the seeded generator and never returns answers; why: assistants get the same puzzles without exposing solutions.
-- Forest Sudoku board grid tracks mirror the carved recesses measured from sudoku_board_blank (asymmetric rim, wider 2x2 gutters), and the story frame and title plaque are separate cutouts. Why: interactive cells and overlays must sit exactly on the painted art.
-- Forest Sudoku renders one unified forest painting outside the fixed 393×852 foreground with the same uniform scale and center registration; only the original carved panel is composited back along its organic lip, never a rectangular center crop. Why: extra viewport space reveals forest without seams or changing board/control proportions.
 - Story Worlds is an isolated /story-world alternative with scoped CSS; /play remains the tree experience. Why: alternatives must be reviewable without replacing existing play.
 - Story Worlds freezes story/title/imagePrompt before painting or prefetching full-screen art in its own cache namespace; loader deadlines dismiss waiting without cancelling live generation. Why: narrative and artwork must agree, and offline/failure play must remain available.
 - Renderer owns answers in both presentations; the optional Story Worlds presentation portals check controls into its reserved footer and uses tap-first pieces. Why: layout changes cannot duplicate or alter puzzle truth.
-- Forest Sudoku phase one keeps the story and gameplay illustration in one mounted frame, with session-scoped entered cells/started state and awarded-score guard. Speech uses explicit browser gestures and cancels on view/navigation/unmount. Phase-two motion keeps that frame mounted, uses a cancellable 1.2s transition with inert game controls until settled, masks only freshly entered glyphs, and reveals loaded artwork separately from image motion. All decorative motion yields to prefers-reduced-motion. Sound is gesture-triggered, synthesized locally, and has a persistent Game settings mute control.
-- Sudoku's empty carved hollows are painted directly into forest-carved-reference.jpg; the 16 transparent touch targets use measured source-image tracks registered to the scenery's single uniform scale. Never substitute CSS boxes or a raised board. Keep both bark edges visible, use the centered title-reference plaque and bundled Forest Lora/Nunito fonts, and reserve the result row above bottom navigation.
 
-- Responsive forest portrait play selects the original 393×852 phone canvas or a 768×1100 broad canvas by available width/aspect ratio (forest-layout.ts), retaining one mounted puzzle across resizing. The broad canvas uses forest-tablet-portrait.jpg at 1.2× overscan and measured hollow tracks; never resize that painting independently of its target coordinates. Tablet surfaces have matching SVG end caps; the vertical rack must explicitly use flex and square 84px tiles. Landscape re-composition remains separate from this portrait pass.
 
 
 <!-- DYNAMIC-CONTENT:BEGIN -->
@@ -62,15 +53,9 @@ Implementation status at this policy update: existing shared story writer only r
 
 <!-- DYNAMIC-CONTENT:END -->
 
-
-<!-- SCENE-RELEASE:BEGIN -->
-## Independent Scene Games public release
-- V1 scene-game public destination: https://aylas-puzzles-scene-games.lovable.app/ . Lovable project: f6472ef2-e352-4eea-bebd-b2ca3e651718 (Ayla’s Puzzles — Scene Games).
-- Source integration branch: release/scene-games in jkretchmer1983/aylas-puzzles, starting from the existing Sudoku scene baseline. Submit finished V1 game changes for review against this branch, not main. No automatic merge is authorized.
-- Keep original published app/project 0a7ba2f9-7210-4e52-9220-51a3c422ad05 and its public address intact. Do not deploy this new release to the original project.
-- The remixed Scene Games Lovable project is independent: original GitHub game branches do NOT automatically sync into it. After reviewing/integrating a game on release/scene-games, explicitly import the chosen version into the new project's draft, test build/gameplay/responsiveness and publish to its existing slug only when release is authorized. Do not claim a branch commit or preview automatically updated the public site.
-- Initial new site contains the copied baseline; loom and balloon review branches are not yet integrated. Add ready games incrementally, keeping unfinished prototypes out of public rotation.
-- V2 Logic Adventures Beta project c7960d92-dee8-4b06-b59c-5a53fe272e8c remains a distinct track; this V1 release direction does not authorize redirecting, overwriting or publishing that project.
-<!-- SCENE-RELEASE:END -->
-
-- Audio only via src/lib/audio + ReadAloud (both speakers read story+task; storybook voice via /api/tts on the shared Web Audio context, device speech as fallback; see AUDIO.md); register templates in TEMPLATE_AUDIO; unlock only on click/touchend/keydown. No background music until explicitly requested.
+## Hub + game hosts
+- This draft is a thin hub with no game engines; preserve courtyard art and project identity. Why: hosts publish independently.
+- Public allowlist + dashboard ages/hidden/release + registry govern launches; tested bands are informational. Why: dashboard eligibility is live.
+- Check public `/api/release` before preload promotion; changed builds reload only reserved identity, keeping game/seed/deck/current. Why: no hub redeploy per host update.
+- A game host on a published origin plays only with its own registry entry (url = self) and `available`; the unregistered-Done shortcut is private preview/dev only; decide after this load's manifest fetch and fail closed to the hub. Why: withdrawn games must not stay playable by direct URL.
+- Parent origins are exact (canonical hub + listed QA previews); both origin and source are checked and messages never carry navigable URLs. Why: no wildcard trust.

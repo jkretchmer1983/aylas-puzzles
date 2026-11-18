@@ -1,0 +1,100 @@
+[
+  {
+    "capability": "code",
+    "source": "ayla-hub.zip",
+    "outcome": "migrate",
+    "status": "verified",
+    "next_action": "Installed in private draft; no publication"
+  },
+  {
+    "capability": "schema",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "No application database"
+  },
+  {
+    "capability": "records",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "Runtime public manifest retained"
+  },
+  {
+    "capability": "auth identities",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "Public hub"
+  },
+  {
+    "capability": "authorization",
+    "source": "ayla-hub.zip",
+    "outcome": "preserve",
+    "status": "verified",
+    "next_action": "Installed in private draft; no publication"
+  },
+  {
+    "capability": "uploaded file bytes",
+    "source": "ayla-hub.zip",
+    "outcome": "preserve",
+    "status": "verified",
+    "next_action": "Installed in private draft; no publication"
+  },
+  {
+    "capability": "external providers",
+    "source": "ayla-hub.zip",
+    "outcome": "preserve",
+    "status": "preserved",
+    "next_action": "Installed in private draft; no publication"
+  },
+  {
+    "capability": "public endpoints",
+    "source": "ayla-hub.zip",
+    "outcome": "preserve",
+    "status": "verified",
+    "next_action": "Installed in private draft; no publication"
+  },
+  {
+    "capability": "callbacks",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "No OAuth"
+  },
+  {
+    "capability": "webhooks",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "No webhooks"
+  },
+  {
+    "capability": "schedules",
+    "source": "ayla-hub.zip",
+    "outcome": "absent",
+    "status": "not-applicable",
+    "next_action": "No schedules"
+  },
+  {
+    "capability": "secrets",
+    "source": "ayla-hub.zip",
+    "outcome": "preserve",
+    "status": "not-applicable",
+    "next_action": "Keep project environment intact"
+  },
+  {
+    "capability": "cutover",
+    "source": "ayla-hub.zip",
+    "outcome": "pending",
+    "status": "blocked",
+    "next_action": "Await eleven public registered hosts and user authorization"
+  },
+  {
+    "capability": "verification",
+    "source": "ayla-hub.zip",
+    "outcome": "verify",
+    "status": "verified",
+    "next_action": "85 tests and focused Chromium fixture flow passed; real eleven-host QA pending"
+  }
+]

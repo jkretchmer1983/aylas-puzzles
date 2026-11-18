@@ -3,7 +3,9 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
+  redirect,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -12,6 +14,11 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { installChildBridge, isHostEmbedded, lastHostHref, reportHostLocation, requestHostBack } from "@/host/child-bridge";
+import { hostAllowsPath, hostEntryHref } from "@/host/config";
+
+// The hub bridge must know it is embedded before any game renders (inert for standalone play).
+if (typeof window !== "undefined") installChildBridge();
 
 function NotFoundComponent() {
   return (
@@ -74,12 +81,22 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    // Inside a hub session, any navigation to the menu becomes a hub Back; the game stays where it is.
+    if (typeof window !== "undefined" && isHostEmbedded() && location.pathname === "/") {
+      requestHostBack();
+      const stay = lastHostHref();
+      if (stay) throw redirect({ href: stay, replace: true });
+    }
+    // Hub and game hosts serve only their own paths (server API routes are unaffected).
+    if (!hostAllowsPath(location.pathname)) throw redirect({ href: hostEntryHref(location.search as Record<string, unknown>), replace: true });
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { title: "Puzzle Quest" },
+      { title: "Ayla’s Puzzles — Adventure Hub" },
       { name: "description", content: "Endless fresh logic puzzles for kids aged 3 to 10." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -117,6 +134,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useRouterState({ select: (state) => state.location });
+  useEffect(() => { reportHostLocation(location.pathname, location.searchStr); }, [location.pathname, location.searchStr]);
 
   return (
     <QueryClientProvider client={queryClient}>

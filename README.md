@@ -1,26 +1,17 @@
-# Aylas Puzzles
+# Ayla’s Puzzles — public hub (thin menu)
 
-I have a series of logic puzzles I made for my daughter. I want to turn them into an interactive app that they can use on an ipad to solve each puzzle. The interaction to solve each puzzle should be specific. ie. If the puzzle solve calls for drawing a line between two images, that's what the interaction should be. If the puzzle just requires selecting one object, that's what the interaction should be. There should be a "Correct!" "Incorrect!" response if the solve was right or wrong. There should be a "Next Puzzle" button and "Previous puzzle" button to navigate from one puzzle to the next and back.
+Role `hub`: the canonical menu at https://aylas-puzzles.lovable.app. It serves only `/` and `/session`, reads the public release manifest, and launches each registered game host in a full-viewport iframe. It contains no game engines; a game becomes playable here the moment the manifest marks it `release: "available"` AND the registry holds its host URL — no hub republish.
 
-This project was built with [Lovable](https://lovable.dev).
+- Source version: `50b7764` (Scene Games private master). Config: `src/host/host.config.json`.
+- Server routes included: `/api/public/catalog`, `/api/release`.
+- Supplied courtyard and thumbnail bytes are preserved through project-owned CDN asset pointers.
+- Focused session, public release, protocol and catalog tests travel with this package (`bunx vitest run`).
 
-**Live app**: https://aylas-puzzles.lovable.app
+## Install into a fresh Lovable TanStack Start project
+1. Copy every file of this folder over the new project (keep its own `.git`); run `bun install`.
+2. Do not edit `src/routeTree.gen.ts`; it regenerates on dev/build. Pages of other games exist only as redirect stubs.
+3. Server secrets: AI story/picture/narration routes use `LOVABLE_API_KEY` (Lovable AI Gateway). Without it the game falls back to its original prepared stories/scenes and narration reports an honest error.
+4. For this draft, STOP before acceptance or publication. Canonical root switches LAST, only after
+   all eleven hosts are independently public/registered and release is explicitly authorized.
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/0a7ba2f9-7210-4e52-9220-51a3c422ad05).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+See `docs/HOSTING.md` for the protocol, registry contract and the update-one-game procedure.
