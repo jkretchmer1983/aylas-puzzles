@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, RotateCcw } from "lucide-react";
-import { getCurrentCatalog, getCurrentRegistry, refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
+import { getCurrentCatalog, getCurrentRegistry, getManifestStatus, refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
 import { sessionTargets, type SessionTarget } from "./eligibility";
 import { buildLaunchUrl, makeMessage, parseChildMessage, randomToken, type HostIdentity, type ParentMessageType } from "./protocol";
 import { publicGameById } from "./public-games";
@@ -100,8 +100,11 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
     busy.current = true;
     try {
       // Revalidate registry, release and age at the moment of launch.
-      await withTimeout(refreshCatalog(true), REVALIDATE_TIMEOUT_MS);
+      const verified = await withTimeout(refreshCatalog(true), REVALIDATE_TIMEOUT_MS);
+      if (!verified || getManifestStatus() !== "fresh") throw new Error("Could not verify adventure availability.");
+      if (sessionRef.current !== current) return;
       const eligible = targetsNow();
+      if (!eligible.some((item) => item.gameId === current.current?.gameId)) { backToMenu(); return; }
       let checked = reserveNext(current, eligible);
       const reserved = checked.reserved;
       if (!reserved) { backToMenu(); return; }
@@ -118,15 +121,9 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
         // Force a new document even if the registry already carries the latest ID.
         const fresh = refreshReservedInstance({ ...reserved, releaseId: captured }, latest, () => randomToken(12));
         checked = { ...checked, reserved: fresh };
-        setSession(checked);
-        setNextError('The next adventure was updated and is getting ready. Tap Try next again.');
-        return;
+      } else {
+        checked = { ...checked, reserved: { ...reserved, releaseId: latest } };
       }
-      if (frame && !frame.ready) {
-        setNextError('The next adventure is still getting ready. Tap Try next again.');
-        return;
-      }
-      checked = { ...checked, reserved: { ...reserved, releaseId: latest } };
       const promoted = promoteNext(checked, eligible);
       if (!promoted) { backToMenu(); return; }
       const leaving = current.current?.instanceId;
@@ -135,7 +132,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
       setNextError(undefined);
       setSession(promoted);
     } catch {
-      setNextError('Could not check the next adventure’s version. Your current puzzle is safe. Tap Try next to retry.');
+      if (sessionRef.current === current) setNextError('Could not verify the next adventure’s availability or version. Your current puzzle is safe. Tap Retry to try again.');
     } finally {
       busy.current = false;
     }
@@ -221,7 +218,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
     })}
     {nextError && <div className="absolute bottom-4 inset-x-4 z-20 bg-background p-3 text-foreground" role="alert">
       <p>{nextError}</p>
-      <button type="button" onClick={() => void goNext()} className="min-h-12 px-4 font-semibold">Try next</button>
+      <button type="button" onClick={() => void goNext()} className="min-h-12 px-4 font-semibold">Retry</button>
       <button type="button" onClick={() => setNextError(undefined)} className="min-h-12 px-4">Keep playing</button>
     </div>}
     {status !== "playing" && <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 p-6" role="status" aria-live="polite">

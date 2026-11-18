@@ -89,7 +89,8 @@ export function refreshCatalog(force = false): Promise<PublicCatalog> {
     })
     .then((value) => fromManifest ? setCurrentManifest(value).catalog : setCurrentCatalog(value))
     .catch(() => {
-      if (manifestStatus === "pending") { manifestStatus = "failed"; listeners.forEach((listener) => listener()); }
+      manifestStatus = "failed";
+      listeners.forEach((listener) => listener());
       return getCurrentCatalog();
     })
     .finally(() => { clearTimeout(timer); inflight = undefined; });
