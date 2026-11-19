@@ -1,5 +1,10 @@
 # Hub installation
 
+## Five approved loader release support
+- [x] Extend only published child-loader capability to ticket, take, seating, sofa and ordering; preserve prior three and all other host behavior.
+- [ ] Run scoped regressions and verify canonical live children across six viewports, cold/cached and Next where accessible.
+- [ ] Publish original canonical hub and record before/after public release metadata and screenshot pointers in public/qa/approved-five-hub/results.json.
+
 ## Approved child-loader hub cover fix
 - [x] Scope child-owned starting presentation to Airship, Radio and Curiosity without changing readiness or registry.
 - [x] Run focused regressions and real parent/live-child loading checks; save QA evidence (70 tests; 18 real live-child loader captures; Radio preserved-document promotion; timeout and other-game fallback).

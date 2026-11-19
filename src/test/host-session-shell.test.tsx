@@ -63,7 +63,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('published child loader ownership', () => {
-  it.each(['airship', 'radio', 'curiosity'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
+  it.each(['airship', 'radio', 'curiosity', 'ticket', 'take', 'seating', 'sofa', 'ordering'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
     mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
     vi.useFakeTimers();
     render(<SessionShell band={4} mode="single" gameId={gameId} />);
@@ -87,8 +87,9 @@ describe('published child loader ownership', () => {
     } finally { vi.useRealTimers(); }
   });
 
-  it('retains normal hub startup for games without the approved child-loader capability', async () => {
-    render(<SessionShell band={4} mode="single" gameId="sofa" />);
+  it.each(['robot', 'seaside', 'trains', 'money-change', 'sudoku'])('%s retains normal hub startup without approved child-loader capability', async (gameId) => {
+    mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
+    render(<SessionShell band={4} mode="single" gameId={gameId} />);
     await waitFor(() => expect(frames()).toHaveLength(1));
     expect(screen.getByRole('status')).toHaveTextContent('Opening your adventure');
     expect(latestSession().reserved).toBeNull();
@@ -107,7 +108,7 @@ describe('one-tap session handover', () => {
     expect(latestSession().current).toEqual({ ...session.reserved, releaseId: 'build-1' });
     expect(latestSession().reserved).toBeNull();
     expect(frames()).toHaveLength(1);
-    expect(screen.getByRole('status')).toHaveTextContent('Opening your adventure');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(post.mock.calls.at(-1)?.[0].type).toBe('activate');
     expect(new URL(preload.src).searchParams.get('band')).toBe('4');
     message(preload, 'ready');
