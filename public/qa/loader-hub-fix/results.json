@@ -1580,6 +1580,279 @@
     "Deep security code scan not run; basic security scan reports no issues and no backend configured"
   ],
   "deployment": {
-    "status": "not yet requested; post-deploy canonical smoke recorded after publishing"
+    "status": "Canonical production fix verified anonymously after initial publish. QA-only evidence checkpoint to be republished separately.",
+    "fixCommit": "fb834832b38bd35ed0089061667515931c24da8e",
+    "canonical": "https://aylas-puzzles.lovable.app",
+    "publicRelease": {
+      "protocol": "ayla-host",
+      "protocolVersion": 1,
+      "role": "hub",
+      "catalogId": null,
+      "gameId": null,
+      "path": null,
+      "minBand": null,
+      "maxBand": null,
+      "sourceVersion": "50b7764",
+      "buildId": "20261119055056-4i047p",
+      "releaseId": "20261119055056-4i047p"
+    },
+    "shaVerification": "Public sourceVersion still reports inherited 50b7764, not current Git SHA. Exact deployed SHA cannot be verified from public release metadata; changed cover behavior and updated buildId independently verified. No release endpoint code changed.",
+    "initialTransition": "First Airship request caught old release while deployment was in progress; fresh follow-up Airship request passed. Radio and Curiosity passed on first post-transition checks.",
+    "liveCaptures": [
+      {
+        "game": "radio",
+        "viewport": [
+          393,
+          852
+        ],
+        "reducedMotion": false,
+        "parentOrigin": "https://aylas-puzzles.lovable.app",
+        "childUrl": "https://aylas-radio-has-opinions.lovable.app/radio?band=3&s=1475661443&from=commons&host_session=d33bfd5f55180fc4777d91a3&host_nonce=00f024e48e8afae20a91044db7c49369&host_game=radio&host_phase=active",
+        "loaderText": "Ayla\u2019s Puzzles\nAges 6\u20137\nAges 7\u20138\nAges 8\u20139\nAges 9\u201310\nThe Great Sock Front\n\nThe forecast says socks, boots and umbrellas.\nThat cannot be right.\n\nINCOMING FORECAST\n\nThe Great Sock Front\n\nThe forecast calls for a heavy shower of socks, with boots blowing in by lunchtime. The radio insists your umbrella will need an umbrella.\n\nTune in & play\nPrevious\nHint\nNew\nNext\nAges 6\u20137 years. Puzzle seed 1475661443.\n\nAYLA\u2019S PUZZLES\n\nThe Radio Has Opinions\n\nHmph. The radio has opinions about today\u2019s weather\u2026\n\nPfft! A sandwich? That is not a forecast.\n\nAhem\u2026 tuning in properly now.\n\nTuned in!\n\nLoading The Radio Has Opinions\u2026",
+        "beforeReady": true,
+        "parentCoverCount": 0,
+        "parentOpeningText": 0,
+        "topLayer": "IFRAME",
+        "messagesAtCapture": [
+          {
+            "type": "hello",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2047.5,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2048.9000000000233,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2075.5,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          }
+        ],
+        "messagesAfterReady": [
+          {
+            "type": "hello",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2047.5,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2048.9000000000233,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 2075.5,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          },
+          {
+            "type": "ready",
+            "game": "radio",
+            "nonce": "00f024e48e8afae20a91044db7c49369",
+            "at": 8984.900000000023,
+            "origin": "https://aylas-radio-has-opinions.lovable.app"
+          }
+        ],
+        "errors": [],
+        "screenshotAsset": {
+          "version": 1,
+          "asset_id": "e046213c-683f-4d2c-b35b-b312ce9d942e",
+          "project_id": "0a7ba2f9-7210-4e52-9220-51a3c422ad05",
+          "url": "/__l5e/assets-v1/e046213c-683f-4d2c-b35b-b312ce9d942e/hub-fix-radio-canonical-loader.png",
+          "r2_key": "a/v1/0a7ba2f9-7210-4e52-9220-51a3c422ad05/e046213c-683f-4d2c-b35b-b312ce9d942e/hub-fix-radio-canonical-loader.png",
+          "original_filename": "hub-fix-radio-canonical-loader.png",
+          "size": 283196,
+          "content_type": "image/png",
+          "created_at": "2026-11-19T05:52:25Z"
+        }
+      },
+      {
+        "game": "curiosity",
+        "viewport": [
+          393,
+          852
+        ],
+        "reducedMotion": false,
+        "parentOrigin": "https://aylas-puzzles.lovable.app",
+        "childUrl": "https://aylas-curiosity-trail.lovable.app/curiosity?from=commons&band=1&s=1479485777",
+        "loaderText": "The Curiosity Trail\n!\n!\n\nPacking the expedition\u2026\n14%\n\nAges 4\u20135\n\nTODAY\u2019S EXPEDITION\n\nPacking the expedition\u2026\n\nYour story and objects are being gathered. Offline play will begin automatically if they cannot arrive.\n\nRead aloud\nPreparing\u2026",
+        "beforeReady": true,
+        "parentCoverCount": 0,
+        "parentOpeningText": 0,
+        "topLayer": "IFRAME",
+        "messagesAtCapture": [
+          {
+            "type": "hello",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1908.1999999999534,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1908.5999999999767,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1926.0999999999767,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 2246.4000000000233,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          }
+        ],
+        "messagesAfterReady": [
+          {
+            "type": "hello",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1908.1999999999534,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1908.5999999999767,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 1926.0999999999767,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 2246.4000000000233,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          },
+          {
+            "type": "ready",
+            "game": "curiosity",
+            "nonce": "57df4bd939ca2bacceca142da5aa5be0",
+            "at": 9908.900000000023,
+            "origin": "https://aylas-curiosity-trail.lovable.app"
+          }
+        ],
+        "errors": [],
+        "screenshotAsset": {
+          "version": 1,
+          "asset_id": "013ae9ad-7462-4bf9-9798-d954dc6619ee",
+          "project_id": "0a7ba2f9-7210-4e52-9220-51a3c422ad05",
+          "url": "/__l5e/assets-v1/013ae9ad-7462-4bf9-9798-d954dc6619ee/hub-fix-curiosity-canonical-loader.png",
+          "r2_key": "a/v1/0a7ba2f9-7210-4e52-9220-51a3c422ad05/013ae9ad-7462-4bf9-9798-d954dc6619ee/hub-fix-curiosity-canonical-loader.png",
+          "original_filename": "hub-fix-curiosity-canonical-loader.png",
+          "size": 615628,
+          "content_type": "image/png",
+          "created_at": "2026-11-19T05:52:29Z"
+        }
+      },
+      {
+        "game": "airship",
+        "viewport": [
+          393,
+          852
+        ],
+        "reducedMotion": false,
+        "parentOrigin": "https://aylas-puzzles.lovable.app",
+        "childUrl": "https://aylas-airship-shape-hunt.lovable.app/airship?band=1&s=1204030575&from=commons&host_session=cd27b9fa6f3c4cdc22d9ae4c&host_nonce=316fb6b89df4879b239db7e014403268&host_game=airship&host_phase=active",
+        "loaderText": "AIRSHIP SHAPE HUNT\nWarming the\nwobble engines\u2026\n\nLoading \u00b7 24%\n\nPreparing your workshop\u2026",
+        "beforeReady": true,
+        "parentCoverCount": 0,
+        "parentOpeningText": 0,
+        "topLayer": "IFRAME",
+        "messagesAtCapture": [
+          {
+            "type": "hello",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1282.3000000000466,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1282.7000000000698,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1298.5999999999767,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          }
+        ],
+        "messagesAfterReady": [
+          {
+            "type": "hello",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1282.3000000000466,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1282.7000000000698,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          },
+          {
+            "type": "location",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 1298.5999999999767,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          },
+          {
+            "type": "ready",
+            "game": "airship",
+            "nonce": "316fb6b89df4879b239db7e014403268",
+            "at": 10505,
+            "origin": "https://aylas-airship-shape-hunt.lovable.app"
+          }
+        ],
+        "errors": [],
+        "screenshotAsset": {
+          "version": 1,
+          "asset_id": "70c96308-5c06-411b-88e5-aa3b6854c775",
+          "project_id": "0a7ba2f9-7210-4e52-9220-51a3c422ad05",
+          "url": "/__l5e/assets-v1/70c96308-5c06-411b-88e5-aa3b6854c775/hub-fix-airship-canonical-loader.png",
+          "r2_key": "a/v1/0a7ba2f9-7210-4e52-9220-51a3c422ad05/70c96308-5c06-411b-88e5-aa3b6854c775/hub-fix-airship-canonical-loader.png",
+          "original_filename": "hub-fix-airship-canonical-loader.png",
+          "size": 356157,
+          "content_type": "image/png",
+          "created_at": "2026-11-19T05:52:20Z"
+        }
+      }
+    ]
   }
 }

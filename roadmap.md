@@ -3,7 +3,7 @@
 ## Approved child-loader hub cover fix
 - [x] Scope child-owned starting presentation to Airship, Radio and Curiosity without changing readiness or registry.
 - [x] Run focused regressions and real parent/live-child loading checks; save QA evidence (70 tests; 18 real live-child loader captures; Radio preserved-document promotion; timeout and other-game fallback).
-- [ ] Publish canonical hub and verify live loader integration and release identity.
+- [x] Publish canonical hub and verify all three live loaders before ready; public build/release ID 20261119055056-4i047p. Exact deployed SHA is unavailable because public sourceVersion still reports inherited 50b7764; QA records this limitation without changing the endpoint.
 
 ## Train menu connection
 - [x] Add only the train allowlist entry and narrowly scoped location fields; retain live dashboard eligibility.
