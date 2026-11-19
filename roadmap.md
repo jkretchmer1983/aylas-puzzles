@@ -1,5 +1,9 @@
 # Hub installation
 
+## Final two approved loader release support
+- [x] Extend only published child-loader capability to robot and seaside; preserve prior eight and all other host behavior (109 tests passed).
+- [ ] Publish original canonical hub and verify Robot + Seaside canonical cold/cached loaders at six sizes; save public/qa/final-two-hub/results.json.
+
 ## Five approved loader release support
 - [x] Extend only published child-loader capability to ticket, take, seating, sofa and ordering; preserve prior three and all other host behavior.
 - [x] Run scoped regressions (80 passed; automatic build OK) and 60 canonical cold/cached captures across six viewports; no parent veil in all 60, before-ready in 53. Real story reveals and Next checked; take win-to-Next preserved prepared document. Child timing/Seating repeated-Next limits recorded, not changed.
