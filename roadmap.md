@@ -1,5 +1,10 @@
 # Hub installation
 
+## Approved child-loader hub cover fix
+- [x] Scope child-owned starting presentation to Airship, Radio and Curiosity without changing readiness or registry.
+- [x] Run focused regressions and real parent/live-child loading checks; save QA evidence (70 tests; 18 real live-child loader captures; Radio preserved-document promotion; timeout and other-game fallback).
+- [ ] Publish canonical hub and verify live loader integration and release identity.
+
 ## Train menu connection
 - [x] Add only the train allowlist entry and narrowly scoped location fields; retain live dashboard eligibility.
 - [x] Run focused regressions and check the live registration once; save for user deployment without publishing.

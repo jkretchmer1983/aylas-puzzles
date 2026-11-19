@@ -8,6 +8,7 @@ import { publicGameById } from "./public-games";
 import { promoteNext, reserveNext, revalidateSession, startSession, withCurrentHref, type HubSession, type SessionInstance, type SessionMode } from "./session-queue";
 import { readHubSession, saveHubSession } from "./session-store";
 import { fetchHostRelease, refreshReservedInstance } from './release-check';
+import { hasPublishedChildLoader } from './loader-capabilities';
 
 /**
  * The hub session shell: the visible game in a full-viewport iframe plus EXACTLY ONE hidden, inert,
@@ -193,6 +194,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
   const hidden = session?.reserved ? [{ instance: session.reserved, role: "reserved" as const }] : [];
   // Stable order by instance ID so promotion never re-parents (and so never reloads) an iframe.
   const slots = [...visible, ...hidden].sort((a, b) => a.instance.instanceId.localeCompare(b.instance.instanceId));
+  const childOwnsStarting = status === "starting" && hasPublishedChildLoader(publicGameById(session?.current?.gameId ?? "")?.gameId);
 
   return <main className="fixed inset-0 overflow-hidden bg-background" aria-label="Puzzle session">
     {slots.map(({ instance, role }) => {
@@ -221,7 +223,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
       <button type="button" onClick={() => void goNext()} className="min-h-12 px-4 font-semibold">Retry</button>
       <button type="button" onClick={() => setNextError(undefined)} className="min-h-12 px-4">Keep playing</button>
     </div>}
-    {status !== "playing" && <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 p-6" role="status" aria-live="polite">
+    {status !== "playing" && !childOwnsStarting && <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 p-6" role="status" aria-live="polite">
       <div className="max-w-sm text-center text-foreground">
         {status === "empty" ? <p className="text-lg font-semibold">No adventures are ready for this age yet.</p>
           : status === "slow" ? <p className="text-lg font-semibold">This adventure is taking a while to open.</p>

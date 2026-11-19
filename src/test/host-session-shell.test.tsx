@@ -55,11 +55,45 @@ async function prepare(mode: 'single' | 'all' = 'single') {
 }
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.targets = [{ gameId: 'sofa', releaseId: 'registry-1', origin: 'https://sofa-host.lovable.app' }, { gameId: 'robot', releaseId: 'registry-1', origin: 'https://robot-host.lovable.app' }];
   mocks.status = 'fresh';
   mocks.refresh.mockResolvedValue({});
   mocks.release.mockResolvedValue('build-1');
 });
 afterEach(cleanup);
+
+describe('published child loader ownership', () => {
+  it.each(['airship', 'radio', 'curiosity'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
+    mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
+    vi.useFakeTimers();
+    render(<SessionShell band={4} mode="single" gameId={gameId} />);
+    await act(async () => { await Promise.resolve(); });
+    expect(frames()).toHaveLength(1);
+    const current = visible();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    message(current, 'hello');
+    message(current, 'next');
+    expect(frames()).toHaveLength(1);
+    expect(latestSession().reserved).toBeNull();
+    try {
+      await act(async () => { vi.advanceTimersByTime(20_000); });
+      expect(screen.getByRole('status')).toHaveTextContent('taking a while');
+      expect(screen.getByRole('button', { name: 'All games' })).toBeInTheDocument();
+      act(() => screen.getByRole('button', { name: 'Try again' }).click());
+      expect(visible()).not.toBe(current);
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      message(visible(), 'ready');
+      expect(frames()).toHaveLength(2);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('retains normal hub startup for games without the approved child-loader capability', async () => {
+    render(<SessionShell band={4} mode="single" gameId="sofa" />);
+    await waitFor(() => expect(frames()).toHaveLength(1));
+    expect(screen.getByRole('status')).toHaveTextContent('Opening your adventure');
+    expect(latestSession().reserved).toBeNull();
+  });
+});
 
 describe('one-tap session handover', () => {
   it('promotes the same unready preload, activates it, and waits for real ready before reserving again', async () => {
