@@ -1,0 +1,1390 @@
+{
+ "scope": "Hub release support for approved Train and Till loaders: add trains and money-change to the published child-loader set only.",
+ "branch": "redesign/forest-sudoku-interface",
+ "baseCommit": "be140f2329a5bfe7c8cf010d387543db50b986e1",
+ "fixCommit": "af5eccb1d9e36302fbe83ff1ac99f7a738053245",
+ "changedFiles": [
+  "src/host/loader-capabilities.ts",
+  "src/test/host-session-shell.test.tsx"
+ ],
+ "regressions": {
+  "tests": "109 passed (vitest)",
+  "productionBuild": "vite build succeeded",
+  "previewBuildLog": "build OK"
+ },
+ "publication": {
+  "method": "native Lovable publish of the original hub to the existing canonical URL",
+  "url": "https://aylas-puzzles.lovable.app",
+  "hubReleaseBefore": "20261119102618-jd3ylf",
+  "hubReleaseAfter": "20261119223351-ycy9mb",
+  "hubReleaseRecheckedAtUtc": "2026-11-19T22:52:51Z",
+  "deployedShaVerification": "Unverified: public /api/release sourceVersion still reports inherited 50b7764; only the build ID proves the new deployment."
+ },
+ "childReleasesAfter": {
+  "trains": {
+   "origin": "https://aylas-train-tangle.lovable.app",
+   "buildId": "trains-host-20261119T2140Z-loader1",
+   "publicSourceVersion": "6326dde",
+   "userStatedPublishedSha": "49d7c0c4f02b49a2f1e1cc414ba652e0ae494ab0"
+  },
+  "money-change": {
+   "origin": "https://aylas-till-is-on-its-lunch-break.lovable.app",
+   "buildId": "till-20261119214858-4zr5k5",
+   "publicSourceVersion": "7cebf85e578d2fb3fb77df86fce5bb69613da9c2",
+   "userStatedPublishedSha": "af5c3cb5f927d72a681ddd0149562ff8af2d8c90"
+  }
+ },
+ "method": "Headless Chromium against the anonymous canonical hub with real published, registered children. Menu card opened by tap (touch sizes) or keyboard Enter (desktop, reduced motion). Ordinary clicks/taps only; no route interception, fake parent, DOM removal, badge removal or relaxed security flags. Parent and child sampled about every 0.3 s; 'child loader visible' means the child's own progress percentage was rendered with effective opacity above 0.5. Ready = real ready postMessage observed by the parent page.",
+ "summary": {
+  "launches": 24,
+  "hubStartingCoverOverChildLoader": 0,
+  "openingTextWhileChildPresent": 0,
+  "trains": "Child loader visible 9.8-22.9 s cold/cached in all 12 launches; no hub slow cover; ready 5.7-14.5 s (slower when six runs shared the network). 6/6 Next presses hit the real Next button unobstructed and promoted the same prepared iframe and seed; Back returned to ?band=4.",
+  "money-change": "Child loader visible 33-49 s in all 12 launches; real story intro with Begin after ready. In all 12 launches (and all 6 post-Next promotions) the hub's 20-second slow cover appeared at about 20 s and covered the child loader until real ready at 33-47 s, then cleared by itself. 6/6 Next presses (after Begin) promoted the same prepared iframe and seed; Back returned to ?band=4."
+ },
+ "limitations": [
+  "Till: the hub's existing 20-second slow cover ('This adventure is taking a while to open.' / Try again / All games) obscures Till's own loader and its 'Start with the market picture' fallback button for roughly 13-27 s on every launch, because Till's real ready arrives after 33-47 s. Not a false failure: it clears on real ready. Not changed, per scope (no timeout/readiness changes). Fix options need approval: Till sends ready earlier from its own fallback path, or a per-game hub timeout.",
+  "All games: the hub shows its 'Opening your adventure' cover for up to ~0.5 s right after the card tap, before any game iframe exists (while the session rechecks availability). It never drew over a child document.",
+  "Till after Next: the prepared Till instance was usually not ready yet, so its loader (and later the 20 s slow cover) appeared again after promotion.",
+  "Train Lovable badge: no badge element was found in the embedded Train document; at 393x852 Next sat at x291 y802 76x44, the hit test landed on the button and the ordinary tap worked in all six sizes. The standalone Train page outside the hub was not checked.",
+  "Till shows a zero-size Lovable badge element (id lovable-badge-cta) inside its document; it did not intercept any tested control.",
+  "No Till or Train puzzle was solved; Next was pressed with the games' own Next buttons.",
+  "Public child sourceVersion values differ from the user-stated published SHAs; build IDs match the registry entries.",
+  "Headless Chromium only; no physical iPad or Safari testing."
+ ],
+ "screenshotPointers": 72,
+ "captures": [
+  {
+   "gameId": "trains",
+   "viewport": "phone",
+   "size": [
+    393,
+    852
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 6.44,
+    "childLoaderVisibleS": [
+     1.83,
+     12.29
+    ],
+    "childLoaderVisibleSpanS": 10.46,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.32,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/d4e35fef-42c4-4b2f-9539-d812d890515e/train-till-trains-phone-cold-loader.png",
+     "atS": 2.75,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/bd62adec-319c-4f62-9b92-0ecba8f162e4/train-till-trains-phone-cold-intro.png",
+     "atS": 13.62
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "cached": {
+    "readyAfterTapS": 5.7,
+    "childLoaderVisibleS": [
+     1.6,
+     11.66
+    ],
+    "childLoaderVisibleSpanS": 10.06,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/da5fc6af-d3d8-463e-b0c6-070bedd80e36/train-till-trains-phone-cached-loader.png",
+     "atS": 5.7,
+     "beforeReady": false,
+     "progress": "6%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/81e300a9-68b1-4d48-b387-8650bf5114fe/train-till-trains-phone-cached-intro.png",
+     "atS": 12.97
+    },
+    "slowCoverScreenshot": null,
+    "samples": 19
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     291,
+     802,
+     76,
+     44
+    ],
+    "preparedSeed": "924892348",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.24,
+     "childLoaderVisibleS": [
+      0.24,
+      5.48
+     ],
+     "childLoaderVisibleSpanS": 5.24,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 1.07,
+      "beforeReady": false,
+      "progress": "22%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 6.78
+     },
+     "slowCoverScreenshot": null,
+     "samples": 14
+    },
+    "screenshot": "/__l5e/assets-v1/2ed3a35b-4c0a-440a-896d-e23c250da9cb/train-till-trains-phone-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "trains",
+   "viewport": "tall",
+   "size": [
+    440,
+    760
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 11.7,
+    "childLoaderVisibleS": [
+     1.51,
+     22.74
+    ],
+    "childLoaderVisibleSpanS": 21.23,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/f5047172-5d32-4a55-9c06-8cb154a9d9cb/train-till-trains-tall-cold-loader.png",
+     "atS": 2.27,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/6485a433-8fb1-40f5-88c9-87accd96b9cd/train-till-trains-tall-cold-intro.png",
+     "atS": 24.17
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "cached": {
+    "readyAfterTapS": 9.14,
+    "childLoaderVisibleS": [
+     0.56,
+     17.02
+    ],
+    "childLoaderVisibleSpanS": 16.46,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.02,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/6751240e-296b-4952-817d-849cabd65f0a/train-till-trains-tall-cached-loader.png",
+     "atS": 1.56,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/bf671e39-dd98-4050-932b-881f0842f487/train-till-trains-tall-cached-intro.png",
+     "atS": 18.61
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     314,
+     710,
+     76,
+     44
+    ],
+    "preparedSeed": "1003288460",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.16,
+     "childLoaderVisibleS": [
+      0.16,
+      7.8
+     ],
+     "childLoaderVisibleSpanS": 7.64,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 1.0,
+      "beforeReady": false,
+      "progress": "27%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 9.18
+     },
+     "slowCoverScreenshot": null,
+     "samples": 13
+    },
+    "screenshot": "/__l5e/assets-v1/6568c3ec-fdec-41c6-9573-a135b3b326f8/train-till-trains-tall-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "trains",
+   "viewport": "phone-landscape",
+   "size": [
+    852,
+    393
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 13.77,
+    "childLoaderVisibleS": [
+     2.03,
+     24.39
+    ],
+    "childLoaderVisibleSpanS": 22.36,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/89a85136-6946-4576-8da8-f064faa2c9dc/train-till-trains-phone-landscape-cold-loader.png",
+     "atS": 3.1,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/0e5dfa1c-8472-4129-815f-6d9720120bb4/train-till-trains-phone-landscape-cold-intro.png",
+     "atS": 25.79
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "cached": {
+    "readyAfterTapS": 9.54,
+    "childLoaderVisibleS": [
+     1.14,
+     19.27
+    ],
+    "childLoaderVisibleSpanS": 18.13,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.04,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/e9371324-5c48-4aab-ab43-2b24690aa318/train-till-trains-phone-landscape-cached-loader.png",
+     "atS": 1.94,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/727e3d20-7822-42a8-b335-6b6ee6440e3e/train-till-trains-phone-landscape-cached-intro.png",
+     "atS": 20.6
+    },
+    "slowCoverScreenshot": null,
+    "samples": 24
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     660,
+     345,
+     69,
+     44
+    ],
+    "preparedSeed": "643196485",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.24,
+     "childLoaderVisibleS": [
+      0.24,
+      9.97
+     ],
+     "childLoaderVisibleSpanS": 9.73,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.89,
+      "beforeReady": false,
+      "progress": "19%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 11.35
+     },
+     "slowCoverScreenshot": null,
+     "samples": 15
+    },
+    "screenshot": "/__l5e/assets-v1/b0ccf998-49f8-47d9-96dd-252b9302d5b7/train-till-trains-phone-landscape-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "trains",
+   "viewport": "ipad",
+   "size": [
+    768,
+    1024
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 13.93,
+    "childLoaderVisibleS": [
+     2.0,
+     23.69
+    ],
+    "childLoaderVisibleSpanS": 21.69,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/1d2f0436-8504-4c6e-bd06-81fb707db044/train-till-trains-ipad-cold-loader.png",
+     "atS": 2.6,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/ae939b2b-374c-4d7a-bcef-5f76083de543/train-till-trains-ipad-cold-intro.png",
+     "atS": 25.1
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "cached": {
+    "readyAfterTapS": 9.6,
+    "childLoaderVisibleS": [
+     1.07,
+     18.4
+    ],
+    "childLoaderVisibleSpanS": 17.33,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.02,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/15efeef6-dd5b-4b97-b355-24c2ade296cb/train-till-trains-ipad-cached-loader.png",
+     "atS": 1.98,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/e49037d8-a426-42d8-9682-565557d6991a/train-till-trains-ipad-cached-intro.png",
+     "atS": 19.73
+    },
+    "slowCoverScreenshot": null,
+    "samples": 22
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     663,
+     958,
+     89,
+     52
+    ],
+    "preparedSeed": "1759745717",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.56,
+     "childLoaderVisibleS": [
+      0.56,
+      9.92
+     ],
+     "childLoaderVisibleSpanS": 9.36,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 1.59,
+      "beforeReady": false,
+      "progress": "22%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 11.32
+     },
+     "slowCoverScreenshot": null,
+     "samples": 16
+    },
+    "screenshot": "/__l5e/assets-v1/bde14be8-7efb-4f0b-91a5-4705a431dd57/train-till-trains-ipad-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "trains",
+   "viewport": "ipad-landscape",
+   "size": [
+    1024,
+    768
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 14.54,
+    "childLoaderVisibleS": [
+     1.52,
+     24.52
+    ],
+    "childLoaderVisibleSpanS": 23.0,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.33,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/8d0c195d-9bc2-41a8-8724-829b67329cb1/train-till-trains-ipad-landscape-cold-loader.png",
+     "atS": 2.37,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/5b1ef7e5-1166-4107-9237-ebb614d41f3d/train-till-trains-ipad-landscape-cold-intro.png",
+     "atS": 25.88
+    },
+    "slowCoverScreenshot": null,
+    "samples": 21
+   },
+   "cached": {
+    "readyAfterTapS": 10.89,
+    "childLoaderVisibleS": [
+     1.11,
+     19.13
+    ],
+    "childLoaderVisibleSpanS": 18.02,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/6989c6ce-abce-41c2-a227-812894868534/train-till-trains-ipad-landscape-cached-loader.png",
+     "atS": 1.82,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/f72c5f2c-cf81-4da8-9cc7-fb36a666043d/train-till-trains-ipad-landscape-cached-intro.png",
+     "atS": 20.42
+    },
+    "slowCoverScreenshot": null,
+    "samples": 23
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     775,
+     714,
+     75,
+     46
+    ],
+    "preparedSeed": "166577796",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 1.1,
+     "childLoaderVisibleS": [
+      1.1,
+      10.11
+     ],
+     "childLoaderVisibleSpanS": 9.01,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 1.92,
+      "beforeReady": false,
+      "progress": "25%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 11.48
+     },
+     "slowCoverScreenshot": null,
+     "samples": 15
+    },
+    "screenshot": "/__l5e/assets-v1/ac5aa907-d0bd-4c1b-96c7-3af7c44fa382/train-till-trains-ipad-landscape-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "trains",
+   "viewport": "desktop",
+   "size": [
+    1440,
+    1000
+   ],
+   "input": "keyboard+mouse, reduced motion",
+   "cold": {
+    "readyAfterTapS": 14.29,
+    "childLoaderVisibleS": [
+     1.87,
+     23.86
+    ],
+    "childLoaderVisibleSpanS": 21.99,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/6a06c20e-b3e4-4483-9375-523213b306b0/train-till-trains-desktop-cold-loader.png",
+     "atS": 2.52,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/2da9dca6-d4bb-4de5-99fe-4136fa443c18/train-till-trains-desktop-cold-intro.png",
+     "atS": 25.26
+    },
+    "slowCoverScreenshot": null,
+    "samples": 21
+   },
+   "cached": {
+    "readyAfterTapS": 9.89,
+    "childLoaderVisibleS": [
+     0.82,
+     16.73
+    ],
+    "childLoaderVisibleSpanS": 15.91,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.47,
+    "hubSlowCoverS": null,
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/5f105fff-b912-42e4-980b-a09e2ceac314/train-till-trains-desktop-cached-loader.png",
+     "atS": 1.42,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/d337f1f1-047c-46db-92e0-2853730ebb54/train-till-trains-desktop-cached-intro.png",
+     "atS": 18.15
+    },
+    "slowCoverScreenshot": null,
+    "samples": 18
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     983,
+     946,
+     75,
+     46
+    ],
+    "preparedSeed": "1264644507",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.07,
+     "childLoaderVisibleS": [
+      0.07,
+      9.63
+     ],
+     "childLoaderVisibleSpanS": 9.56,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": null,
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.82,
+      "beforeReady": false,
+      "progress": "6%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 11.08
+     },
+     "slowCoverScreenshot": null,
+     "samples": 15
+    },
+    "screenshot": "/__l5e/assets-v1/8fc4ce08-fc04-4c84-be2c-7e2176b44bb6/train-till-trains-desktop-next.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "phone",
+   "size": [
+    393,
+    852
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 47.33,
+    "childLoaderVisibleS": [
+     0.73,
+     48.95
+    ],
+    "childLoaderVisibleSpanS": 48.22,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": [
+     20.58,
+     47.0
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/d3dfe91c-e017-4a86-b5a1-ab2b59c84bc3/train-till-money-change-phone-cold-loader.png",
+     "atS": 1.43,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/30cc1afc-7439-4ce6-ba7e-5a56c2ba2b0e/train-till-money-change-phone-cold-intro.png",
+     "atS": 50.24
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/b3cc110e-7410-494a-affc-8a37c92c7ec0/train-till-money-change-phone-cold-hubslow.png",
+     "atS": 20.58
+    },
+    "samples": 153
+   },
+   "cached": {
+    "readyAfterTapS": 45.6,
+    "childLoaderVisibleS": [
+     0.34,
+     45.6
+    ],
+    "childLoaderVisibleSpanS": 45.26,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": [
+     20.36,
+     45.25
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/cb5fb256-b64b-48bc-b970-d99ccb056902/train-till-money-change-phone-cached-loader.png",
+     "atS": 1.0,
+     "beforeReady": true,
+     "progress": "3%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/bf907be7-a198-4100-97de-c6401fc514d0/train-till-money-change-phone-cached-intro.png",
+     "atS": 46.91
+    },
+    "slowCoverScreenshot": null,
+    "samples": 144
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     321,
+     803,
+     62,
+     44
+    ],
+    "preparedSeed": "291524399",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.04,
+     "childLoaderVisibleS": [
+      0.04,
+      41.34
+     ],
+     "childLoaderVisibleSpanS": 41.3,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      19.97,
+      39.71
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.73,
+      "beforeReady": false,
+      "progress": "5%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 42.65
+     },
+     "slowCoverScreenshot": null,
+     "samples": 130
+    },
+    "screenshot": "/__l5e/assets-v1/100cca1c-027c-4d5a-a2cb-159f172b390d/train-till-money-change-phone-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/3bbaacb2-e9e8-4d97-9e48-ae634b0598c4/train-till-money-change-phone-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "tall",
+   "size": [
+    440,
+    760
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 47.58,
+    "childLoaderVisibleS": [
+     0.99,
+     48.91
+    ],
+    "childLoaderVisibleSpanS": 47.92,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": [
+     20.45,
+     47.23
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/58b2343f-3371-4139-a16e-16077260b387/train-till-money-change-tall-cold-loader.png",
+     "atS": 1.69,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/c6e24c74-0768-4bee-9358-7f8ec3223816/train-till-money-change-tall-cold-intro.png",
+     "atS": 50.21
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/6ef6ed6e-4968-4c4a-9dcf-4b3b432b0e68/train-till-money-change-tall-cold-hubslow.png",
+     "atS": 20.45
+    },
+    "samples": 152
+   },
+   "cached": {
+    "readyAfterTapS": 46.58,
+    "childLoaderVisibleS": [
+     0.34,
+     47.91
+    ],
+    "childLoaderVisibleSpanS": 47.57,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": [
+     20.35,
+     46.26
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/44a7d026-7277-4342-a1d1-651423d797d4/train-till-money-change-tall-cached-loader.png",
+     "atS": 0.99,
+     "beforeReady": true,
+     "progress": "6%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/c27e7f36-70f3-42a4-8e80-dfadf7f787e4/train-till-money-change-tall-cached-intro.png",
+     "atS": 49.21
+    },
+    "slowCoverScreenshot": null,
+    "samples": 151
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     368,
+     711,
+     62,
+     44
+    ],
+    "preparedSeed": "838594390",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.03,
+     "childLoaderVisibleS": [
+      0.03,
+      41.62
+     ],
+     "childLoaderVisibleSpanS": 41.59,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      19.9,
+      39.66
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.69,
+      "beforeReady": false,
+      "progress": "7%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 42.95
+     },
+     "slowCoverScreenshot": null,
+     "samples": 131
+    },
+    "screenshot": "/__l5e/assets-v1/30df0a60-53fa-4a5d-85a8-014f0b0fd094/train-till-money-change-tall-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/9cad045b-1248-4484-ae64-ed800b0993fe/train-till-money-change-tall-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "phone-landscape",
+   "size": [
+    852,
+    393
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 47.49,
+    "childLoaderVisibleS": [
+     1.32,
+     49.16
+    ],
+    "childLoaderVisibleSpanS": 47.84,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": [
+     20.41,
+     47.16
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/d7b4c7f1-1f63-4daa-995f-99d9452b2120/train-till-money-change-phone-landscape-cold-loader.png",
+     "atS": 1.97,
+     "beforeReady": true,
+     "progress": "1%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/5c4ca563-bfbb-45eb-b183-30ce83f0cba4/train-till-money-change-phone-landscape-cold-intro.png",
+     "atS": 50.47
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/3f280c95-78aa-4c88-b51c-7af61cdd56d6/train-till-money-change-phone-landscape-cold-hubslow.png",
+     "atS": 20.41
+    },
+    "samples": 153
+   },
+   "cached": {
+    "readyAfterTapS": 46.28,
+    "childLoaderVisibleS": [
+     0.36,
+     47.91
+    ],
+    "childLoaderVisibleSpanS": 47.55,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.02,
+    "hubSlowCoverS": [
+     20.33,
+     45.95
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/89618f64-8c9f-48b5-bbb0-57ee49788c54/train-till-money-change-phone-landscape-cached-loader.png",
+     "atS": 1.02,
+     "beforeReady": true,
+     "progress": "6%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/6c64f6c9-ec9a-4389-97ca-e11a031a7eae/train-till-money-change-phone-landscape-cached-intro.png",
+     "atS": 49.21
+    },
+    "slowCoverScreenshot": null,
+    "samples": 151
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     778,
+     345,
+     64,
+     44
+    ],
+    "preparedSeed": "390553235",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.03,
+     "childLoaderVisibleS": [
+      0.03,
+      41.6
+     ],
+     "childLoaderVisibleSpanS": 41.57,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      19.92,
+      39.66
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.69,
+      "beforeReady": false,
+      "progress": "7%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 42.89
+     },
+     "slowCoverScreenshot": null,
+     "samples": 131
+    },
+    "screenshot": "/__l5e/assets-v1/90bd2729-f4a6-47ca-9f01-ba45720b66ef/train-till-money-change-phone-landscape-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/90579fd7-83a9-415c-af4b-12c33de0d731/train-till-money-change-phone-landscape-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "ipad",
+   "size": [
+    768,
+    1024
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 37.21,
+    "childLoaderVisibleS": [
+     0.54,
+     37.54
+    ],
+    "childLoaderVisibleSpanS": 37.0,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": [
+     20.64,
+     36.88
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/68956dc0-507e-4897-87d7-f921222fd9d3/train-till-money-change-ipad-cold-loader.png",
+     "atS": 1.22,
+     "beforeReady": true,
+     "progress": "0%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/2fde960e-8ec0-4e84-92e1-d044cd7e5c79/train-till-money-change-ipad-cold-intro.png",
+     "atS": 38.84
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/391b9a02-c33a-4dbf-865e-4a327fb22f78/train-till-money-change-ipad-cold-hubslow.png",
+     "atS": 20.64
+    },
+    "samples": 117
+   },
+   "cached": {
+    "readyAfterTapS": 46.9,
+    "childLoaderVisibleS": [
+     0.33,
+     47.88
+    ],
+    "childLoaderVisibleSpanS": 47.55,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": [
+     20.16,
+     46.56
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/5dfde4fc-ddf5-498b-9024-49d93be68cea/train-till-money-change-ipad-cached-loader.png",
+     "atS": 0.98,
+     "beforeReady": true,
+     "progress": "4%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/89a65247-ded0-4a45-a8d6-bcb5eb645db9/train-till-money-change-ipad-cached-intro.png",
+     "atS": 49.18
+    },
+    "slowCoverScreenshot": null,
+    "samples": 150
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     687,
+     975,
+     71,
+     44
+    ],
+    "preparedSeed": "1900769693",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.02,
+     "childLoaderVisibleS": [
+      0.02,
+      42.31
+     ],
+     "childLoaderVisibleSpanS": 42.29,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      20.05,
+      40.34
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.67,
+      "beforeReady": false,
+      "progress": "6%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 43.61
+     },
+     "slowCoverScreenshot": null,
+     "samples": 132
+    },
+    "screenshot": "/__l5e/assets-v1/4da55806-0c48-4715-81c5-bd214c01316c/train-till-money-change-ipad-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/23559a62-acac-4684-8b18-2157d3bfae5e/train-till-money-change-ipad-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "ipad-landscape",
+   "size": [
+    1024,
+    768
+   ],
+   "input": "touch",
+   "cold": {
+    "readyAfterTapS": 47.58,
+    "childLoaderVisibleS": [
+     1.3,
+     49.19
+    ],
+    "childLoaderVisibleSpanS": 47.89,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0,
+    "hubSlowCoverS": [
+     20.66,
+     47.24
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/a2805297-59a3-4a2c-b39f-2b3dcc98b88a/train-till-money-change-ipad-landscape-cold-loader.png",
+     "atS": 1.96,
+     "beforeReady": true,
+     "progress": "2%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/519dfed5-8f3b-4607-b861-67dfc84545e3/train-till-money-change-ipad-landscape-cold-intro.png",
+     "atS": 50.48
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/bec1fe5a-3033-4640-a8cf-26a3c72c5ecf/train-till-money-change-ipad-landscape-cold-hubslow.png",
+     "atS": 20.66
+    },
+    "samples": 152
+   },
+   "cached": {
+    "readyAfterTapS": 46.43,
+    "childLoaderVisibleS": [
+     0.34,
+     48.05
+    ],
+    "childLoaderVisibleSpanS": 47.71,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": [
+     20.23,
+     46.09
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/c8fde00d-f187-4da7-8694-704884e99e62/train-till-money-change-ipad-landscape-cached-loader.png",
+     "atS": 0.98,
+     "beforeReady": true,
+     "progress": "3%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/b5ca8bdb-fc3a-435d-bbaf-cef277e80385/train-till-money-change-ipad-landscape-cached-intro.png",
+     "atS": 49.35
+    },
+    "slowCoverScreenshot": null,
+    "samples": 150
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     596,
+     719,
+     68,
+     44
+    ],
+    "preparedSeed": "668073782",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.03,
+     "childLoaderVisibleS": [
+      0.03,
+      41.09
+     ],
+     "childLoaderVisibleSpanS": 41.06,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      20.13,
+      39.15
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.69,
+      "beforeReady": false,
+      "progress": "8%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 42.38
+     },
+     "slowCoverScreenshot": null,
+     "samples": 128
+    },
+    "screenshot": "/__l5e/assets-v1/af7062f0-49fb-4686-b41a-438602ea0e60/train-till-money-change-ipad-landscape-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/095f4a5d-d9c8-4b02-b13e-0ed87d1298bf/train-till-money-change-ipad-landscape-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  },
+  {
+   "gameId": "money-change",
+   "viewport": "desktop",
+   "size": [
+    1440,
+    1000
+   ],
+   "input": "keyboard+mouse, reduced motion",
+   "cold": {
+    "readyAfterTapS": 33.65,
+    "childLoaderVisibleS": [
+     1.01,
+     33.97
+    ],
+    "childLoaderVisibleSpanS": 32.96,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.33,
+    "hubSlowCoverS": [
+     20.42,
+     33.31
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/addaa67a-8c67-434c-ac5d-88a881c10ebe/train-till-money-change-desktop-cold-loader.png",
+     "atS": 1.67,
+     "beforeReady": true,
+     "progress": "2%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/582ca871-2f25-4ad3-a71e-4c37f00167b6/train-till-money-change-desktop-cold-intro.png",
+     "atS": 35.29
+    },
+    "slowCoverScreenshot": {
+     "url": "/__l5e/assets-v1/9318317b-1313-4494-9d32-ac51f3588091/train-till-money-change-desktop-cold-hubslow.png",
+     "atS": 20.42
+    },
+    "samples": 105
+   },
+   "cached": {
+    "readyAfterTapS": 46.4,
+    "childLoaderVisibleS": [
+     0.33,
+     47.74
+    ],
+    "childLoaderVisibleSpanS": 47.41,
+    "hubStartingCoverWhileChildPresent": 0,
+    "openingTextWhileChildPresent": 0,
+    "hubOpeningCoverBeforeAnyGameFrameS": 0.01,
+    "hubSlowCoverS": [
+     20.2,
+     46.07
+    ],
+    "visibleIframeTopmostOutsideSlowCover": true,
+    "horizontalOverflowPx": 0,
+    "loaderScreenshot": {
+     "url": "/__l5e/assets-v1/c011deff-7575-4538-b705-7ef29ca25af2/train-till-money-change-desktop-cached-loader.png",
+     "atS": 0.97,
+     "beforeReady": true,
+     "progress": "4%"
+    },
+    "introScreenshot": {
+     "url": "/__l5e/assets-v1/1a3824d1-84aa-4678-a912-9b0c40e7b12d/train-till-money-change-desktop-cached-intro.png",
+     "atS": 49.05
+    },
+    "slowCoverScreenshot": null,
+    "samples": 148
+   },
+   "next": {
+    "pressedChildNext": true,
+    "nextButtonHitTestUnobstructed": true,
+    "nextButtonRect": [
+     804,
+     951,
+     68,
+     44
+    ],
+    "preparedSeed": "335634878",
+    "samePreparedIframePromoted": true,
+    "afterPromotion": {
+     "readyAfterTapS": 0.04,
+     "childLoaderVisibleS": [
+      0.04,
+      41.44
+     ],
+     "childLoaderVisibleSpanS": 41.4,
+     "hubStartingCoverWhileChildPresent": 0,
+     "openingTextWhileChildPresent": 0,
+     "hubOpeningCoverBeforeAnyGameFrameS": 0,
+     "hubSlowCoverS": [
+      20.02,
+      39.79
+     ],
+     "visibleIframeTopmostOutsideSlowCover": true,
+     "horizontalOverflowPx": 0,
+     "loaderScreenshot": {
+      "url": null,
+      "atS": 0.69,
+      "beforeReady": false,
+      "progress": "6%"
+     },
+     "introScreenshot": {
+      "url": null,
+      "atS": 42.74
+     },
+     "slowCoverScreenshot": null,
+     "samples": 127
+    },
+    "screenshot": "/__l5e/assets-v1/cce6fd44-1b59-49f6-87ef-705b0c192eab/train-till-money-change-desktop-next.png",
+    "pressedBegin": true,
+    "afterBeginScreenshot": "/__l5e/assets-v1/3c04dcea-3d85-43cf-baf1-247d8421e1e4/train-till-money-change-desktop-cold-afterbegin.png"
+   },
+   "back": {
+    "ok": true,
+    "url": "https://aylas-puzzles.lovable.app/?band=4"
+   }
+  }
+ ]
+}

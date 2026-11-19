@@ -1,5 +1,10 @@
 # Hub installation
 
+## Train and Till loader release support
+- [x] Extend only published child-loader capability to trains and money-change; preserve prior ten and all other host behavior (109 tests; build OK).
+- [x] Publish original canonical hub (20261119102618-jd3ylf -> 20261119223351-ycy9mb) and verify 24 canonical cold/cached launches at six sizes: zero hub starting cover/opening text over child loaders; 12 Next promotions kept the prepared iframe and seed; Back keeps age. Results and 72 screenshot pointers at public/qa/train-till-hub/results.json.
+- [ ] Till's 20 s hub slow cover hides its loader until real ready (33-47 s): needs a decision (earlier Till ready or per-game timeout); not changed under this scope.
+
 ## Final two approved loader release support
 - [x] Extend only published child-loader capability to robot and seaside; preserve prior eight and all other host behavior (109 tests passed).
 - [x] Publish original canonical hub (public release 20261119083812-crk9dv -> 20261119102618-jd3ylf) and verify Robot + Seaside: 24 canonical cold/cached captures at six sizes, zero hub cover/opening text, iframe on top; 12 Next promotions kept the prepared iframe; 6 real Seaside wins; Back keeps age. Results and 66 screenshot pointers at public/qa/final-two-hub/results.json. Exact deployed SHA unverified (inherited sourceVersion 50b7764).
@@ -17,7 +22,7 @@
 ## Train menu connection
 - [x] Add only the train allowlist entry and narrowly scoped location fields; retain live dashboard eligibility.
 - [x] Run focused regressions and check the live registration once; save for user deployment without publishing.
-- [ ] Live train handshake/Next/New game: blocked by missing production registry entry and host releaseId/buildId metadata; user owns registration, host upgrade and deployment.
+- [x] Live train handshake/Next verified after registration (see Train and Till loader release support).
 
 - [x] Install supplied thin hub; retain project identity and exact courtyard menu.
 - [x] Add release alias and pre-promotion host freshness checks.
