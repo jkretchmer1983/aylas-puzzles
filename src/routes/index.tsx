@@ -17,6 +17,7 @@ import { refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import sceneLandscape from "@/assets/stacked/stacked-worlds-landscape.webp.asset.json";
 import scenePortrait from "@/assets/stacked/stacked-worlds-portrait.webp.asset.json";
+import scenePhoneTall from "@/assets/stacked/stacked-worlds-phone-tall.webp.asset.json";
 import { useSceneParallax } from "@/lib/scene-parallax";
 import { AgeDropdown } from "@/components/commons/AgeDropdown";
 import "@fontsource/baloo-2/800.css";
@@ -152,8 +153,10 @@ function PuzzleCommons() {
 
   return <main className="puzzle-commons">
     <div ref={sceneRef} className="commons-scene" aria-hidden="true">
-      {/* The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens. */}
+      {/* The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens, tall scene for narrow phones. */}
       <picture>
+        {/* Must match the narrow-phone media query in puzzle-commons.css. */}
+        <source media="(orientation: portrait) and (max-aspect-ratio: 2/3)" srcSet={scenePhoneTall.url} width={772} height={1920} />
         <source media="(orientation: portrait)" srcSet={scenePortrait.url} width={1086} height={1448} />
         <img src={sceneLandscape.url} width={1536} height={1024} alt="" fetchPriority="high" decoding="async" />
       </picture>

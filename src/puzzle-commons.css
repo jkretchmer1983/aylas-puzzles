@@ -18,7 +18,8 @@
   isolation: isolate;
   color: var(--commons-ink);
   font-family: "Nunito", ui-rounded, system-ui, sans-serif;
-  /* Scene framing. Landscape art 1536x1024 by default; the portrait recompose (1086x1448) in portrait.
+  /* Scene framing. Landscape art 1536x1024 by default; the portrait recompose (1086x1448) in portrait;
+     the tall phone scene (772x1920) on narrow portrait phones.
      --logo-f = bottom of the painted hanging sign as a fraction of the art's height. */
   --scene-vh: 100vh;
   --scene-aspect: 1.5;
@@ -41,6 +42,9 @@
 }
 @supports (height: 100lvh) { .puzzle-commons { --scene-vh: 100lvh; } }
 @media (orientation: portrait) { .puzzle-commons { --scene-aspect: .75; --logo-f: .1; } }
+/* Narrow portrait phones: the tall phone scene (772x1920, sign bottom at 5% of its height), shown at natural
+   width so its extra path below the worlds is the only parallax travel. */
+@media (orientation: portrait) and (max-aspect-ratio: 2/3) { .puzzle-commons { --scene-aspect: .4021; --logo-f: .05; } }
 
 /* ---------- One continuous illustrated scene behind everything ----------
    ONE fixed transform layer = the whole width-led art; it drifts only by its own overscan below the large

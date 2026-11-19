@@ -1,0 +1,62 @@
+{
+  "check": "Draft 7 homepage: tall phone scene (stacked-worlds-phone-tall, 772x1920) on narrow portrait phones",
+  "browser": "Chromium (Playwright) against the draft dev server; not a physical iPhone/iPad",
+  "rule": "orientation: portrait and max-aspect-ratio 2/3 -> tall phone scene; other portrait -> 1086x1448 portrait; landscape -> 1536x1024",
+  "measurements": {
+    "phone 393x852": {
+      "scene": "393x977",
+      "zoom": 1.0,
+      "overscanTravelPx": 125,
+      "headlineTopPx": 57,
+      "overflowX": 0,
+      "bottomCovered": true,
+      "loadedSource": "stacked-worlds-phone-tall.webp"
+    },
+    "duo 440x760": {
+      "scene": "440x1094",
+      "zoom": 1.0,
+      "overscanTravelPx": 334,
+      "headlineTopPx": 63,
+      "overflowX": 0,
+      "bottomCovered": true,
+      "loadedSource": "stacked-worlds-phone-tall.webp"
+    },
+    "phone 393x852 reduced motion": {
+      "layerTopAtBottomOfPage": 0
+    },
+    "ipad 768x1024": {
+      "loadedSource": "stacked-worlds-portrait.webp",
+      "zoom": 1.0,
+      "travel": 0
+    },
+    "ipad landscape 1024x768": {
+      "zoom": 1.13,
+      "travel": 0
+    },
+    "phone landscape 844x390": {
+      "zoom": 1.0,
+      "travel": 173
+    },
+    "desktop 1440x900": {
+      "zoom": 1.0,
+      "travel": 60
+    }
+  },
+  "allSizes": {
+    "consoleErrors": 0,
+    "headlineStroke": "0px",
+    "comingSoonDescriptionVisible": true
+  },
+  "screenshots": {
+    "tall-duo-bottom.png": "/__l5e/assets-v1/b2d25d2a-16ae-4400-bbea-02ff2683d1c2/stacked-tall-duo-bottom.png",
+    "tall-duo-coming.png": "/__l5e/assets-v1/5535ab2a-b1bb-4191-a223-975efe0d847a/stacked-tall-duo-coming.png",
+    "tall-duo-top.png": "/__l5e/assets-v1/9866dace-627d-4ee8-9812-305966817989/stacked-tall-duo-top.png",
+    "tall-phone-bottom.png": "/__l5e/assets-v1/4d0d9bf1-be6a-4a09-b96d-07a21a58161c/stacked-tall-phone-bottom.png",
+    "tall-phone-coming.png": "/__l5e/assets-v1/5d44853b-7a66-460b-abf7-72393b943e3c/stacked-tall-phone-coming.png",
+    "tall-phone-top.png": "/__l5e/assets-v1/ad0d0b4e-aa35-463e-962c-e3b2a31c96ac/stacked-tall-phone-top.png"
+  },
+  "knownLimits": [
+    "Train card launch: iframe renders but the hub stays on 'Opening your adventure' because the Train host's readiness/origin handshake is not complete; game projects were not modified.",
+    "Not tested on a physical iPhone/iPad or Safari."
+  ]
+}
