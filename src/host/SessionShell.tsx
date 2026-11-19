@@ -8,7 +8,7 @@ import { publicGameById } from "./public-games";
 import { promoteNext, reserveNext, revalidateSession, startSession, withCurrentHref, type HubSession, type SessionInstance, type SessionMode } from "./session-queue";
 import { readHubSession, saveHubSession } from "./session-store";
 import { fetchHostRelease, refreshReservedInstance } from './release-check';
-import { hasPublishedChildLoader } from './loader-capabilities';
+import { hasCompactSlowRecovery, hasPublishedChildLoader } from './loader-capabilities';
 
 /**
  * The hub session shell: the visible game in a full-viewport iframe plus EXACTLY ONE hidden, inert,
@@ -194,7 +194,11 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
   const hidden = session?.reserved ? [{ instance: session.reserved, role: "reserved" as const }] : [];
   // Stable order by instance ID so promotion never re-parents (and so never reloads) an iframe.
   const slots = [...visible, ...hidden].sort((a, b) => a.instance.instanceId.localeCompare(b.instance.instanceId));
-  const childOwnsStarting = status === "starting" && hasPublishedChildLoader(publicGameById(session?.current?.gameId ?? "")?.gameId);
+  const currentGameId = publicGameById(session?.current?.gameId ?? "")?.gameId;
+  const childOwnsStarting = status === "starting" && hasPublishedChildLoader(currentGameId);
+  // Slow stays slow; for approved long loaders with a real current document, recovery is a compact panel.
+  const currentFrameExists = !!session?.current && frameFor(session.current, "current") !== null;
+  const compactSlow = status === "slow" && currentFrameExists && hasCompactSlowRecovery(currentGameId);
 
   return <main className="fixed inset-0 overflow-hidden bg-background" aria-label="Puzzle session">
     {slots.map(({ instance, role }) => {
@@ -223,7 +227,12 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
       <button type="button" onClick={() => void goNext()} className="min-h-12 px-4 font-semibold">Retry</button>
       <button type="button" onClick={() => setNextError(undefined)} className="min-h-12 px-4">Keep playing</button>
     </div>}
-    {status !== "playing" && !childOwnsStarting && <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 p-6" role="status" aria-live="polite">
+    {compactSlow && <div className="absolute z-10 flex w-max max-w-[calc(100%-1rem)] flex-wrap items-center justify-center gap-2 rounded-2xl border border-input bg-background p-2 text-foreground shadow-lg portrait:bottom-[max(0.5rem,env(safe-area-inset-bottom))] portrait:left-1/2 portrait:-translate-x-1/2 landscape:right-[max(0.5rem,env(safe-area-inset-right))] landscape:top-[max(0.5rem,env(safe-area-inset-top))] landscape:w-36 landscape:flex-col landscape:items-stretch" role="status" aria-live="polite" data-slow-recovery="compact">
+      <p className="px-1 text-center text-sm font-semibold">Taking a while…</p>
+      <button type="button" onClick={retry} className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full bg-primary px-3 text-sm font-semibold text-primary-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"><RotateCcw className="h-4 w-4" aria-hidden="true" />Try again</button>
+      <button type="button" onClick={backToMenu} className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border border-input bg-background px-3 text-sm font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"><ArrowLeft className="h-4 w-4" aria-hidden="true" />All games</button>
+    </div>}
+    {status !== "playing" && !childOwnsStarting && !compactSlow && <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 p-6" role="status" aria-live="polite">
       <div className="max-w-sm text-center text-foreground">
         {status === "empty" ? <p className="text-lg font-semibold">No adventures are ready for this age yet.</p>
           : status === "slow" ? <p className="text-lg font-semibold">This adventure is taking a while to open.</p>

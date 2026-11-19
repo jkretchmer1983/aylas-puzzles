@@ -63,7 +63,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('published child loader ownership', () => {
-  it.each(['airship', 'radio', 'curiosity', 'ticket', 'take', 'seating', 'sofa', 'ordering', 'robot', 'seaside', 'trains', 'money-change'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
+  it.each(['airship', 'radio', 'curiosity', 'ticket', 'take', 'seating', 'sofa', 'ordering', 'robot', 'seaside', 'trains'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
     mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
     vi.useFakeTimers();
     render(<SessionShell band={4} mode="single" gameId={gameId} />);
@@ -84,6 +84,72 @@ describe('published child loader ownership', () => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
       message(visible(), 'ready');
       expect(frames()).toHaveLength(2);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('money-change keeps the 20 s slow state but shows compact, non-blocking recovery over its live document', async () => {
+    mocks.targets = [{ gameId: 'money-change', releaseId: 'registry-1', origin: 'https://till-host.lovable.app' }];
+    vi.useFakeTimers();
+    try {
+      render(<SessionShell band={3} mode="single" gameId="money-change" />);
+      await act(async () => { await Promise.resolve(); });
+      const current = visible();
+      message(current, 'hello');
+      await act(async () => { vi.advanceTimersByTime(19_999); });
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      await act(async () => { vi.advanceTimersByTime(1); });
+      const panel = screen.getByRole('status');
+      expect(panel).toHaveTextContent(/taking a while/i);
+      expect(panel.dataset.slowRecovery).toBe('compact');
+      expect(panel.className).not.toMatch(/inset-0|bg-background\/90|backdrop/);
+      expect(screen.queryByText('This adventure is taking a while to open.')).not.toBeInTheDocument();
+      expect(screen.queryByText('Opening your adventure…')).not.toBeInTheDocument();
+      expect(document.activeElement).not.toBe(screen.getByRole('button', { name: 'Try again' }));
+      expect(visible()).toBe(current);
+      expect(latestSession().reserved).toBeNull();
+      // Same recovery handlers: Try again gives the same instance a fresh document and nonce.
+      const before = new URL(current.src);
+      act(() => screen.getByRole('button', { name: 'Try again' }).click());
+      const again = visible();
+      expect(again).not.toBe(current);
+      const after = new URL(again.src);
+      expect(after.searchParams.get('s')).toBeTruthy();
+      expect(after.searchParams.get('s')).toBe(before.searchParams.get('s'));
+      expect(readLaunchIdentity(after.search)?.nonce).not.toBe(readLaunchIdentity(before.search)?.nonce);
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      await act(async () => { vi.advanceTimersByTime(20_000); });
+      expect(screen.getByRole('status').dataset.slowRecovery).toBe('compact');
+      // Only real ready clears it.
+      message(again, 'ready');
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(frames()).toHaveLength(2);
+      expect(screen.queryByRole('button', { name: 'All games' })).not.toBeInTheDocument();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('money-change compact All games uses the normal Back handler', async () => {
+    mocks.targets = [{ gameId: 'money-change', releaseId: 'registry-1', origin: 'https://till-host.lovable.app' }];
+    vi.useFakeTimers();
+    try {
+      render(<SessionShell band={3} mode="single" gameId="money-change" />);
+      await act(async () => { await Promise.resolve(); });
+      await act(async () => { vi.advanceTimersByTime(20_000); });
+      act(() => screen.getByRole('button', { name: 'All games' }).click());
+      expect(mocks.navigate).toHaveBeenCalledWith({ to: '/', search: { band: 3 } });
+    } finally { vi.useRealTimers(); }
+  });
+
+  it.each(['trains', 'airship'])('%s keeps the existing full slow cover', async (gameId) => {
+    mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
+    vi.useFakeTimers();
+    try {
+      render(<SessionShell band={4} mode="single" gameId={gameId} />);
+      await act(async () => { await Promise.resolve(); });
+      await act(async () => { vi.advanceTimersByTime(20_000); });
+      const cover = screen.getByRole('status');
+      expect(cover).toHaveTextContent('This adventure is taking a while to open.');
+      expect(cover.className).toContain('inset-0');
+      expect(cover.dataset.slowRecovery).toBeUndefined();
     } finally { vi.useRealTimers(); }
   });
 
