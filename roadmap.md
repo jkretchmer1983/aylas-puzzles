@@ -2,8 +2,8 @@
 
 ## Five approved loader release support
 - [x] Extend only published child-loader capability to ticket, take, seating, sofa and ordering; preserve prior three and all other host behavior.
-- [ ] Run scoped regressions and verify canonical live children across six viewports, cold/cached and Next where accessible.
-- [ ] Publish original canonical hub and record before/after public release metadata and screenshot pointers in public/qa/approved-five-hub/results.json.
+- [x] Run scoped regressions (80 passed; automatic build OK) and 60 canonical cold/cached captures across six viewports; no parent veil in all 60, before-ready in 53. Real story reveals and Next checked; take win-to-Next preserved prepared document. Child timing/Seating repeated-Next limits recorded, not changed.
+- [x] Publish original canonical hub; public release changed from 20261119055257-opem1r to 20261119083812-crk9dv. Save 74 canonical screenshot pointers and results at public/qa/approved-five-hub/results.json. Exact deployed SHA remains unverified (inherited sourceVersion 50b7764).
 
 ## Approved child-loader hub cover fix
 - [x] Scope child-owned starting presentation to Airship, Radio and Curiosity without changing readiness or registry.
