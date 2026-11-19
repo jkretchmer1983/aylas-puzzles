@@ -2,7 +2,7 @@
 
 ## Final two approved loader release support
 - [x] Extend only published child-loader capability to robot and seaside; preserve prior eight and all other host behavior (109 tests passed).
-- [ ] Publish original canonical hub and verify Robot + Seaside canonical cold/cached loaders at six sizes; save public/qa/final-two-hub/results.json.
+- [x] Publish original canonical hub (public release 20261119083812-crk9dv -> 20261119102618-jd3ylf) and verify Robot + Seaside: 24 canonical cold/cached captures at six sizes, zero hub cover/opening text, iframe on top; 12 Next promotions kept the prepared iframe; 6 real Seaside wins; Back keeps age. Results and 66 screenshot pointers at public/qa/final-two-hub/results.json. Exact deployed SHA unverified (inherited sourceVersion 50b7764).
 
 ## Five approved loader release support
 - [x] Extend only published child-loader capability to ticket, take, seating, sofa and ordering; preserve prior three and all other host behavior.

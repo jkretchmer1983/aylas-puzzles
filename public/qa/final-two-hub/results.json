@@ -1,0 +1,2197 @@
+{
+ "scope": "Only add robot and seaside to published child-loader capability (src/host/loader-capabilities.ts). Prior eight (airship, radio, curiosity, ticket, take, seating, sofa, ordering) retained. Train, Till, Sudoku not added. No game, registry, menu, train, age, bridge, readiness, origin/source/nonce or sandbox changes.",
+ "baseCommit": "71b855b",
+ "fixCommit": "f7e8d0dbbd1c676b5a09f05fd9d1e83bef6f10d5",
+ "sourceShaAtCheck": "f7e8d0dbbd1c676b5a09f05fd9d1e83bef6f10d5",
+ "branch": "redesign/forest-sudoku-interface",
+ "checkedAtUtc": "2026-11-19T11:11:32.529402+00:00",
+ "children": {
+  "robot": {
+   "catalogId": "v2-robot",
+   "origin": "https://aylas-robot-shortcut.lovable.app",
+   "registryReleaseId": "20261119092211-yvhecc",
+   "menuAges": "7-10",
+   "launchBand": 4,
+   "launchAgeLabel": "Ages 7-8"
+  },
+  "seaside": {
+   "catalogId": "v1-position",
+   "origin": "https://aylas-seaside-scoop-stop.lovable.app",
+   "registryReleaseId": "20261119090006-rz0cms",
+   "menuAges": "4-6",
+   "launchBand": 1,
+   "launchAgeLabel": "Ages 4-5"
+  }
+ },
+ "method": "Anonymous actual canonical HTTPS hub (https://aylas-puzzles.lovable.app) and the live registered children in headless Chromium. Real menu Play card launches (touch tap on phone/Duo/iPad emulation; keyboard Enter plus reduced motion on desktop), cold (fresh context) then cached (same context) at six sizes. No route interception, fake parent, forged messages, relaxed security flags or browser bypass; a read-only window message listener records real child events. Parent cover = role=status children of the session main; topmost element at viewport centre must be the visible iframe. Child loader timing is from the child's own visible loader text (Robot: 'Pip is warming up the route…'/'All parcels loaded!'; Seaside: 'Rabbit is opening the kiosk…'), sampled about every 150-300 ms.",
+ "publication": {
+  "requestedWithNativePublish": true,
+  "expectedUrl": "https://aylas-puzzles.lovable.app",
+  "before": {
+   "buildId": "20261119083812-crk9dv",
+   "releaseId": "20261119083812-crk9dv",
+   "sourceVersion": "50b7764"
+  },
+  "after": {
+   "protocol": "ayla-host",
+   "protocolVersion": 1,
+   "role": "hub",
+   "catalogId": null,
+   "gameId": null,
+   "path": null,
+   "minBand": null,
+   "maxBand": null,
+   "sourceVersion": "50b7764",
+   "buildId": "20261119102618-jd3ylf",
+   "releaseId": "20261119102618-jd3ylf"
+  },
+  "newPublicBuildObserved": true,
+  "exactDeployedShaVerified": false,
+  "shaLimitation": "Public sourceVersion remains inherited 50b7764, not the Git SHA. The new public build ID plus canonical Robot/Seaside launches with zero hub cover (the previous source drew the cover for these two; not re-observed live this turn) establish rollout, not the exact deployed SHA."
+ },
+ "childReleasesAfter": {
+  "robot": {
+   "protocol": "ayla-host",
+   "protocolVersion": 1,
+   "role": "game",
+   "catalogId": "v2-robot",
+   "gameId": "robot",
+   "path": "/robot",
+   "minBand": 4,
+   "maxBand": 6,
+   "sourceVersion": "50b7764",
+   "buildId": "20261119092211-yvhecc",
+   "releaseId": "20261119092211-yvhecc"
+  },
+  "seaside": {
+   "protocol": "ayla-host",
+   "protocolVersion": 1,
+   "role": "game",
+   "catalogId": "v1-position",
+   "gameId": "seaside",
+   "path": "/seaside-scoop",
+   "minBand": 1,
+   "maxBand": 6,
+   "ageGate": "catalog",
+   "sourceVersion": "50b7764",
+   "buildId": "20261119090006-rz0cms",
+   "releaseId": "20261119090006-rz0cms"
+  }
+ },
+ "summary": {
+  "captures": 24,
+  "noParentCover": 24,
+  "noOpeningText": 24,
+  "iframeTopLayerEveryPoll": 24,
+  "noHorizontalOverflow": 24,
+  "loaderScreenshotBeforeReadyMessage": 20,
+  "realReadyReceived": 24,
+  "introReached": 24,
+  "childLoaderVisibleAtLeast3s": 24,
+  "samePreparedIframePromotionOnNext": 12,
+  "nextAttempts": 12,
+  "realWins": 6
+ },
+ "backToMenu": [
+  {
+   "game": "robot",
+   "band": 4,
+   "afterBackUrl": "https://aylas-puzzles.lovable.app/?band=4",
+   "selectedAge": "Ages 7–8",
+   "iframesLeft": 0
+  },
+  {
+   "game": "seaside",
+   "band": 1,
+   "afterBackUrl": "https://aylas-puzzles.lovable.app/?band=1",
+   "selectedAge": "Ages 4–5",
+   "iframesLeft": 0
+  }
+ ],
+ "regressions": {
+  "vitest": "14 files, 109 tests passed (host-session-shell: all 10 approved games stay unready with no duplicate starting cover, then 20 s slow timeout shows Try again / All games and retry; trains, money-change, sudoku keep the normal hub startup cover; pre-ready Next refused; release-freshness replacement; nextError retry; forged/hidden Back ignored).",
+  "productionBuild": "vite build succeeded (client + SSR + nitro).",
+  "previewBuildLog": "build OK"
+ },
+ "limitations": [
+  "Robot sends its real ready message about 1-2.5 s after launch while its own loader keeps painting for about 12-16 s; in cached runs ready can arrive before the first loader screenshot, so some Robot loader screenshots are after ready. This child-owned timing was recorded, not changed.",
+  "Robot was not won: solving requires programming a route and no safe, non-guessing play script was attempted. Robot Next was taken from the child's real 'Next adventure' control after Start delivery.",
+  "Seaside wins were played from the visible question and the on-screen queue order relative to the flag described by the child's own accessible scene label; feedback 'You got it right!' then the child's 'Next puzzle' control.",
+  "After Next, the promoted prepared iframe sometimes still shows its own loader (Seaside library-story fallback text or Robot 'warming up' near 95%); the hub draws no cover over it.",
+  "The 20-second slow timeout was verified by regression tests, not by a stuck live child.",
+  "Headless Chromium emulation only; not physical iPad/Safari, and no audio listening."
+ ],
+ "captures": [
+  {
+   "game": "robot",
+   "size": "phone",
+   "viewport": [
+    393,
+    852
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 25,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1900,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1029,
+    15105
+   ],
+   "childLoaderVisibleMs": 14075,
+   "childLoaderShownBeforeReadyMs": 871,
+   "loaderTextGoneMs": 15405,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1459,
+     "hello"
+    ],
+    [
+     1462,
+     "location"
+    ],
+    [
+     1502,
+     "location"
+    ],
+    [
+     1900,
+     "ready"
+    ],
+    [
+     2292,
+     "hello"
+    ],
+    [
+     2292,
+     "location"
+    ],
+    [
+     2293,
+     "location"
+    ],
+    [
+     6608,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-phone-cold-loader.png",
+    "atMs": 1595,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/13ae83d1-d99b-4ab6-bf1e-0c0ba66da838/final-two-robot-phone-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-phone-cold-intro.png",
+    "url": "/__l5e/assets-v1/58946b0e-7848-4438-96e8-c64cb89bdfa2/final-two-robot-phone-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "37434073"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-phone-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/13ea6558-3b79-4621-8af9-bfdbea4432de/final-two-robot-phone-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "phone",
+   "viewport": [
+    393,
+    852
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 14,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1109,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    890,
+    14952
+   ],
+   "childLoaderVisibleMs": 14062,
+   "childLoaderShownBeforeReadyMs": 218,
+   "loaderTextGoneMs": 15332,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     704,
+     "hello"
+    ],
+    [
+     708,
+     "location"
+    ],
+    [
+     734,
+     "location"
+    ],
+    [
+     1002,
+     "hello"
+    ],
+    [
+     1002,
+     "location"
+    ],
+    [
+     1003,
+     "location"
+    ],
+    [
+     1109,
+     "ready"
+    ],
+    [
+     1426,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-phone-cached-loader.png",
+    "atMs": 1212,
+    "beforeReadyMessage": false,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/72b12123-4454-4a75-b652-9ee63d29d815/final-two-robot-phone-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-phone-cached-intro.png",
+    "url": "/__l5e/assets-v1/5d87066b-64e5-41a4-af0f-fb4978d15507/final-two-robot-phone-cached-intro.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "duo",
+   "viewport": [
+    540,
+    720
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 19,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1896,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    931,
+    14808
+   ],
+   "childLoaderVisibleMs": 13877,
+   "childLoaderShownBeforeReadyMs": 966,
+   "loaderTextGoneMs": 15079,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1449,
+     "hello"
+    ],
+    [
+     1449,
+     "location"
+    ],
+    [
+     1520,
+     "location"
+    ],
+    [
+     1896,
+     "ready"
+    ],
+    [
+     2118,
+     "hello"
+    ],
+    [
+     2118,
+     "location"
+    ],
+    [
+     2120,
+     "location"
+    ],
+    [
+     2528,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-duo-cold-loader.png",
+    "atMs": 1440,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/8815c6ec-e2c9-440a-b7b0-0249f1c9586f/final-two-robot-duo-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-duo-cold-intro.png",
+    "url": "/__l5e/assets-v1/f8d59f05-9b01-4aa4-a479-c6e29eb80b4d/final-two-robot-duo-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "10229115"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-duo-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/fdea765c-6225-4a55-b9da-227a40cf6873/final-two-robot-duo-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "duo",
+   "viewport": [
+    540,
+    720
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 14,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1510,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    612,
+    15196
+   ],
+   "childLoaderVisibleMs": 14584,
+   "childLoaderShownBeforeReadyMs": 899,
+   "loaderTextGoneMs": 15664,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     983,
+     "hello"
+    ],
+    [
+     984,
+     "location"
+    ],
+    [
+     1002,
+     "hello"
+    ],
+    [
+     1002,
+     "location"
+    ],
+    [
+     1037,
+     "location"
+    ],
+    [
+     1037,
+     "location"
+    ],
+    [
+     1510,
+     "ready"
+    ],
+    [
+     1511,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-duo-cached-loader.png",
+    "atMs": 966,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/2f0dd66e-a330-476a-9c77-2374596c8618/final-two-robot-duo-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-duo-cached-intro.png",
+    "url": "/__l5e/assets-v1/2b3a3512-a91d-4e26-89dc-2770116cc88d/final-two-robot-duo-cached-intro.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "phone-landscape",
+   "viewport": [
+    852,
+    393
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 17,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 2103,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1037,
+    16186
+   ],
+   "childLoaderVisibleMs": 15149,
+   "childLoaderShownBeforeReadyMs": 1066,
+   "loaderTextGoneMs": 16596,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1709,
+     "hello"
+    ],
+    [
+     1709,
+     "location"
+    ],
+    [
+     1984,
+     "location"
+    ],
+    [
+     2103,
+     "ready"
+    ],
+    [
+     2430,
+     "hello"
+    ],
+    [
+     2431,
+     "location"
+    ],
+    [
+     2438,
+     "location"
+    ],
+    [
+     2837,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-phone-landscape-cold-loader.png",
+    "atMs": 1568,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/07a81dd6-9ceb-412a-80bb-96ca43795f1a/final-two-robot-phone-landscape-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-phone-landscape-cold-intro.png",
+    "url": "/__l5e/assets-v1/efd1ac21-2a1f-4f95-b9dd-674737ce6277/final-two-robot-phone-landscape-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "811667763"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-phone-landscape-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/af5f44a6-214b-4416-b2e7-0e2871d9d30f/final-two-robot-phone-landscape-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "phone-landscape",
+   "viewport": [
+    852,
+    393
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 16,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1296,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    768,
+    15467
+   ],
+   "childLoaderVisibleMs": 14700,
+   "childLoaderShownBeforeReadyMs": 529,
+   "loaderTextGoneMs": 15775,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     888,
+     "hello"
+    ],
+    [
+     889,
+     "location"
+    ],
+    [
+     1002,
+     "hello"
+    ],
+    [
+     1002,
+     "location"
+    ],
+    [
+     1013,
+     "location"
+    ],
+    [
+     1015,
+     "location"
+    ],
+    [
+     1296,
+     "ready"
+    ],
+    [
+     1606,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-phone-landscape-cached-loader.png",
+    "atMs": 1307,
+    "beforeReadyMessage": false,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/cc5fa4c7-65bd-4465-9a6c-8d8fd7b150b5/final-two-robot-phone-landscape-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-phone-landscape-cached-intro.png",
+    "url": "/__l5e/assets-v1/a2490959-49f8-454f-aab6-50db81813c02/final-two-robot-phone-landscape-cached-intro.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "ipad",
+   "viewport": [
+    768,
+    1024
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 23,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 2169,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1372,
+    15935
+   ],
+   "childLoaderVisibleMs": 14563,
+   "childLoaderShownBeforeReadyMs": 797,
+   "loaderTextGoneMs": 16355,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1760,
+     "hello"
+    ],
+    [
+     1778,
+     "location"
+    ],
+    [
+     2037,
+     "location"
+    ],
+    [
+     2169,
+     "ready"
+    ],
+    [
+     8905,
+     "hello"
+    ],
+    [
+     8907,
+     "location"
+    ],
+    [
+     9067,
+     "location"
+    ],
+    [
+     9667,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-ipad-cold-loader.png",
+    "atMs": 1899,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/c59ea6b3-64c8-413e-a5f3-24ff9c91cb58/final-two-robot-ipad-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-ipad-cold-intro.png",
+    "url": "/__l5e/assets-v1/44f38837-caa9-4885-844d-f232abcb3990/final-two-robot-ipad-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "824298924"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-ipad-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/a32ebb4a-20ad-4ab1-8588-7edc16b0a475/final-two-robot-ipad-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "ipad",
+   "viewport": [
+    768,
+    1024
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 14,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1221,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1046,
+    14150
+   ],
+   "childLoaderVisibleMs": 13104,
+   "childLoaderShownBeforeReadyMs": 175,
+   "loaderTextGoneMs": 14537,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     767,
+     "hello"
+    ],
+    [
+     767,
+     "location"
+    ],
+    [
+     800,
+     "location"
+    ],
+    [
+     1101,
+     "hello"
+    ],
+    [
+     1102,
+     "location"
+    ],
+    [
+     1122,
+     "location"
+    ],
+    [
+     1221,
+     "ready"
+    ],
+    [
+     1501,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-ipad-cached-loader.png",
+    "atMs": 1378,
+    "beforeReadyMessage": false,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/b8a7e051-3f39-42fb-a498-cb636ee491fd/final-two-robot-ipad-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-ipad-cached-intro.png",
+    "url": "/__l5e/assets-v1/6eea1d63-1dc2-47b3-8f4f-a783fe12257f/final-two-robot-ipad-cached-intro.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "ipad-landscape",
+   "viewport": [
+    1180,
+    820
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 28,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 2302,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1017,
+    16660
+   ],
+   "childLoaderVisibleMs": 15643,
+   "childLoaderShownBeforeReadyMs": 1285,
+   "loaderTextGoneMs": 17052,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1692,
+     "hello"
+    ],
+    [
+     1693,
+     "location"
+    ],
+    [
+     2298,
+     "location"
+    ],
+    [
+     2302,
+     "ready"
+    ],
+    [
+     2841,
+     "hello"
+    ],
+    [
+     2842,
+     "location"
+    ],
+    [
+     2878,
+     "location"
+    ],
+    [
+     6601,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-ipad-landscape-cold-loader.png",
+    "atMs": 1480,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/7b5606b1-6e37-4c78-8763-c2f1db732da9/final-two-robot-ipad-landscape-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-ipad-landscape-cold-intro.png",
+    "url": "/__l5e/assets-v1/6257f2c0-8214-4c56-b368-6900f6590cee/final-two-robot-ipad-landscape-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "1500151456"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-ipad-landscape-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/2fda91da-4a41-49e0-8755-1ea8400db8d1/final-two-robot-ipad-landscape-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "ipad-landscape",
+   "viewport": [
+    1180,
+    820
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 15,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 1563,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1261,
+    13021
+   ],
+   "childLoaderVisibleMs": 11760,
+   "childLoaderShownBeforeReadyMs": 301,
+   "loaderTextGoneMs": 13358,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1103,
+     "hello"
+    ],
+    [
+     1103,
+     "location"
+    ],
+    [
+     1128,
+     "location"
+    ],
+    [
+     1383,
+     "hello"
+    ],
+    [
+     1384,
+     "location"
+    ],
+    [
+     1395,
+     "location"
+    ],
+    [
+     1563,
+     "ready"
+    ],
+    [
+     1786,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-ipad-landscape-cached-loader.png",
+    "atMs": 1746,
+    "beforeReadyMessage": false,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/f22ac6cb-00f2-4b39-84be-4859044716d4/final-two-robot-ipad-landscape-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-ipad-landscape-cached-intro.png",
+    "url": "/__l5e/assets-v1/584660e8-133c-4496-8634-9e37e0c636d0/final-two-robot-ipad-landscape-cached-intro.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "desktop",
+   "viewport": [
+    1440,
+    1000
+   ],
+   "phase": "cold",
+   "activation": "keyboard Enter",
+   "reducedMotion": true,
+   "polls": 23,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 2507,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    744,
+    15214
+   ],
+   "childLoaderVisibleMs": 14470,
+   "childLoaderShownBeforeReadyMs": 1764,
+   "loaderTextGoneMs": 15587,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     1350,
+     "hello"
+    ],
+    [
+     1352,
+     "location"
+    ],
+    [
+     1366,
+     "location"
+    ],
+    [
+     2507,
+     "ready"
+    ],
+    [
+     7782,
+     "hello"
+    ],
+    [
+     7782,
+     "location"
+    ],
+    [
+     7964,
+     "location"
+    ],
+    [
+     8457,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-desktop-cold-loader.png",
+    "atMs": 1401,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/8786649c-6553-4315-84ea-4a93dd58445e/final-two-robot-desktop-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-desktop-cold-intro.png",
+    "url": "/__l5e/assets-v1/c61c0a9a-c6a0-4368-be1a-f5368d4cd476/final-two-robot-desktop-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": [
+     "981320201"
+    ],
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "robot-desktop-next.png",
+    "control": "Next adventure",
+    "url": "/__l5e/assets-v1/72e1048e-bd54-41fa-b3e0-4a80c706c42e/final-two-robot-desktop-next.png"
+   }
+  },
+  {
+   "game": "robot",
+   "size": "desktop",
+   "viewport": [
+    1440,
+    1000
+   ],
+   "phase": "cached",
+   "activation": "keyboard Enter",
+   "reducedMotion": true,
+   "polls": 10,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 2128,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    528,
+    12587
+   ],
+   "childLoaderVisibleMs": 12059,
+   "childLoaderShownBeforeReadyMs": 1600,
+   "loaderTextGoneMs": 12918,
+   "introReached": true,
+   "introText": "Ayla’s Puzzles — The Robot Took a Shortcut Build a route that delivers every parcel. Story Listen Hint Settings 0/10 Swipe for more blocks Hold to drag · Swipe ",
+   "events": [
+    [
+     884,
+     "hello"
+    ],
+    [
+     885,
+     "location"
+    ],
+    [
+     894,
+     "hello"
+    ],
+    [
+     896,
+     "location"
+    ],
+    [
+     918,
+     "location"
+    ],
+    [
+     924,
+     "location"
+    ],
+    [
+     2128,
+     "ready"
+    ],
+    [
+     2128,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "robot-desktop-cached-loader.png",
+    "atMs": 920,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/4b94f250-650b-4273-a427-c6df9a5269bd/final-two-robot-desktop-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "robot-desktop-cached-intro.png",
+    "url": "/__l5e/assets-v1/f29a1e8a-0117-4b2f-acbb-71860d75272c/final-two-robot-desktop-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "phone",
+   "viewport": [
+    393,
+    852
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 32,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 8300,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1823,
+    7686
+   ],
+   "childLoaderVisibleMs": 5863,
+   "childLoaderShownBeforeReadyMs": 6477,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Sprinkles at Sunset The tram just dropped off a crowd of hungry friends. Rabbit is ready with the scoop — but only for",
+   "events": [
+    [
+     1492,
+     "hello"
+    ],
+    [
+     1494,
+     "location"
+    ],
+    [
+     1522,
+     "location"
+    ],
+    [
+     1899,
+     "location"
+    ],
+    [
+     8300,
+     "ready"
+    ],
+    [
+     8882,
+     "hello"
+    ],
+    [
+     8883,
+     "location"
+    ],
+    [
+     8886,
+     "location"
+    ],
+    [
+     8954,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-phone-cold-loader.png",
+    "atMs": 2193,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/938a9e71-54db-4330-8534-1287ddc39449/final-two-seaside-phone-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-phone-cold-intro.png",
+    "url": "/__l5e/assets-v1/0d894e1f-091a-4cd1-a499-e658cc8ab071/final-two-seaside-phone-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-phone-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/970889a7-3566-42da-bbcd-51b379bd705e/final-two-seaside-phone-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is first in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Hedgehog",
+     "Pig",
+     "Bear",
+     "Raccoon"
+    ],
+    "picked": "Hedgehog",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is first in line from the flag? 1st You got it right! Hedgehog is first from the flag. Next puzzle Previous New",
+    "shot": "seaside-phone-win.png",
+    "url": "/__l5e/assets-v1/01408754-7936-40f6-93d7-50aa735d161f/final-two-seaside-phone-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "phone",
+   "viewport": [
+    393,
+    852
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 20,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7208,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1305,
+    6697
+   ],
+   "childLoaderVisibleMs": 5392,
+   "childLoaderShownBeforeReadyMs": 5903,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop A Drippy Customer At Rabbit’s boardwalk ice-cream kiosk, robots Boxbot, Clawdia, Teabot, Wheelie and Whirly queued wit",
+   "events": [
+    [
+     1070,
+     "hello"
+    ],
+    [
+     1070,
+     "location"
+    ],
+    [
+     1076,
+     "hello"
+    ],
+    [
+     1077,
+     "location"
+    ],
+    [
+     1151,
+     "location"
+    ],
+    [
+     1153,
+     "location"
+    ],
+    [
+     1293,
+     "location"
+    ],
+    [
+     1695,
+     "location"
+    ],
+    [
+     7208,
+     "ready"
+    ],
+    [
+     7628,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-phone-cached-loader.png",
+    "atMs": 1991,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/34cd3d4d-5399-4376-a2c6-99992a4506f6/final-two-seaside-phone-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-phone-cached-intro.png",
+    "url": "/__l5e/assets-v1/d0365e76-4e39-4993-ba57-40b4e7a326d1/final-two-seaside-phone-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "duo",
+   "viewport": [
+    540,
+    720
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 25,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7438,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1767,
+    6882
+   ],
+   "childLoaderVisibleMs": 5116,
+   "childLoaderShownBeforeReadyMs": 5671,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop A Cone for the Wind Bear, Frog and Panda queued with tickets at Rabbit’s seaside boardwalk ice-cream kiosk. A breeze s",
+   "events": [
+    [
+     1428,
+     "hello"
+    ],
+    [
+     1428,
+     "location"
+    ],
+    [
+     1452,
+     "location"
+    ],
+    [
+     1946,
+     "location"
+    ],
+    [
+     7438,
+     "ready"
+    ],
+    [
+     8030,
+     "hello"
+    ],
+    [
+     8032,
+     "location"
+    ],
+    [
+     8033,
+     "location"
+    ],
+    [
+     8112,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-duo-cold-loader.png",
+    "atMs": 2229,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/61370657-335d-4acb-b74d-11bec3e6febc/final-two-seaside-duo-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-duo-cold-intro.png",
+    "url": "/__l5e/assets-v1/bd45bfbb-1c19-46ba-ae4f-63d2c6dfbba2/final-two-seaside-duo-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-duo-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/2872a967-4345-4f36-a986-386baa511660/final-two-seaside-duo-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is fourth in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Bear",
+     "Frog",
+     "Panda",
+     "Dog"
+    ],
+    "picked": "Dog",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is fourth in line from the flag? 4th You got it right! Dog is fourth from the flag. Next puzzle Previous New",
+    "shot": "seaside-duo-win.png",
+    "url": "/__l5e/assets-v1/ca4ef7be-dd56-47ed-b9be-9457bf21e53d/final-two-seaside-duo-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "duo",
+   "viewport": [
+    540,
+    720
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 27,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 5990,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    775,
+    6789
+   ],
+   "childLoaderVisibleMs": 6014,
+   "childLoaderShownBeforeReadyMs": 5215,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Too Many Eyeballs The monsters insist they queued perfectly. Rabbit isn't so sure, so the flag will settle it. Rabbit ",
+   "events": [
+    [
+     716,
+     "hello"
+    ],
+    [
+     717,
+     "location"
+    ],
+    [
+     724,
+     "hello"
+    ],
+    [
+     724,
+     "location"
+    ],
+    [
+     748,
+     "location"
+    ],
+    [
+     749,
+     "location"
+    ],
+    [
+     928,
+     "location"
+    ],
+    [
+     990,
+     "location"
+    ],
+    [
+     5990,
+     "ready"
+    ],
+    [
+     7383,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-duo-cached-loader.png",
+    "atMs": 1229,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/19aa008b-132e-4e98-8a2d-28bb17a25d2f/final-two-seaside-duo-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-duo-cached-intro.png",
+    "url": "/__l5e/assets-v1/038c9e67-35e3-44b9-9ad2-d8c71df0e1da/final-two-seaside-duo-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "phone-landscape",
+   "viewport": [
+    852,
+    393
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 32,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7963,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1625,
+    7412
+   ],
+   "childLoaderVisibleMs": 5788,
+   "childLoaderShownBeforeReadyMs": 6338,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 Sprinkles at Sunset The tram just dropped off a crowd of hungry friends. Rabbit is ready with the scoop — but only for the right ticket! Rabb",
+   "events": [
+    [
+     1139,
+     "hello"
+    ],
+    [
+     1145,
+     "location"
+    ],
+    [
+     1177,
+     "location"
+    ],
+    [
+     1590,
+     "location"
+    ],
+    [
+     7963,
+     "ready"
+    ],
+    [
+     8240,
+     "hello"
+    ],
+    [
+     8241,
+     "location"
+    ],
+    [
+     8247,
+     "location"
+    ],
+    [
+     8355,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-phone-landscape-cold-loader.png",
+    "atMs": 2215,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/a3d1056c-9ba4-4b73-bdb5-61aae7642004/final-two-seaside-phone-landscape-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-phone-landscape-cold-intro.png",
+    "url": "/__l5e/assets-v1/e71d50f4-9354-4a81-b6b4-f36a60345cbc/final-two-seaside-phone-landscape-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-phone-landscape-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/bc218e98-68ce-4aea-8dff-6ffa59dcf836/final-two-seaside-phone-landscape-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is second in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Dog",
+     "Bear",
+     "Pig",
+     "Panda",
+     "Frog",
+     "Fox"
+    ],
+    "picked": "Bear",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is second in line from the flag? 2nd You got it right! Bear is second from the flag. Next puzzle Previous New",
+    "shot": "seaside-phone-landscape-win.png",
+    "url": "/__l5e/assets-v1/b577f391-3c50-4dbc-9eb5-9060ef49d313/final-two-seaside-phone-landscape-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "phone-landscape",
+   "viewport": [
+    852,
+    393
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 30,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7329,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    967,
+    6810
+   ],
+   "childLoaderVisibleMs": 5843,
+   "childLoaderShownBeforeReadyMs": 6362,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Big Beach Treat After a long day of sandcastles, everyone lined up for a cold treat. Rabbit wants to serve them in order. Rabbit asks: Wh",
+   "events": [
+    [
+     708,
+     "hello"
+    ],
+    [
+     708,
+     "location"
+    ],
+    [
+     748,
+     "hello"
+    ],
+    [
+     749,
+     "location"
+    ],
+    [
+     791,
+     "location"
+    ],
+    [
+     792,
+     "location"
+    ],
+    [
+     1036,
+     "location"
+    ],
+    [
+     1191,
+     "location"
+    ],
+    [
+     7329,
+     "ready"
+    ],
+    [
+     7576,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-phone-landscape-cached-loader.png",
+    "atMs": 1383,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/938330a9-a2a2-4827-a0b2-ccc8d13ea5b5/final-two-seaside-phone-landscape-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-phone-landscape-cached-intro.png",
+    "url": "/__l5e/assets-v1/bf676bc5-07c6-4a2b-8138-cbb853922c03/final-two-seaside-phone-landscape-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "ipad",
+   "viewport": [
+    768,
+    1024
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 27,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7486,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1995,
+    6892
+   ],
+   "childLoaderVisibleMs": 4897,
+   "childLoaderShownBeforeReadyMs": 5491,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop The Singing Scoops On the seaside boardwalk, Rabbit’s ice-cream kiosk sold scoops that sang. Fox, Owl and Raccoon queu",
+   "events": [
+    [
+     1581,
+     "hello"
+    ],
+    [
+     1582,
+     "location"
+    ],
+    [
+     1623,
+     "location"
+    ],
+    [
+     2097,
+     "location"
+    ],
+    [
+     7486,
+     "ready"
+    ],
+    [
+     7887,
+     "hello"
+    ],
+    [
+     7887,
+     "location"
+    ],
+    [
+     7894,
+     "location"
+    ],
+    [
+     7947,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-ipad-cold-loader.png",
+    "atMs": 2365,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/06157a52-80da-4fdd-a46e-5ba0fcddf785/final-two-seaside-ipad-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-ipad-cold-intro.png",
+    "url": "/__l5e/assets-v1/7c05a067-9305-47b3-8b69-9b2daaf57b46/final-two-seaside-ipad-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-ipad-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/e3a7dd0d-d08f-4ea5-a404-bc96cad9a374/final-two-seaside-ipad-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is fourth in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Fox",
+     "Raccoon",
+     "Owl",
+     "Cat"
+    ],
+    "picked": "Cat",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is fourth in line from the flag? 4th You got it right! Cat is fourth from the flag. Next puzzle Previous New",
+    "shot": "seaside-ipad-win.png",
+    "url": "/__l5e/assets-v1/d3a12ed1-ab59-4905-b76a-43ae4a828dec/final-two-seaside-ipad-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "ipad",
+   "viewport": [
+    768,
+    1024
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 19,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 6562,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1094,
+    6042
+   ],
+   "childLoaderVisibleMs": 4948,
+   "childLoaderShownBeforeReadyMs": 5468,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop A Soggy Customer At Rabbit’s boardwalk ice-cream kiosk, robots Boing, Boxbot, Clawdia, Treadwell and Whirly queued wit",
+   "events": [
+    [
+     1043,
+     "hello"
+    ],
+    [
+     1043,
+     "location"
+    ],
+    [
+     1054,
+     "hello"
+    ],
+    [
+     1054,
+     "location"
+    ],
+    [
+     1089,
+     "location"
+    ],
+    [
+     1098,
+     "location"
+    ],
+    [
+     1262,
+     "location"
+    ],
+    [
+     1509,
+     "location"
+    ],
+    [
+     6562,
+     "ready"
+    ],
+    [
+     7387,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-ipad-cached-loader.png",
+    "atMs": 1717,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/a2e80397-8e6a-4ed2-b885-e072af3a0596/final-two-seaside-ipad-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-ipad-cached-intro.png",
+    "url": "/__l5e/assets-v1/53500209-4149-4001-a856-19bb41724451/final-two-seaside-ipad-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "ipad-landscape",
+   "viewport": [
+    1180,
+    820
+   ],
+   "phase": "cold",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 29,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 8332,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    2032,
+    7839
+   ],
+   "childLoaderVisibleMs": 5807,
+   "childLoaderShownBeforeReadyMs": 6300,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop The Big Beach Treat After a long day of sandcastles, everyone lined up for a cold treat. Rabbit wants to serve them in",
+   "events": [
+    [
+     1527,
+     "hello"
+    ],
+    [
+     1527,
+     "location"
+    ],
+    [
+     1559,
+     "location"
+    ],
+    [
+     1929,
+     "location"
+    ],
+    [
+     8332,
+     "ready"
+    ],
+    [
+     8733,
+     "hello"
+    ],
+    [
+     8735,
+     "location"
+    ],
+    [
+     8758,
+     "location"
+    ],
+    [
+     8833,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-ipad-landscape-cold-loader.png",
+    "atMs": 2396,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/3f3c1f3f-064e-40eb-84d7-cebcb479b0ab/final-two-seaside-ipad-landscape-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-ipad-landscape-cold-intro.png",
+    "url": "/__l5e/assets-v1/4718b7c3-ace8-46f9-8bdd-fc64d459954c/final-two-seaside-ipad-landscape-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-ipad-landscape-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/70bfd420-3165-40f0-a3d0-991264cf0f6b/final-two-seaside-ipad-landscape-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is second in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Raccoon",
+     "Frog",
+     "Panda",
+     "Cat"
+    ],
+    "picked": "Frog",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is second in line from the flag? 2nd You got it right! Frog is second from the flag. Next puzzle Previous New",
+    "shot": "seaside-ipad-landscape-win.png",
+    "url": "/__l5e/assets-v1/501e3e7b-0eba-4f97-b308-592893ef5c73/final-two-seaside-ipad-landscape-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "ipad-landscape",
+   "viewport": [
+    1180,
+    820
+   ],
+   "phase": "cached",
+   "activation": "touch tap",
+   "reducedMotion": false,
+   "polls": 22,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7338,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1001,
+    6989
+   ],
+   "childLoaderVisibleMs": 5988,
+   "childLoaderShownBeforeReadyMs": 6337,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop A Cone, Not a Pond At Rabbit’s boardwalk ice-cream kiosk, Beach Ball and Rubber Duck queued with tickets. “Mine in a c",
+   "events": [
+    [
+     836,
+     "hello"
+    ],
+    [
+     836,
+     "location"
+    ],
+    [
+     859,
+     "hello"
+    ],
+    [
+     859,
+     "location"
+    ],
+    [
+     871,
+     "location"
+    ],
+    [
+     873,
+     "location"
+    ],
+    [
+     979,
+     "location"
+    ],
+    [
+     1264,
+     "location"
+    ],
+    [
+     7338,
+     "ready"
+    ],
+    [
+     7461,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-ipad-landscape-cached-loader.png",
+    "atMs": 1504,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/202b8e0c-4d91-433c-88ff-7b9716b0766b/final-two-seaside-ipad-landscape-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-ipad-landscape-cached-intro.png",
+    "url": "/__l5e/assets-v1/16e67b2a-60e7-4618-ba10-5ba5329803ee/final-two-seaside-ipad-landscape-cached-intro.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "desktop",
+   "viewport": [
+    1440,
+    1000
+   ],
+   "phase": "cold",
+   "activation": "keyboard Enter",
+   "reducedMotion": true,
+   "polls": 27,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7992,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    1627,
+    7428
+   ],
+   "childLoaderVisibleMs": 5800,
+   "childLoaderShownBeforeReadyMs": 6365,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Sprinkles at Sunset The tram just dropped off a crowd of hungry friends. Rabbit is ready with the scoop — but only for",
+   "events": [
+    [
+     1216,
+     "hello"
+    ],
+    [
+     1217,
+     "location"
+    ],
+    [
+     1233,
+     "location"
+    ],
+    [
+     1606,
+     "location"
+    ],
+    [
+     7992,
+     "ready"
+    ],
+    [
+     8449,
+     "hello"
+    ],
+    [
+     8450,
+     "location"
+    ],
+    [
+     8455,
+     "location"
+    ],
+    [
+     8578,
+     "location"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-desktop-cold-loader.png",
+    "atMs": 2163,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/6f65039d-6889-402c-bf33-5094206dec3d/final-two-seaside-desktop-cold-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-desktop-cold-intro.png",
+    "url": "/__l5e/assets-v1/b7efbc15-6a26-4524-aba0-b4aebc945350/final-two-seaside-desktop-cold-intro.png"
+   },
+   "next": {
+    "samePreparedIframePromoted": true,
+    "srcUnchanged": true,
+    "preparedSeed": null,
+    "parentCoverAfter": 0,
+    "openingTextAfter": 0,
+    "shot": "seaside-desktop-next.png",
+    "control": "Next puzzle",
+    "url": "/__l5e/assets-v1/01e29953-106f-4497-b0d1-684115ceb00e/final-two-seaside-desktop-next.png"
+   },
+   "win": {
+    "attempted": true,
+    "question": "Who is first in line from the flag",
+    "scene": "Ice-cream queue. The flag is on the left, at the front.",
+    "visibleOrderFromFlag": [
+     "Cat",
+     "Bear",
+     "Raccoon"
+    ],
+    "picked": "Cat",
+    "feedback": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Story Who is first in line from the flag? 1st You got it right! Cat is first from the flag. Next puzzle Previous New",
+    "shot": "seaside-desktop-win.png",
+    "url": "/__l5e/assets-v1/9df71be1-a3ba-475e-8759-523fcf59be1c/final-two-seaside-desktop-win.png"
+   }
+  },
+  {
+   "game": "seaside",
+   "size": "desktop",
+   "viewport": [
+    1440,
+    1000
+   ],
+   "phase": "cached",
+   "activation": "keyboard Enter",
+   "reducedMotion": true,
+   "polls": 20,
+   "maxParentCover": 0,
+   "maxOpeningText": 0,
+   "iframeTopAlways": true,
+   "overflowX": false,
+   "readyMessageMs": 7377,
+   "realReadyReceived": true,
+   "childLoaderObservedMs": [
+    957,
+    6839
+   ],
+   "childLoaderVisibleMs": 5882,
+   "childLoaderShownBeforeReadyMs": 6420,
+   "loaderTextGoneMs": null,
+   "introReached": true,
+   "introText": "Age Ages 4–5 Age 6 The Seaside Scoop Stop Monster Melt Rush A grumpy, fuzzy, wiggly crowd of monsters stomped off the tram, tickets crumpled in their claws. Rab",
+   "events": [
+    [
+     890,
+     "hello"
+    ],
+    [
+     890,
+     "location"
+    ],
+    [
+     906,
+     "hello"
+    ],
+    [
+     906,
+     "location"
+    ],
+    [
+     912,
+     "location"
+    ],
+    [
+     912,
+     "location"
+    ],
+    [
+     990,
+     "location"
+    ],
+    [
+     1301,
+     "location"
+    ],
+    [
+     7377,
+     "ready"
+    ],
+    [
+     7459,
+     "ready"
+    ]
+   ],
+   "loaderScreenshot": {
+    "file": "seaside-desktop-cached-loader.png",
+    "atMs": 1515,
+    "beforeReadyMessage": true,
+    "parentCover": 0,
+    "openingText": 0,
+    "topIsVisibleIframe": true,
+    "url": "/__l5e/assets-v1/037b1147-1f39-40bf-8fad-40fd9212848e/final-two-seaside-desktop-cached-loader.png"
+   },
+   "introScreenshot": {
+    "file": "seaside-desktop-cached-intro.png",
+    "url": "/__l5e/assets-v1/1270c40d-40da-4812-8e39-e83e0520e066/final-two-seaside-desktop-cached-intro.png"
+   }
+  }
+ ]
+}
