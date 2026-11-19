@@ -1,5 +1,10 @@
 # Hub installation
 
+## Train menu connection
+- [x] Add only the train allowlist entry and narrowly scoped location fields; retain live dashboard eligibility.
+- [x] Run focused regressions and check the live registration once; save for user deployment without publishing.
+- [ ] Live train handshake/Next/New game: blocked by missing production registry entry and host releaseId/buildId metadata; user owns registration, host upgrade and deployment.
+
 - [x] Install supplied thin hub; retain project identity and exact courtyard menu.
 - [x] Add release alias and pre-promotion host freshness checks.
 - [x] Make dashboard ages the sole dynamic age gate.

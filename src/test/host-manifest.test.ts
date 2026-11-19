@@ -16,8 +16,8 @@ const manifest = (records: unknown[], games: Record<string, unknown> = {}) => pa
 const reg = (catalogId: string, gameId: string, url = `https://${gameId}-host.lovable.app`) => ({ [catalogId]: { catalogId, gameId, url, releaseId: "b1" } });
 
 describe("public release rules", () => {
-  it("exactly twelve approved games are public; Pattern Loom is not one of them", () => {
-    expect(PUBLIC_GAMES.map((g) => g.catalogId).sort()).toEqual(["v1-change", "v1-cipher", "v1-lineup", "v1-position", "v1-riddle", "v1-shapepick", "v1-sudoku", "v1-take", "v2-curiosity", "v2-robot", "v2-seating", "v2-sofa"]);
+  it("preserves twelve approved games and adds only trains; Pattern Loom is not public", () => {
+    expect(PUBLIC_GAMES.map((g) => g.catalogId).sort()).toEqual(["v1-change", "v1-cipher", "v1-lineup", "v1-position", "v1-riddle", "v1-shapepick", "v1-sudoku", "v1-take", "v2-curiosity", "v2-robot", "v2-seating", "v2-sofa", "v2-trains"]);
     expect(CATALOG_SNAPSHOT.records.find((r) => r.id === "v1-pattern")!.release).toBe("coming-soon");
   });
 

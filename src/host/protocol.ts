@@ -78,6 +78,13 @@ export function isGameRelativeHref(game: PublicGame, href: string): boolean {
   try { url = new URL(href, "https://host.invalid"); } catch { return false; }
   if (url.origin !== "https://host.invalid" || url.pathname !== game.path || url.hash) return false;
   for (const [key, value] of url.searchParams) {
+    if (key === "game" || key === "age" || key === "deal") {
+      if (game.gameId !== "trains" || url.searchParams.getAll(key).length !== 1) return false;
+      if (key === "game" && value !== game.fixed.game) return false;
+      if (key === "age" && !/^(?:[3-9]|10)$/.test(value)) return false;
+      if (key === "deal" && !/^\d{1,40}$/.test(value)) return false;
+      continue;
+    }
     if (!INSTANCE_PARAMS.includes(key) || value.length > 40 || !/^[A-Za-z0-9_-]*$/.test(value)) return false;
   }
   for (const [key, value] of Object.entries(game.fixed)) if (url.searchParams.get(key) !== value) return false;
