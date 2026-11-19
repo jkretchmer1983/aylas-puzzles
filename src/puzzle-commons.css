@@ -23,9 +23,11 @@
   --scene-vh: 100vh;
   --scene-aspect: 1.5;
   --logo-f: .148;
-  --scene-travel: 340px;
-  /* Art height: covers the large viewport plus the parallax travel, and always the full width. */
-  --scene-size: max(calc(var(--scene-vh) + var(--scene-travel)), calc(100vw / var(--scene-aspect)));
+  /* Width-led art: exactly the viewport width, enlarged only as far as needed to cover the large viewport
+     height (never extra zoom just to make room for motion). Parallax travel is whatever art is left below
+     the viewport, capped, and is 0 when the art only just covers it. */
+  --scene-size: max(var(--scene-vh), calc(100vw / var(--scene-aspect)));
+  --scene-travel: clamp(0px, calc(var(--scene-size) - var(--scene-vh)), 340px);
   --logo-bottom: calc(var(--scene-size) * var(--logo-f));
   --catalog-w: 980px;
   --card-min: 250px;
@@ -38,14 +40,14 @@
   background: #8fc4ea;
 }
 @supports (height: 100lvh) { .puzzle-commons { --scene-vh: 100lvh; } }
-@media (orientation: portrait) { .puzzle-commons { --scene-aspect: .75; --logo-f: .1; --scene-travel: 300px; } }
+@media (orientation: portrait) { .puzzle-commons { --scene-aspect: .75; --logo-f: .1; } }
 
 /* ---------- One continuous illustrated scene behind everything ----------
-   ONE fixed transform layer = large viewport + travel, so the art never runs out however long the catalog is
-   and the side habitats stay in view at every scroll position. Its drift is scroll-driven on the compositor
+   ONE fixed transform layer = the whole width-led art; it drifts only by its own overscan below the large
+   viewport, so the art never runs out however long the catalog is and the side habitats stay in view. Its drift is scroll-driven on the compositor
    where supported (animation-timeline), otherwise a passive-scroll rAF fallback (scene-parallax.ts).
    No transitions chase scroll; reduced motion keeps it still. */
-.commons-scene { position: fixed; left: 0; right: 0; top: 0; z-index: -1; height: calc(var(--scene-vh) + var(--scene-travel)); overflow: hidden; pointer-events: none; will-change: transform; transform: translate3d(0, 0, 0); backface-visibility: hidden; }
+.commons-scene { position: fixed; left: 0; right: 0; top: 0; z-index: -1; height: var(--scene-size); overflow: hidden; pointer-events: none; will-change: transform; transform: translate3d(0, 0, 0); backface-visibility: hidden; }
 .commons-scene picture { position: absolute; inset: 0; display: block; }
 .commons-scene img { position: absolute; top: 0; left: 50%; display: block; width: calc(var(--scene-size) * var(--scene-aspect)); height: var(--scene-size); max-width: none; translate: -50% 0; }
 .commons-scene-travel { position: absolute; left: 0; top: 0; width: 1px; height: var(--scene-travel); visibility: hidden; }
@@ -63,7 +65,7 @@
 .commons-hero { position: relative; display: flex; justify-content: center; padding: calc(var(--logo-bottom) + clamp(8px, 1.4vw, 18px)) 16px 0; text-align: center; }
 .commons-hero-copy { display: flex; flex-direction: column; align-items: center; max-width: 100%; animation: commons-arrive .6s cubic-bezier(.2,.8,.2,1) both; }
 .commons-hero h1 { margin: 0; color: var(--commons-navy); font-family: var(--commons-title); font-size: clamp(40px, 4.6vw, 70px); font-weight: 800; line-height: .98; letter-spacing: -.012em;
-  -webkit-text-stroke: .16em #fff; paint-order: stroke fill; text-shadow: 0 .05em .08em rgb(20 30 80 / .28); }
+  text-shadow: 0 0 2px rgb(255 255 255 / .9), 0 0 8px rgb(255 255 255 / .75), 0 0 18px rgb(255 255 255 / .55); }
 .commons-h1-line { display: inline; }
 .commons-h1-line + .commons-h1-line::before { content: " "; }
 .commons-tagline { max-width: 34ch; margin: clamp(6px, .8vw, 12px) auto 0; color: var(--commons-blue); font-size: clamp(17px, 1.45vw, 22px); font-weight: 800; line-height: 1.25; text-wrap: balance; text-shadow: var(--commons-halo); }
@@ -116,13 +118,13 @@
 .commons-section + .commons-section { margin-top: clamp(30px, 3.4vw, 46px); }
 .commons-section-heading { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0 auto 10px; }
 .commons-section-heading h2 { margin: 0; color: var(--commons-navy); font-family: var(--commons-title); font-size: clamp(30px, 2.9vw, 40px); font-weight: 800; line-height: 1.02;
-  -webkit-text-stroke: .14em #fff; paint-order: stroke fill; text-shadow: 0 .05em .08em rgb(20 30 80 / .25); }
+  text-shadow: 0 0 2px rgb(255 255 255 / .9), 0 0 8px rgb(255 255 255 / .75), 0 0 18px rgb(255 255 255 / .55); }
 .commons-section-heading span { display: block; flex: 0 0 auto; width: 34px; aspect-ratio: 151 / 138; background: url("/__l5e/assets-v1/b27b805b-8654-4cb1-ba15-d06639a6a6be/rays-green.png") center / contain no-repeat; filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 3px #fff); }
 .commons-section-heading span:first-child { transform: scaleX(-1); }
 /* "Coming soon" sits on its own cream plaque so it reads over any part of the scene. */
 .commons-section.coming .commons-section-heading { width: fit-content; min-height: 56px; padding: 4px 26px; margin-bottom: 18px;
   border-image: url("/__l5e/assets-v1/4faff8d2-674e-40f7-acaf-9f9d83c524b8/pill-age.png") 70 70 fill / 28px 28px stretch; filter: drop-shadow(0 6px 8px rgb(40 30 20 / .28)); }
-.commons-section.coming .commons-section-heading h2 { font-size: clamp(26px, 2.4vw, 32px); -webkit-text-stroke: 0; text-shadow: none; }
+.commons-section.coming .commons-section-heading h2 { font-size: clamp(26px, 2.4vw, 32px); text-shadow: none; }
 .commons-section.coming .commons-section-heading span { width: 28px; filter: none; }
 
 .commons-play-all-row { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 560px; margin: 0 auto 22px; text-align: center; }
@@ -162,7 +164,7 @@
 .is-upcoming { padding: 20px 14px 14px; }
 .is-upcoming h3 { font-size: 18px; }
 .is-upcoming h3::before, .is-upcoming h3::after { display: none; }
-.is-upcoming .commons-card-copy > p:last-child { display: none; }
+.is-upcoming .commons-card-copy > p:last-child { display: -webkit-box; margin-top: 4px; overflow: hidden; font-size: 13.5px; line-height: 1.25; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .is-upcoming .commons-thumbnail { margin-top: 8px; }
 .is-upcoming .commons-thumbnail img { max-height: var(--soon-thumb-h); }
 .commons-card-action.soon { position: relative; z-index: 1; width: auto; max-width: 100%; min-height: 44px; margin-top: -24px; padding: 2px 18px; white-space: nowrap; color: var(--commons-navy); font-size: 16px;

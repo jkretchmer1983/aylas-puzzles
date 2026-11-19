@@ -38,7 +38,7 @@ export function useSceneParallax(ref: RefObject<HTMLElement | null>) {
     let pageHeight = document.documentElement.scrollHeight;
     let last = Number.NaN;
     const measure = () => {
-      travel = probe?.offsetHeight || SCENE_OVERSCAN;
+      travel = probe ? probe.offsetHeight : SCENE_OVERSCAN; // 0 when the art only just covers the viewport
       viewport = Math.max(window.innerHeight, layer.offsetHeight - travel);
       pageHeight = document.documentElement.scrollHeight;
     };
