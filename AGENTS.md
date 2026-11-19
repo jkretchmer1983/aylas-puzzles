@@ -54,8 +54,7 @@ Implementation status at this policy update: existing shared story writer only r
 <!-- DYNAMIC-CONTENT:END -->
 
 ## Hub + game hosts
-- This draft is a thin hub with no game engines; preserve the approved homepage scene art and project identity. Why: hosts publish independently.
-- Homepage scene is one fixed transform layer (large viewport + travel) of the approved art with its logo painted in; the headline is offset from the logo fraction and surfaces are nine-sliced rasters. Why: art never runs out on long catalogs and studs/corners never stretch.
+- This draft is a thin hub with no game engines; preserve approved homepage art and identity. Why: hosts publish independently.
 - Public allowlist + dashboard ages/hidden/release + registry govern launches; tested bands are informational. Why: dashboard eligibility is live.
 - Check public `/api/release` before preload promotion; changed builds reload only reserved identity, keeping game/seed/deck/current. Why: no hub redeploy per host update.
 - A game host on a published origin plays only with its own registry entry (url = self) and `available`; the unregistered-Done shortcut is private preview/dev only; decide after this load's manifest fetch and fail closed to the hub. Why: withdrawn games must not stay playable by direct URL.
