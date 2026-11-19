@@ -1,0 +1,844 @@
+{
+ "scope": "Till (money-change) only: hub 20 s slow state rendered as a compact non-blocking recovery panel instead of the full-viewport bg-background/90 cover when the current Till iframe exists. Timeout, readiness, trust checks, retry/back handlers and all other games unchanged.",
+ "sourceCommit": "324229e6d3d2cbca51d9e7263222d67c2398ebc7",
+ "canonicalHub": "https://aylas-puzzles.lovable.app",
+ "publicReleaseBefore": "20261119232740-0o5z17",
+ "publicReleaseAfter": "20261119234759-ewi3at",
+ "publicSourceVersionReported": "50b7764 (inherited metadata; unchanged before/after, so the deployed SHA cannot be confirmed from /api/release)",
+ "childRelease": "till-20261119214858-4zr5k5 (unchanged)",
+ "launch": "Real anonymous canonical hub /?band=3 (Ages 6-7) -> Play The Till Is On Its Lunch Break card -> live registered child https://aylas-till-is-on-its-lunch-break.lovable.app. No route interception, fake parent or relaxed browser security.",
+ "tests": "bunx vitest run: 14 files, 112 tests passed; preview build log: build OK.",
+ "captures": [
+  {
+   "viewport": "ipad",
+   "size": [
+    768,
+    1024
+   ],
+   "input": "touch",
+   "cold": {
+    "iframeCreatedS": 4.46,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     3.76
+    ],
+    "compactPanelS": [
+     24.17,
+     24.17
+    ],
+    "readyMessageS": 25.27,
+    "introSeenS": 26.84,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.17,
+     "panelRect": [
+      201,
+      954,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      132,
+      849,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/673c3c60-5a2b-4b0c-9ba2-2fb77e8a0f53/slowfix-money-change-ipad-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/44c5610d-98c6-4253-ad2e-d1dd93ce6eff/slowfix-money-change-ipad-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "touch tap",
+     "atS": 25.13
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 0.89,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.36
+    ],
+    "compactPanelS": [
+     20.85,
+     48.03
+    ],
+    "readyMessageS": 48.63,
+    "introSeenS": 48.8,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 88,
+    "past20": {
+     "atS": 20.85,
+     "panelRect": [
+      201,
+      954,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      132,
+      849,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/d2000013-7c81-41f2-9df0-9919c357a3af/slowfix-money-change-ipad-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/7256f616-e8c9-43fe-b8b8-519b7b3c01d4/slowfix-money-change-ipad-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     687,
+     975,
+     71,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "466700462",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 47.37,
+     "introSeenS": 47.52,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 90
+    },
+    "introScreenshot": "/__l5e/assets-v1/5c903ff8-10c2-44c4-a7f9-d8102e5ee5aa/slowfix-money-change-ipad-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  },
+  {
+   "viewport": "ipad-landscape",
+   "size": [
+    1024,
+    768
+   ],
+   "input": "touch",
+   "cold": {
+    "iframeCreatedS": 4.93,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     4.28
+    ],
+    "compactPanelS": [
+     24.89,
+     24.89
+    ],
+    "readyMessageS": 26.63,
+    "introSeenS": 28.04,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.89,
+     "panelRect": [
+      872,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      458,
+      665,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/a268fb79-79b1-4dd4-85f8-71e39c8cd63c/slowfix-money-change-ipad-landscape-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/6b21ab97-def7-4ab0-892d-88ab3a405962/slowfix-money-change-ipad-landscape-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "touch tap",
+     "atS": 26.46
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 1.03,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.45
+    ],
+    "compactPanelS": [
+     21.11,
+     48.76
+    ],
+    "readyMessageS": 35.65,
+    "introSeenS": 50.52,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 91,
+    "past20": {
+     "atS": 21.11,
+     "panelRect": [
+      872,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      458,
+      665,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/48da7f0b-848f-4280-9347-17b16e13b1b0/slowfix-money-change-ipad-landscape-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/0dbfc622-c7c3-47da-9d55-7d4ab84fb09d/slowfix-money-change-ipad-landscape-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     596,
+     719,
+     68,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "454217827",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 47.22,
+     "introSeenS": 47.46,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 91
+    },
+    "introScreenshot": "/__l5e/assets-v1/34f781f9-14b5-4c30-b4c9-65f4ca67c4a6/slowfix-money-change-ipad-landscape-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  },
+  {
+   "viewport": "desktop",
+   "size": [
+    1440,
+    1000
+   ],
+   "input": "keyboard Enter + reduced motion",
+   "cold": {
+    "iframeCreatedS": 4.44,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     3.81
+    ],
+    "compactPanelS": [
+     24.29,
+     24.29
+    ],
+    "readyMessageS": 26.28,
+    "introSeenS": 27.91,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.29,
+     "panelRect": [
+      1288,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      649,
+      861,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/e14d7abd-5ad6-47f7-a481-259f93486bf0/slowfix-money-change-desktop-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/301cfb86-94ac-4fe7-9b03-46d4ad2a55c4/slowfix-money-change-desktop-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "mouse click",
+     "atS": 26.23
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 1.11,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.49
+    ],
+    "compactPanelS": [
+     21.31,
+     48.8
+    ],
+    "readyMessageS": 48.61,
+    "introSeenS": 50.41,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 90,
+    "past20": {
+     "atS": 21.31,
+     "panelRect": [
+      1288,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      649,
+      861,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/e377b5b2-f3c4-4540-8835-2445bfdef02d/slowfix-money-change-desktop-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/5d22d2db-e06d-44a3-ae77-856760c2fa9a/slowfix-money-change-desktop-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     804,
+     951,
+     68,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "670362549",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 35.62,
+     "introSeenS": 35.9,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 69
+    },
+    "introScreenshot": "/__l5e/assets-v1/17fc26db-10a2-4b7a-8fdd-cf8ebf151c4c/slowfix-money-change-desktop-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  },
+  {
+   "viewport": "phone",
+   "size": [
+    393,
+    852
+   ],
+   "input": "touch",
+   "cold": {
+    "iframeCreatedS": 5.01,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     4.34
+    ],
+    "compactPanelS": [
+     24.97,
+     24.97
+    ],
+    "readyMessageS": 25.98,
+    "introSeenS": 27.45,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.97,
+     "panelRect": [
+      13,
+      782,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      36,
+      675,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/1ed78063-b21d-448a-acc5-9b6a6c131dce/slowfix-money-change-phone-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/ddab566b-8a93-4e10-a330-4332db6db00a/slowfix-money-change-phone-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "touch tap",
+     "atS": 25.7
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 0.93,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.41
+    ],
+    "compactPanelS": [
+     20.78,
+     48.22
+    ],
+    "readyMessageS": 47.11,
+    "introSeenS": 49.91,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 90,
+    "past20": {
+     "atS": 20.78,
+     "panelRect": [
+      13,
+      782,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      36,
+      675,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/0d98cd3a-7219-41ac-b850-309bc4a65a17/slowfix-money-change-phone-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/b7a546c5-1328-4ccd-a2f5-98856c292177/slowfix-money-change-phone-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     321,
+     803,
+     62,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "211480820",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 47.05,
+     "introSeenS": 47.5,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 90
+    },
+    "introScreenshot": "/__l5e/assets-v1/254734ed-8e72-4abe-a413-6e6d45647d53/slowfix-money-change-phone-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  },
+  {
+   "viewport": "duo",
+   "size": [
+    440,
+    760
+   ],
+   "input": "touch",
+   "cold": {
+    "iframeCreatedS": 4.77,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     4.23
+    ],
+    "compactPanelS": [
+     24.94,
+     24.94
+    ],
+    "readyMessageS": 25.91,
+    "introSeenS": 27.41,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.94,
+     "panelRect": [
+      37,
+      690,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      39,
+      609,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/6832ec3f-c12a-42ab-b81a-c4260b4c0121/slowfix-money-change-duo-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/9086c35c-1c06-4d4b-89ac-b86890a22dd1/slowfix-money-change-duo-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "touch tap",
+     "atS": 25.61
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 1.02,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.46
+    ],
+    "compactPanelS": [
+     21.18,
+     45.97
+    ],
+    "readyMessageS": 46.61,
+    "introSeenS": 46.72,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 84,
+    "past20": {
+     "atS": 21.18,
+     "panelRect": [
+      37,
+      690,
+      367,
+      62
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      39,
+      609,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/b7c24637-e4e6-4fc6-aaad-6626df6573a0/slowfix-money-change-duo-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/b61f56d2-56f9-404d-83e7-d726fd0f0e4d/slowfix-money-change-duo-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     368,
+     711,
+     62,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "738051720",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 0.97,
+     "introSeenS": 3.93,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 6
+    },
+    "introScreenshot": "/__l5e/assets-v1/a572f95b-a393-49fe-bb25-3472df0ba911/slowfix-money-change-duo-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  },
+  {
+   "viewport": "phone-landscape",
+   "size": [
+    852,
+    393
+   ],
+   "input": "touch",
+   "cold": {
+    "iframeCreatedS": 4.94,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     4.29
+    ],
+    "compactPanelS": [
+     24.87,
+     24.87
+    ],
+    "readyMessageS": 25.69,
+    "introSeenS": 27.35,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 40,
+    "past20": {
+     "atS": 24.87,
+     "panelRect": [
+      700,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      392,
+      353,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/7e94273c-c124-4383-be2e-0fa4b82ad70d/slowfix-money-change-phone-landscape-cold-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/19306cc9-ea66-4dac-8551-e002768f149e/slowfix-money-change-phone-landscape-cold-intro.png",
+    "childFallbackTapAfter20s": {
+     "tappedFallback": true,
+     "how": "touch tap",
+     "atS": 25.54
+    }
+   },
+   "cached": {
+    "iframeCreatedS": 0.98,
+    "hubOpeningCoverOnlyBeforeIframeS": [
+     0.34
+    ],
+    "compactPanelS": [
+     20.73,
+     48.28
+    ],
+    "readyMessageS": 48.72,
+    "introSeenS": 49.95,
+    "fullViewportCoverSamplesWithGameFrame": 0,
+    "openingTextSamplesWithGameFrame": 0,
+    "oldSlowTextSamples": 0,
+    "maxPanelOverlapWithChildFallbackPx": 0,
+    "maxHorizontalOverflowPx": 0,
+    "samples": 89,
+    "past20": {
+     "atS": 20.73,
+     "panelRect": [
+      700,
+      8,
+      144,
+      142
+     ],
+     "panelText": "Taking a while\u2026 Try again All games",
+     "childFallbackRect": [
+      392,
+      353,
+      251,
+      44
+     ],
+     "overlapPx": 0,
+     "fallbackCenterHitTest": "IFRAME",
+     "childProgress": "92%",
+     "focusedElement": "BODY",
+     "screenshot": "/__l5e/assets-v1/c3517c51-cf6c-4f0b-9665-f42664eb0529/slowfix-money-change-phone-landscape-cached-past20.png"
+    },
+    "introScreenshot": "/__l5e/assets-v1/6af64139-c6eb-4843-8d24-cbc28daa6800/slowfix-money-change-phone-landscape-cached-intro.png"
+   },
+   "next": {
+    "pressedBegin": true,
+    "childNextRect": [
+     778,
+     345,
+     64,
+     44
+    ],
+    "childNextHitTest": "IFRAME",
+    "samePreparedIframePromoted": true,
+    "sameDocumentSrc": true,
+    "preparedSeed": "1576191879",
+    "afterPromotion": {
+     "readyMessageAfterTapS": 48.33,
+     "introSeenS": 48.62,
+     "compactPanelShown": false,
+     "fullViewportCoverSamples": 0,
+     "openingTextSamples": 0,
+     "samples": 91
+    },
+    "introScreenshot": "/__l5e/assets-v1/6bd32c35-8589-4970-a2a2-e4569ed2c4b8/slowfix-money-change-phone-landscape-next-intro.png"
+   },
+   "back": {
+    "control": "Back to adventure chooser",
+    "url": "https://aylas-puzzles.lovable.app/?band=3"
+   }
+  }
+ ],
+ "extras": {
+  "phone": {
+   "tryAgain": {
+    "sameSeed": true,
+    "seed": "178335111",
+    "changedParams": [
+     "b",
+     "from",
+     "host_nonce"
+    ],
+    "panelClearedImmediately": true,
+    "frames": 1,
+    "fullCover": false,
+    "panelReturnedAfterNew20s": true
+   },
+   "allGames": {
+    "url": "https://aylas-puzzles.lovable.app/?band=3",
+    "selectedAge": [
+     "Ages 6\u20137",
+     "Ages 6\u20137",
+     "Ages 6\u20137",
+     "Ages 6\u20137"
+    ]
+   },
+   "screenshots": {
+    "afterTryAgain": "/__l5e/assets-v1/4017332b-da36-483b-a3c9-1cf90da0c257/slowfix-money-change-phone-after-tryagain.png",
+    "tryAgainPast20": "/__l5e/assets-v1/ddec3fc8-5066-4f42-9df7-c6577839a9da/slowfix-money-change-phone-tryagain-past20.png",
+    "allGamesMenu": "/__l5e/assets-v1/61c81cf9-daac-406c-ad34-1672846cf004/slowfix-money-change-phone-allgames-menu.png"
+   }
+  },
+  "desktop": {
+   "focusAtPanelAppear": "BODY",
+   "tabsToTryAgain": 2,
+   "focusRing": [
+    "solid",
+    "2px",
+    "oklch(0.52 0.09 190)",
+    true
+   ],
+   "enterRetried": true,
+   "readyFromVisible": [
+    {
+     "t": 70483,
+     "type": "ready",
+     "visible": true,
+     "panel": true
+    }
+   ],
+   "panelAfterVisibleReady": 0,
+   "screenshots": {
+    "focusRing": "/__l5e/assets-v1/ebe0a6f9-cb0a-49ea-8731-d9f5be028dfe/slowfix-money-change-desktop-keyboard-focus.png",
+    "focusPage": "/__l5e/assets-v1/51bd72cf-8f85-4cad-8425-e9dc22e52d13/slowfix-money-change-desktop-keyboard-focus-page.png"
+   }
+  },
+  "phoneLandscape": {
+   "messages": [
+    {
+     "t": 1.35,
+     "type": "hello",
+     "visible": true,
+     "panel": false
+    },
+    {
+     "t": 1.35,
+     "type": "location",
+     "visible": true,
+     "panel": false
+    },
+    {
+     "t": 1.37,
+     "type": "location",
+     "visible": true,
+     "panel": false
+    },
+    {
+     "t": 1.65,
+     "type": "location",
+     "visible": true,
+     "panel": false
+    },
+    {
+     "t": 37.42,
+     "type": "ready",
+     "visible": true,
+     "panel": true
+    },
+    {
+     "t": 37.62,
+     "type": "hello",
+     "visible": false,
+     "panel": false
+    },
+    {
+     "t": 37.62,
+     "type": "location",
+     "visible": false,
+     "panel": false
+    },
+    {
+     "t": 37.64,
+     "type": "location",
+     "visible": false,
+     "panel": false
+    }
+   ],
+   "panelAfterVisibleReady": 0
+  }
+ },
+ "limits": [
+  "Headless Chromium only; no physical iPad/iPhone Safari.",
+  "The 20 s timer runs from the hub's current iframe being created (~4.5 s after tap cold, ~1 s cached), so the compact panel appears ~24-25 s after the tap on cold runs; timeout unchanged.",
+  "The only full-viewport hub status seen was the existing 'Opening your adventure' cover before any game iframe exists (unchanged by request).",
+  "Cached = second launch in the same browser profile; the hub restored the saved session as designed, so its hidden prepared frame could send its own prepare-ready earlier. readyMessageS in cached rows counts any Till ready; source-attributed checks in extras show the panel clears exactly at the visible frame's ready.",
+  "After Next promotion the prepared frame was already ready, so the hub showed no slow state; the child's own loader stayed visible with no hub cover.",
+  "Try again resumes the same instance from the child-reported location, so 'b'/'from' query values change alongside the new host_nonce; the seed stays the same.",
+  "The keyboard path reaches Try again after 2 Tabs from the page body at desktop; focus is not moved automatically."
+ ]
+}

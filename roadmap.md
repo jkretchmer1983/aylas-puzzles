@@ -4,7 +4,7 @@
 - [x] Extend only published child-loader capability to trains and money-change; preserve prior ten and all other host behavior (109 tests; build OK).
 - [x] Publish original canonical hub (20261119102618-jd3ylf -> 20261119223351-ycy9mb) and verify 24 canonical cold/cached launches at six sizes: zero hub starting cover/opening text over child loaders; 12 Next promotions kept the prepared iframe and seed; Back keeps age. Results and 72 screenshot pointers at public/qa/train-till-hub/results.json.
 - [x] Till's 20 s hub slow cover hid its loader until real ready (33-47 s): replaced for money-change only by a compact non-blocking recovery panel (same slow state, timeout and handlers).
-- [ ] Publish the slow-cover fix and verify canonical Till past 20 s at six sizes cold/cached; save public/qa/train-till-hub/slow-cover-fix.json.
+- [x] Published the slow-cover fix (hub 20261119234759-ewi3at) and verified canonical Till past 20 s at six sizes cold/cached; results in public/qa/train-till-hub/slow-cover-fix.json.
 
 ## Final two approved loader release support
 - [x] Extend only published child-loader capability to robot and seaside; preserve prior eight and all other host behavior (109 tests passed).
