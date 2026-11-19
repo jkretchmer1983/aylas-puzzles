@@ -15,10 +15,8 @@ import {
 } from "@/lib/public-catalog";
 import { refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import sceneWide from "@/assets/commons/scene-wide.jpg.asset.json";
-import scenePortrait from "@/assets/commons/scene-portrait.jpg.asset.json";
-import wordmark from "@/assets/commons/wordmark.png.asset.json";
-import headlineArt from "@/assets/commons/headline.png.asset.json";
+import sceneLandscape from "@/assets/stacked/stacked-worlds-landscape.webp.asset.json";
+import scenePortrait from "@/assets/stacked/stacked-worlds-portrait.webp.asset.json";
 import { useSceneParallax } from "@/lib/scene-parallax";
 import { AgeDropdown } from "@/components/commons/AgeDropdown";
 import "@fontsource/baloo-2/800.css";
@@ -36,10 +34,10 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "Ayla’s Puzzles — Big adventures. Clever little puzzles." },
-      { name: "description", content: "Choose an age, meet some unusual friends, and find your next puzzle adventure." },
-      { property: "og:title", content: "Ayla’s Puzzles — Big adventures. Clever little puzzles." },
-      { property: "og:description", content: "Choose an age, meet some unusual friends, and find your next puzzle adventure." },
+      { title: "Ayla’s Puzzles — Every puzzle has a story." },
+      { name: "description", content: "Choose an age and find something worth figuring out: story puzzle adventures for curious kids." },
+      { property: "og:title", content: "Ayla’s Puzzles — Every puzzle has a story." },
+      { property: "og:description", content: "Choose an age and find something worth figuring out: story puzzle adventures for curious kids." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -154,20 +152,19 @@ function PuzzleCommons() {
 
   return <main className="puzzle-commons">
     <div ref={sceneRef} className="commons-scene" aria-hidden="true">
+      {/* The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens. */}
       <picture>
-        <source media="(max-aspect-ratio: 4/5)" srcSet={scenePortrait.url} />
-        <img src={sceneWide.url} width={1536} height={1536} alt="" fetchPriority="high" decoding="async" />
+        <source media="(orientation: portrait)" srcSet={scenePortrait.url} width={1086} height={1448} />
+        <img src={sceneLandscape.url} width={1536} height={1024} alt="" fetchPriority="high" decoding="async" />
       </picture>
       <span className="commons-scene-travel" />
     </div>
     <section className="commons-hero" aria-labelledby="commons-title">
       <div className="commons-hero-copy">
-        <p className="commons-brand"><img src={wordmark.url} width={1808} height={493} alt="Ayla’s Puzzles" /></p>
-        <h1 id="commons-title">
-          <span className="commons-visually-hidden">Big adventures. Clever little puzzles.</span>
-          <img className="commons-headline-art" src={headlineArt.url} width={1843} height={509} alt="" aria-hidden="true" />
-        </h1>
-        <p className="commons-tagline">Choose an age, meet some unusual friends, and find your next puzzle adventure.</p>
+        {/* The hanging logo is painted into the scene; this names it for assistive tech. */}
+        <p className="commons-visually-hidden">Ayla’s Puzzles</p>
+        <h1 id="commons-title"><span className="commons-h1-line">Every puzzle</span> <span className="commons-h1-line">has a story.</span></h1>
+        <p className="commons-tagline">Choose an age and find something worth figuring out.</p>
       </div>
     </section>
 
@@ -211,7 +208,7 @@ function PuzzleCommons() {
     <div id="commons-catalog" role="tabpanel" aria-labelledby={`age-tab-${band}`} className="commons-catalog">
       <p className="commons-result" aria-live="polite">{games.length} puzzle {games.length === 1 ? "adventure" : "adventures"} for ages {selectedBand.min}–{selectedBand.max}</p>
       <section aria-labelledby="ready-heading" className="commons-section">
-        <div className="commons-section-heading ready"><span aria-hidden="true">✦</span><h2 id="ready-heading">Ready to play</h2><span aria-hidden="true">✦</span></div>
+        <div className="commons-section-heading ready"><span aria-hidden="true" /><h2 id="ready-heading">Ready to play</h2><span aria-hidden="true" /></div>
         {ready.length > 0 && <div className="commons-play-all-row">
           <button className="commons-play-all" type="button" onClick={playAll} disabled={!playable.length} aria-describedby="play-all-note">
             <Play aria-hidden="true" fill="currentColor" />Play all<ArrowRight aria-hidden="true" />
@@ -221,7 +218,7 @@ function PuzzleCommons() {
         {ready.length ? <div className="commons-grid" style={{ "--n": Math.min(ready.length, 5) } as CSSProperties}>{ready.map((game) => <GameCard key={game.id} game={game} onPlay={() => launch(game)} onPreview={openPreview} />)}</div> : <p className="commons-empty">These adventures are still being prepared. Try another age for a game ready now.</p>}
       </section>
       <section aria-labelledby="coming-heading" className="commons-section coming">
-        <div className="commons-section-heading"><span aria-hidden="true">✦</span><h2 id="coming-heading">Coming soon</h2><span aria-hidden="true">✦</span></div>
+        <div className="commons-section-heading"><span aria-hidden="true" /><h2 id="coming-heading">Coming soon</h2><span aria-hidden="true" /></div>
         {upcoming.length ? <div className="commons-grid" style={{ "--n": Math.min(upcoming.length, 5) } as CSSProperties}>{upcoming.map((game) => <GameCard key={game.id} game={game} onPlay={() => launch(game)} onPreview={openPreview} />)}</div> : <p className="commons-empty">Every adventure for this age is ready to play!</p>}
       </section>
     </div>
@@ -246,7 +243,8 @@ function PuzzleCommons() {
 function GameCard({ game, onPlay, onPreview }: { game: CatalogGame; onPlay: () => void; onPreview: (game: CatalogGame, trigger: HTMLButtonElement) => void }) {
   return <article className={`commons-card ${game.adapter ? "is-playable" : "is-upcoming"}`}>
     <div className="commons-card-copy"><p className="commons-card-age">Ages {game.minAge}–{game.maxAge}</p><h3>{game.name}</h3><p>{game.description}</p></div>
-    <div className="commons-thumbnail"><img className="commons-thumb-bed" src={game.thumbnailUrl} alt="" aria-hidden="true" loading="lazy" decoding="async" draggable={false} /><img className="commons-thumb-main" src={game.thumbnailUrl} alt="" loading="lazy" decoding="async" draggable={false} /></div>
+    {/* Real catalog thumbnail at its own ratio: no crop, no blurred fill. */}
+    <div className="commons-thumbnail"><img src={game.thumbnailUrl} alt="" loading="lazy" decoding="async" draggable={false} /></div>
     {game.adapter ? <button type="button" className="commons-card-action play" onClick={onPlay} aria-label={`Play ${game.name}`}><Play aria-hidden="true" fill="currentColor" />Play</button> : <button type="button" className="commons-card-action soon" onClick={(event) => onPreview(game, event.currentTarget)} aria-label={`Preview ${game.name}, coming soon`}><Clock3 aria-hidden="true" />Coming soon</button>}
   </article>;
 }

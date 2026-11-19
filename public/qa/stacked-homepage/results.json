@@ -1,0 +1,328 @@
+{
+ "draft": "drft_01m7ttdrxre4dtmqtjp4rpssbn",
+ "baseCommit": "be140f2329a5bfe7c8cf010d387543db50b986e1",
+ "route": "/?band=3 (ages 6–7) and band 4 for behaviour",
+ "environment": "Chromium headless via Playwright against the local draft dev server with the live release manifest; not physical Safari/iPad",
+ "viewports": {
+  "phone": "393x852",
+  "duo": "440x760",
+  "phone-landscape": "844x390",
+  "ipad": "768x1024",
+  "ipad-landscape": "1024x768",
+  "desktop": "1440x900"
+ },
+ "layouts": {
+  "phone": {
+   "overflow": 0,
+   "h1": [
+    79,
+    123,
+    236,
+    82
+   ],
+   "dock": [
+    12,
+    268,
+    369,
+    72
+   ],
+   "tabsShown": "none",
+   "select": "flex",
+   "playAll": [
+    57,
+    397,
+    280,
+    60
+   ],
+   "firstCard": [
+    32,
+    511,
+    330,
+    442
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -235,
+    0,
+    864,
+    1152
+   ],
+   "page": 6521,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -54.225)",
+   "quickShown": true,
+   "errors": []
+  },
+  "duo": {
+   "overflow": 0,
+   "h1": [
+    102,
+    114,
+    236,
+    82
+   ],
+   "dock": [
+    12,
+    259,
+    416,
+    72
+   ],
+   "tabsShown": "none",
+   "select": "flex",
+   "playAll": [
+    80,
+    388,
+    280,
+    60
+   ],
+   "firstCard": [
+    10,
+    502,
+    204,
+    423
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -177,
+    0,
+    795,
+    1060
+   ],
+   "page": 5130,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -78.7746)",
+   "quickShown": true,
+   "errors": []
+  },
+  "phone-landscape": {
+   "overflow": 0,
+   "h1": [
+    237,
+    112,
+    370,
+    33
+   ],
+   "dock": [
+    32,
+    195,
+    780,
+    60
+   ],
+   "tabsShown": "grid",
+   "select": "none",
+   "playAll": [
+    282,
+    314,
+    280,
+    60
+   ],
+   "firstCard": [
+    64,
+    431,
+    228,
+    403
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -125,
+    0,
+    1095,
+    730
+   ],
+   "page": 3445,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -77.9051)",
+   "quickShown": true,
+   "errors": []
+  },
+  "ipad": {
+   "overflow": 0,
+   "h1": [
+    233,
+    143,
+    302,
+    105
+   ],
+   "dock": [
+    154,
+    318,
+    460,
+    72
+   ],
+   "tabsShown": "none",
+   "select": "flex",
+   "playAll": [
+    244,
+    448,
+    280,
+    60
+   ],
+   "firstCard": [
+    98,
+    564,
+    275,
+    470
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -112,
+    0,
+    993,
+    1324
+   ],
+   "page": 5717,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -73.1856)",
+   "quickShown": true,
+   "errors": []
+  },
+  "ipad-landscape": {
+   "overflow": 0,
+   "h1": [
+    256,
+    178,
+    512,
+    46
+   ],
+   "dock": [
+    52,
+    296,
+    920,
+    70
+   ],
+   "tabsShown": "grid",
+   "select": "none",
+   "playAll": [
+    372,
+    429,
+    280,
+    60
+   ],
+   "firstCard": [
+    112,
+    545,
+    252,
+    494
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -319,
+    0,
+    1662,
+    1108
+   ],
+   "page": 4319,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -114.897)",
+   "quickShown": true,
+   "errors": []
+  },
+  "desktop": {
+   "overflow": 0,
+   "h1": [
+    360,
+    202,
+    720,
+    65
+   ],
+   "dock": [
+    260,
+    356,
+    920,
+    70
+   ],
+   "tabsShown": "grid",
+   "select": "none",
+   "playAll": [
+    580,
+    507,
+    280,
+    60
+   ],
+   "firstCard": [
+    248,
+    623,
+    300,
+    470
+   ],
+   "cards": 32,
+   "playable": 9,
+   "result": "32 puzzle adventures for ages 6–7",
+   "brokenImgs": 0,
+   "scene": [
+    -210,
+    0,
+    1860,
+    1240
+   ],
+   "page": 3970,
+   "sceneTransformScrolled": "matrix(1, 0, 0, 1, 0, -132.899)",
+   "quickShown": true,
+   "errors": []
+  }
+ },
+ "longScrollBottom": {
+  "phone": "{'sceneBottom': 966, 'vh': 852, 'tf': 'matrix(1, 0, 0, 1, 0, -186.379)', 'tabs': [0, 0, 0, 0, 0, 0]}",
+  "desktop": "{'sceneBottom': 1014, 'vh': 900, 'tf': 'matrix(1, 0, 0, 1, 0, -225.818)', 'tabs': [0, 0, 0, 0, 0, 0]}",
+  "phone-landscape": "{'sceneBottom': 554, 'vh': 390, 'tf': 'matrix(1, 0, 0, 1, 0, -175.954)', 'tabs': [0, 0, 0, 0, 0, 0]}"
+ },
+ "behaviour": {
+  "dropdownUrl": "http://localhost:8080/?band=4",
+  "dropdownValue": "Ages 7–8",
+  "resultAfterPick": "33 puzzle adventures for ages 7–8",
+  "cardLaunch": {
+   "label": "Play The Ticket Machine Is Being Difficult",
+   "url": "http://localhost:8080/session?band=4&mode=single&game=ticket"
+  },
+  "afterBack": {
+   "url": "http://localhost:8080/?band=4",
+   "value": "Ages 7–8"
+  },
+  "playAllUrl": "http://localhost:8080/session?band=4&mode=all",
+  "previewOpen": 1,
+  "focusBackOnSoon": "commons-card-action soon",
+  "arrowRight": {
+   "url": "http://localhost:8080/?band=4",
+   "focused": "age-tab-4",
+   "selected": "Ages 7–8"
+  },
+  "home": "Ages 4–5",
+  "reducedMotionTransform": "none"
+ },
+ "screenshots": {
+  "desktop-bottom.png": "/__l5e/assets-v1/d01f07e4-6b4d-4463-8367-a2a2997cc15b/stacked-desktop-bottom.png",
+  "desktop-coming.png": "/__l5e/assets-v1/4020f0c4-477a-456b-9016-b69faacf6d41/stacked-desktop-coming.png",
+  "desktop-scrolled.png": "/__l5e/assets-v1/c365bd26-0e76-4478-b077-9cf1d2eb384d/stacked-desktop-scrolled.png",
+  "desktop-top.png": "/__l5e/assets-v1/03c7b636-f0fd-4d5b-a617-d92780bde2bf/stacked-desktop-top.png",
+  "duo-scrolled.png": "/__l5e/assets-v1/2f9513ea-579c-48c8-b8b7-dd20bd6bf7d6/stacked-duo-scrolled.png",
+  "duo-top.png": "/__l5e/assets-v1/5f700211-8a41-4570-9b86-7c129a9d1956/stacked-duo-top.png",
+  "ipad-landscape-scrolled.png": "/__l5e/assets-v1/7411c5e9-5667-4dcd-9fba-3404b7032fc3/stacked-ipad-landscape-scrolled.png",
+  "ipad-landscape-top.png": "/__l5e/assets-v1/b6e2abd3-d0d1-4a96-81e6-ef40cd430747/stacked-ipad-landscape-top.png",
+  "ipad-scrolled.png": "/__l5e/assets-v1/91f21abc-b649-4c51-af16-0b6307d8e864/stacked-ipad-scrolled.png",
+  "ipad-top.png": "/__l5e/assets-v1/adbc1f36-f071-4fcc-9bdc-9e98de9a1a05/stacked-ipad-top.png",
+  "phone-bottom.png": "/__l5e/assets-v1/44327adf-a2b8-4b01-adbf-2e7ca715ce82/stacked-phone-bottom.png",
+  "phone-coming.png": "/__l5e/assets-v1/529ec308-0080-4504-9af8-a8162e802f2f/stacked-phone-coming.png",
+  "phone-landscape-bottom.png": "/__l5e/assets-v1/a1a6517c-7e1f-40ce-b3d1-7e47a5c9e98e/stacked-phone-landscape-bottom.png",
+  "phone-landscape-coming.png": "/__l5e/assets-v1/6134a527-4c8e-452a-b42d-578f66ec70e7/stacked-phone-landscape-coming.png",
+  "phone-landscape-scrolled.png": "/__l5e/assets-v1/25a09f40-62f1-40d5-8b6b-116b36e19bd7/stacked-phone-landscape-scrolled.png",
+  "phone-landscape-top.png": "/__l5e/assets-v1/8b332b5b-2790-4fec-9065-d6f5acd89465/stacked-phone-landscape-top.png",
+  "phone-scrolled.png": "/__l5e/assets-v1/e173f374-3ef5-43f4-90d3-de947b32068e/stacked-phone-scrolled.png",
+  "phone-top.png": "/__l5e/assets-v1/cff0c8b8-aa8b-4c1c-994e-deb275398a9c/stacked-phone-top.png"
+ },
+ "limitations": [
+  "Chromium only; Safari scroll-driven drift and toolbar resizing not observed on a device",
+  "Scene art is the supplied 1086x1448 / 1536x1024 raster, so it is upscaled on large or high-density screens",
+  "Thumbnails are the live catalog images; tall phone screenshots are shown smaller (contained, never cropped)"
+ ],
+ "tests": "bunx vitest run: 14 files, 109 tests passed; preview build log: build OK"
+}
