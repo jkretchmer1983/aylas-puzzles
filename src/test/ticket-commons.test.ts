@@ -13,7 +13,7 @@ describe("Ticket Machine (v1-riddle) public release", () => {
     expect(parseRouteBand(2)).toBe(2);
   });
   it("is the eleventh public game", () => {
-    expect(PUBLIC_GAMES).toHaveLength(11);
+    expect(PUBLIC_GAMES[10]?.gameId).toBe("ticket");
     expect(PUBLIC_GAMES.find((g) => g.gameId === "ticket")).toMatchObject({ catalogId: "v1-riddle", path: "/ticket-machine", minBand: 4, maxBand: 6 });
   });
 });

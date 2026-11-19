@@ -2,7 +2,7 @@ import { z } from "zod";
 import { BANDS } from "@/gen/bands";
 import snapshotJson from "@/lib/catalog-snapshot.json";
 import { CATALOG_THUMBNAILS } from "@/lib/catalog-thumbnails";
-import { installedAdapterForBand, type InstalledGameAdapter } from "@/lib/game-adapters";
+import { installedAdapterForBand } from "@/lib/game-adapters";
 
 /** Catalog release status. Only `available` can ever unlock an installed adapter. */
 export const CATALOG_RELEASES = ["available", "coming-soon", "withdrawn"] as const;
@@ -114,11 +114,11 @@ export function resolveThumbnail(reference: string | null): string {
 
 export type CatalogGame = PublicCatalogRecord & {
   thumbnailUrl: string;
-  adapter: InstalledGameAdapter | undefined;
+  adapter: { templateId: string } | undefined;
 };
 
 /** Default (master build): catalog release "available" + an installed same-origin adapter. */
-export type AdapterResolver = (record: PublicCatalogRecord, bandId: number) => InstalledGameAdapter | undefined;
+export type AdapterResolver = (record: PublicCatalogRecord, bandId: number) => CatalogGame["adapter"];
 const installedResolver: AdapterResolver = (record, bandId) => record.release === "available" ? installedAdapterForBand(record.id, bandId) : undefined;
 
 export function gamesForBand(catalog: PublicCatalog, bandId: number, resolveAdapter: AdapterResolver = installedResolver): CatalogGame[] {

@@ -5,6 +5,8 @@ const PUBLIC = { selfOrigin: "https://robot-host.lovable.app", privateQa: false 
 const QA = { selfOrigin: "https://id-preview--734562b7-9af6-4e5e-97e9-2466ddef3755.lovable.app", privateQa: true };
 import { CATALOG_SNAPSHOT } from "@/lib/public-catalog";
 import { PUBLIC_GAMES } from "@/host/public-games";
+import { roleAdapterResolver, sessionTargets } from "@/host/eligibility";
+import { buildLaunchUrl, isGameRelativeHref } from "@/host/protocol";
 
 const rec = (id: string, over: Record<string, unknown> = {}) => ({ ...CATALOG_SNAPSHOT.records.find((r) => r.id === id)!, ...over });
 const manifest = (records: unknown[], games: Record<string, unknown> = {}) => parseReleaseManifest({
@@ -14,9 +16,33 @@ const manifest = (records: unknown[], games: Record<string, unknown> = {}) => pa
 const reg = (catalogId: string, gameId: string, url = `https://${gameId}-host.lovable.app`) => ({ [catalogId]: { catalogId, gameId, url, releaseId: "b1" } });
 
 describe("public release rules", () => {
-  it("exactly eleven workflow-Done games are public; Pattern Loom is not one of them", () => {
-    expect(PUBLIC_GAMES.map((g) => g.catalogId).sort()).toEqual(["v1-cipher", "v1-lineup", "v1-position", "v1-riddle", "v1-shapepick", "v1-sudoku", "v1-take", "v2-curiosity", "v2-robot", "v2-seating", "v2-sofa"]);
+  it("exactly twelve approved games are public; Pattern Loom is not one of them", () => {
+    expect(PUBLIC_GAMES.map((g) => g.catalogId).sort()).toEqual(["v1-change", "v1-cipher", "v1-lineup", "v1-position", "v1-riddle", "v1-shapepick", "v1-sudoku", "v1-take", "v2-curiosity", "v2-robot", "v2-seating", "v2-sofa"]);
     expect(CATALOG_SNAPSHOT.records.find((r) => r.id === "v1-pattern")!.release).toBe("coming-soon");
+  });
+
+  it("connects the registered Till to the age-seven hub card and existing session bridge", () => {
+    const origin = "https://aylas-till-is-on-its-lunch-break.lovable.app";
+    const m = manifest([rec("v1-change", { release: "available", nextAction: "Done", minAge: 6, maxAge: 10 })], {
+      "v1-change": { catalogId: "v1-change", gameId: "money-change", url: origin, releaseId: "till-20261119023422-gekdo4" },
+    });
+    const game = PUBLIC_GAMES.find((item) => item.gameId === "money-change");
+    expect(game).toEqual({ catalogId: "v1-change", gameId: "money-change", title: "The Till Is On Its Lunch Break", path: "/money-change", fixed: {}, seedParam: "s", minBand: 3, maxBand: 6 });
+    if (!game) throw new Error("Till connection missing");
+    expect(hubPlayableGames(m, 4).map((item) => item.game.gameId)).toEqual(["money-change"]);
+    const record = m.catalog.records[0];
+    if (!record) throw new Error("Till record missing");
+    expect(roleAdapterResolver(m.catalog, m.registry)(record, 4)?.templateId).toBe("money-change");
+    expect(sessionTargets(m.catalog, m.registry, 4, "http://localhost:8080")).toEqual([{ gameId: "money-change", origin, releaseId: "till-20261119023422-gekdo4" }]);
+    const url = new URL(buildLaunchUrl({ origin, game, band: 4, seed: 42, phase: "active", identity: { session: "session123", nonce: "nonce1234", gameId: game.gameId } }));
+    expect(url.origin).toBe(origin);
+    expect(url.pathname).toBe("/money-change");
+    expect(url.searchParams.get("s")).toBe("42");
+    expect(url.searchParams.get("host_game")).toBe("money-change");
+    expect(isGameRelativeHref(game, "/money-change?band=4&s=42")).toBe(true);
+    expect(isGameRelativeHref(game, "/ticket-machine?band=4&s=42")).toBe(false);
+    expect(hubPlayableGames({ ...m, registry: { ...m.registry, games: {} } }, 4)).toEqual([]);
+    expect(roleAdapterResolver(m.catalog, { ...m.registry, games: {} })(record, 4)).toBeUndefined();
   });
 
   it("hub plays a game only when available AND registered", () => {

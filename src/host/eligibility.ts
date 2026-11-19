@@ -2,8 +2,8 @@ import { HOST_GAME, HOST_ROLE } from "./config";
 import { childAcceptsRecord, hubPlayableGames, type ChildGateContext, type ReleaseRegistry } from "./manifest";
 import { isPrivateQaOrigin } from "./origins";
 import { gameSupportsBand, publicGameByCatalogId, publicGameById, PUBLIC_GAME_IDS } from "./public-games";
-import { playableTemplateIds, type PublicCatalog, type PublicCatalogRecord } from "@/lib/public-catalog";
-import { INSTALLED_SCENE_ADAPTERS, installedAdapterForBand, type InstalledGameAdapter } from "@/lib/game-adapters";
+import { playableTemplateIds, type CatalogGame, type PublicCatalog, type PublicCatalogRecord } from "@/lib/public-catalog";
+import { INSTALLED_SCENE_ADAPTERS, installedAdapterForBand } from "@/lib/game-adapters";
 
 /** One launchable game for the hub session: its release ID and exact registered origin. */
 export type SessionTarget = { gameId: string; releaseId: string; origin: string };
@@ -25,12 +25,12 @@ const adapterFor = (catalogId: string) => INSTALLED_SCENE_ADAPTERS.find((item) =
  *            private preview/dev QA origin: also unregistered + Done).
  */
 export function roleAdapterResolver(catalog: PublicCatalog, registry: ReleaseRegistry) {
-  return (record: PublicCatalogRecord, band: number): InstalledGameAdapter | undefined => {
+  return (record: PublicCatalogRecord, band: number): CatalogGame["adapter"] => {
     if (HOST_ROLE === "master") return record.release === "available" ? installedAdapterForBand(record.id, band) : undefined;
     const game = publicGameByCatalogId(record.id);
     if (!game) return undefined;
     const manifest = { catalog, registry };
-    if (HOST_ROLE === "hub") return hubPlayableGames(manifest, band).some((item) => item.game.catalogId === record.id) ? adapterFor(record.id) : undefined;
+    if (HOST_ROLE === "hub") return hubPlayableGames(manifest, band).some((item) => item.game.catalogId === record.id) ? { templateId: game.gameId } : undefined;
     const context = ownGateContext();
     return context && HOST_GAME?.catalogId === record.id && childAcceptsRecord(manifest, record.id, band, context) ? adapterFor(record.id) : undefined;
   };
