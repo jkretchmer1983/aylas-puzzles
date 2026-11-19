@@ -281,3 +281,11 @@
   .commons-age-select-list { animation: none; }
   .commons-card:hover, .commons-age-tab:hover, .commons-play-all:hover:not(:disabled) { transform: none; }
 }
+
+/* Narrow portrait phones on the tall scene: headline and tagline sit in the central sky/valley opening
+   between Ayla's balcony and the fox's shop (~45vw), so neither covers the characters. Must match the tall-art query. */
+@media (orientation: portrait) and (max-aspect-ratio: 2/3) {
+  .commons-hero-copy { width: 45vw; max-width: 45vw; }
+  .commons-hero h1 { font-size: calc(7.3px + 4.26vw); line-height: 1.05; }
+  .commons-tagline { max-width: 45vw; font-size: calc(3.6px + 2.13vw); line-height: 1.25; }
+}
