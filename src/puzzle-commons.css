@@ -27,7 +27,10 @@
   /* Width-led art: exactly the viewport width, enlarged only as far as needed to cover the large viewport
      height (never extra zoom just to make room for motion). Parallax travel is whatever art is left below
      the viewport, capped, and is 0 when the art only just covers it. */
-  --scene-size: max(var(--scene-vh), calc(100vw / var(--scene-aspect)));
+  --scene-cover: max(var(--scene-vh), calc(100vw / var(--scene-aspect)));
+  /* Where the art only just covers the viewport (no overscan, e.g. iPad portrait/landscape), a 3% floor
+     gives a small drift; it crops at most 1.5% per side, keeping the edge characters in view. */
+  --scene-size: max(var(--scene-cover), calc(var(--scene-vh) * 1.03));
   --scene-travel: clamp(0px, calc(var(--scene-size) - var(--scene-vh)), 340px);
   --logo-bottom: calc(var(--scene-size) * var(--logo-f));
   --catalog-w: 980px;
@@ -48,17 +51,14 @@
 
 /* ---------- One continuous illustrated scene behind everything ----------
    ONE fixed transform layer = the whole width-led art; it drifts only by its own overscan below the large
-   viewport, so the art never runs out however long the catalog is and the side habitats stay in view. Its drift is scroll-driven on the compositor
-   where supported (animation-timeline), otherwise a passive-scroll rAF fallback (scene-parallax.ts).
-   No transitions chase scroll; reduced motion keeps it still. */
+   viewport, so the art never runs out however long the catalog is and the side habitats stay in view. One rAF
+   transform driver (scene-parallax.ts) owns the drift from scrollY and the probes below only; there is no CSS
+   scroll timeline or transition competing with it. Reduced motion keeps it still. */
 .commons-scene { position: fixed; left: 0; right: 0; top: 0; z-index: -1; height: var(--scene-size); overflow: hidden; pointer-events: none; will-change: transform; transform: translate3d(0, 0, 0); backface-visibility: hidden; }
 .commons-scene picture { position: absolute; inset: 0; display: block; }
 .commons-scene img { position: absolute; top: 0; left: 50%; display: block; width: calc(var(--scene-size) * var(--scene-aspect)); height: var(--scene-size); max-width: none; translate: -50% 0; }
 .commons-scene-travel { position: absolute; left: 0; top: 0; width: 1px; height: var(--scene-travel); visibility: hidden; }
-@keyframes commons-scene-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(-1 * var(--scene-travel)), 0); } }
-@supports (animation-timeline: scroll()) {
-  .commons-scene { animation: commons-scene-drift auto linear both; animation-timeline: scroll(root block); }
-}
+.commons-scene-vh { position: absolute; right: 0; top: 0; width: 1px; height: var(--scene-vh); visibility: hidden; }
 
 .puzzle-commons *, .puzzle-commons *::before, .puzzle-commons *::after { box-sizing: border-box; }
 :where(.puzzle-commons) button { font: inherit; }
@@ -275,7 +275,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .commons-hero-copy, .commons-age-dock, .commons-catalog { animation: none; }
-  .commons-scene { animation: none !important; transform: none !important; }
+  .commons-scene { transform: none !important; }
   .commons-age-quick, .commons-age-quick.is-shown { transition: none; }
   .commons-card, .commons-age-tab, .commons-play-all, .commons-card-action, .commons-age-select-field, .commons-age-select-chevron, .commons-age-option { transition: none; }
   .commons-age-select-list { animation: none; }

@@ -1,70 +1,71 @@
-import { useEffect, type RefObject } from "react";
-
-/** Most the courtyard ever drifts; must match --scene-travel-max in puzzle-commons.css. */
-export const SCENE_OVERSCAN = 400;
-/** Least drift kept after part of the overscan is spent lifting the characters; matches --scene-travel-min. */
-export const SCENE_TRAVEL_MIN = 250;
+import { useLayoutEffect, type RefObject } from "react";
 
 /**
- * Bounded parallax: the background moves `travel` px in total across the page's FULL scroll extent,
- * so it never runs out of art early however long the catalog is.
+ * Homepage scene drift: ONE transform driver (no CSS scroll timeline, no transitions). It writes the transform
+ * straight from the browser's scroll event, which is already delivered once per rendered frame, so there is no
+ * extra animation-frame hop between a scroll and its matching scene position.
+ *
+ * The drift depends only on scrollY and two viewport-stable lengths measured from CSS probes:
+ *  - travel: the art's own overscan below the large viewport (--scene-travel), and
+ *  - vh: the large-viewport height (--scene-vh = 100lvh), which Safari's collapsing toolbar does not change.
+ * It never reads the page height, so catalog hydration, lazy thumbnails, fonts or an age change cannot move
+ * the scene at an unchanged scroll position.
+ *
+ * Curve: shift = travel * (1 - e^(-y / D)), D = max(SPAN * vh, travel / RATE). It starts at exactly 0, its
+ * slope is largest at the top (at most RATE of scroll speed), and it is strictly increasing with no clamp, so a
+ * reversal anywhere on the page moves the scene back at once (more gently deep down: the painted overscan is finite).
  */
-export function sceneShift(scrollY: number, scrollHeight: number, viewportHeight: number, travel = SCENE_OVERSCAN) {
-  const range = scrollHeight - viewportHeight;
-  if (!(range > 0)) return 0;
-  const progress = Math.min(1, Math.max(0, scrollY / range));
-  return Math.round(progress * travel * 10) / 10;
+export const SCENE_RATE = 0.12;
+export const SCENE_SPAN_VIEWPORTS = 2.5;
+
+export function sceneSpan(travel: number, viewportHeight: number) {
+  return Math.max(SCENE_SPAN_VIEWPORTS * viewportHeight, travel / SCENE_RATE);
 }
 
-/** True when the browser drives the drift itself from CSS (animation-timeline: scroll()) on the compositor. */
-export function cssDrivesSceneDrift() {
-  return typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("animation-timeline: scroll()");
+export function sceneShift(scrollY: number, travel: number, viewportHeight: number) {
+  if (!(travel > 0) || !(viewportHeight > 0)) return 0;
+  return travel * (1 - Math.exp(-Math.max(0, scrollY) / sceneSpan(travel, viewportHeight)));
 }
 
 /**
- * Fallback driver for browsers without scroll-driven animations. Metrics (travel, large-viewport height,
- * page height) are measured only when layout changes, never per scroll, and use the layer's own large-viewport
- * height so Safari's collapsing toolbar cannot rescale the motion. No transitions: each frame sets the exact target.
+ * The driver as plain ES5 source, so the SAME code can run as an inline script in the server HTML (moving the
+ * scene correctly even if the visitor scrolls before hydration) and be adopted by the hook afterwards. Only one
+ * instance per layer ever exists (layer.__sceneDrift). Same math as sceneShift (asserted in tests).
  */
+const DRIVER_BODY = `var layer=arguments[0];if(!layer)return function(){};if(layer.__sceneDrift)return layer.__sceneDrift;
+var RATE=${SCENE_RATE},SPAN=${SCENE_SPAN_VIEWPORTS};
+var tp=layer.querySelector('.commons-scene-travel'),vp=layer.querySelector('.commons-scene-vh');
+var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+var T=0,V=0,last=NaN;
+function measure(){T=tp?tp.offsetHeight:0;V=(vp&&vp.offsetHeight)||window.innerHeight;}
+function shift(y){if(!(T>0)||!(V>0))return 0;var D=Math.max(SPAN*V,T/RATE);return T*(1-Math.exp(-Math.max(0,y)/D));}
+function apply(){var s=mq.matches?0:Math.round(shift(window.scrollY)*100)/100;if(s===last)return;last=s;layer.style.transform='translate3d(0,'+(-s)+'px,0)';}
+function relayout(){measure();last=NaN;apply();}
+var ro=typeof ResizeObserver==='function'?new ResizeObserver(relayout):null;
+if(ro){if(tp)ro.observe(tp);if(vp)ro.observe(vp);}else window.addEventListener('resize',relayout);
+measure();apply();
+window.addEventListener('scroll',apply,{passive:true});
+if(mq.addEventListener)mq.addEventListener('change',relayout);
+var stop=function(){if(ro)ro.disconnect();else window.removeEventListener('resize',relayout);window.removeEventListener('scroll',apply);if(mq.removeEventListener)mq.removeEventListener('change',relayout);layer.style.transform='';layer.__sceneDrift=undefined;};
+layer.__sceneDrift=stop;return stop;`;
+
+/** Inline script placed as the LAST child of the scene layer (after its probes) in the server HTML. */
+export const SCENE_DRIFT_BOOT = `(function(){${DRIVER_BODY}})(document.currentScript&&document.currentScript.parentNode);`;
+
+type DriftLayer = HTMLElement & { __sceneDrift?: () => void };
+let startDrift: ((layer: HTMLElement) => () => void) | undefined;
+
+/** Starts (or adopts the server-booted) driver for a layer; returns its stop function. Browser only. */
+export function startSceneDrift(layer: HTMLElement): () => void {
+  startDrift ??= new Function(DRIVER_BODY) as (layer: HTMLElement) => () => void;
+  return (layer as DriftLayer).__sceneDrift ?? startDrift(layer);
+}
+
 export function useSceneParallax(ref: RefObject<HTMLElement | null>) {
-  useEffect(() => {
+  // Layout effect: on client navigation, a restored scroll position is applied before the first paint.
+  useLayoutEffect(() => {
     const layer = ref.current;
-    if (!layer || cssDrivesSceneDrift()) return;
-    const probe = layer.querySelector<HTMLElement>(".commons-scene-travel");
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
-    let travel = SCENE_OVERSCAN;
-    let viewport = window.innerHeight;
-    let pageHeight = document.documentElement.scrollHeight;
-    let last = Number.NaN;
-    const measure = () => {
-      travel = probe ? probe.offsetHeight : SCENE_OVERSCAN; // 0 when the art only just covers the viewport
-      viewport = Math.max(window.innerHeight, layer.offsetHeight - travel);
-      pageHeight = document.documentElement.scrollHeight;
-    };
-    const apply = () => {
-      frame = 0;
-      const shift = reduced.matches ? 0 : sceneShift(window.scrollY, pageHeight, viewport, travel);
-      if (shift === last) return;
-      last = shift;
-      layer.style.transform = `translate3d(0, ${-shift}px, 0)`;
-    };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(apply); };
-    const relayout = () => { measure(); schedule(); };
-    const observer = new ResizeObserver(relayout);
-    observer.observe(document.body);
-    measure();
-    apply();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", relayout);
-    reduced.addEventListener?.("change", schedule);
-    return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", relayout);
-      reduced.removeEventListener?.("change", schedule);
-      layer.style.transform = "";
-    };
+    if (!layer) return;
+    return startSceneDrift(layer);
   }, [ref]);
 }

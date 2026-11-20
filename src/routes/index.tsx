@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import sceneLandscape from "@/assets/stacked/stacked-worlds-landscape.webp.asset.json";
 import scenePortrait from "@/assets/stacked/stacked-worlds-portrait.webp.asset.json";
 import scenePhoneTall from "@/assets/stacked/stacked-worlds-phone-tall.webp.asset.json";
-import { useSceneParallax } from "@/lib/scene-parallax";
+import { SCENE_DRIFT_BOOT, useSceneParallax } from "@/lib/scene-parallax";
 import { AgeDropdown } from "@/components/commons/AgeDropdown";
 import "@fontsource/baloo-2/800.css";
 import "@/puzzle-commons.css";
@@ -152,7 +152,7 @@ function PuzzleCommons() {
   };
 
   return <main className="puzzle-commons">
-    <div ref={sceneRef} className="commons-scene" aria-hidden="true">
+    <div ref={sceneRef} className="commons-scene" aria-hidden="true" suppressHydrationWarning>
       {/* The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens, tall scene for narrow phones. */}
       <picture>
         {/* Must match the narrow-phone media query in puzzle-commons.css. */}
@@ -161,6 +161,9 @@ function PuzzleCommons() {
         <img src={sceneLandscape.url} width={1536} height={1024} alt="" fetchPriority="high" decoding="async" />
       </picture>
       <span className="commons-scene-travel" />
+      <span className="commons-scene-vh" />
+      {/* Runs during HTML parse so the drift is right even if the visitor scrolls before hydration; the hook adopts it. */}
+      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: SCENE_DRIFT_BOOT }} />
     </div>
     <section className="commons-hero" aria-labelledby="commons-title">
       <div className="commons-hero-copy">
