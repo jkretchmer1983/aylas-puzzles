@@ -1,0 +1,90 @@
+{
+  "portrait: menu shows published games as Checking (not Coming soon) while registry loads": {
+    "pass": true,
+    "detail": "checking=8"
+  },
+  "portrait: single-launch top Next changes puzzle type": {
+    "pass": true,
+    "detail": "sofa -> trains"
+  },
+  "portrait: Previous restores the earlier game with its seed, work and level": {
+    "pass": true,
+    "detail": "{\"gameId\": \"sofa\", \"seed\": \"1027830180\", \"work\": \"2\", \"level\": \"2\", \"build\": \"build-1\"}"
+  },
+  "portrait: centre New keeps the same type and updates the saved location": {
+    "pass": true,
+    "detail": "/sofa?band=4&seed=470612298&from=commons&o=2&lvl=2"
+  },
+  "portrait: Next after Previous returns to the same forward instance": {
+    "pass": true,
+    "detail": "trains seed 1852530492"
+  },
+  "portrait: republished standby is replaced (new document, build-2) with the same reserved seed": {
+    "pass": true,
+    "detail": "robot seed=1124577418"
+  },
+  "portrait: failed check keeps the current game safe": {
+    "pass": true,
+    "detail": "robot"
+  },
+  "portrait: Retry after failure changes type": {
+    "pass": true,
+    "detail": "ticket"
+  },
+  "portrait: Previous skips a now-hidden game": {
+    "pass": true,
+    "detail": "hid robot; went to trains"
+  },
+  "portrait: max iframes observed": {
+    "pass": true,
+    "detail": "2"
+  },
+  "portrait: Home returns to menu with same age": {
+    "pass": true,
+    "detail": "http://localhost:8080/?band=4"
+  },
+  "portrait: Play all top Next changes type": {
+    "pass": true,
+    "detail": "robot -> ticket"
+  },
+  "portrait: standalone step=next opens a different type, cleans the URL, refresh keeps it": {
+    "pass": true,
+    "detail": "http://localhost:8080/session?band=4&mode=all -> ticket / after refresh ticket"
+  },
+  "portrait: standalone step=previous opens a different type": {
+    "pass": true,
+    "detail": "robot"
+  },
+  "portrait: legacy level 3 resume opens at level 2 with the same seed": {
+    "pass": true,
+    "detail": "band=4&seed=5&from=commons&lvl=2&host_session=legacyqa0001&host_nonce=a558999f28"
+  },
+  "portrait: failed manifest shows Try again, not Coming soon, for published games": {
+    "pass": true,
+    "detail": "try-again buttons=8"
+  },
+  "portrait: page errors": {
+    "pass": true,
+    "detail": ""
+  },
+  "landscape: menu shows published games as Checking (not Coming soon) while registry loads": {
+    "pass": true,
+    "detail": "checking=8"
+  },
+  "landscape: single-launch top Next changes puzzle type": {
+    "pass": true,
+    "detail": "sofa -> ticket"
+  },
+  "landscape: Previous restores the earlier game with its seed, work and level": {
+    "pass": true,
+    "detail": "{\"gameId\": \"sofa\", \"seed\": \"678235790\", \"work\": \"2\", \"level\": \"2\", \"build\": \"build-1\"}"
+  },
+  "landscape: centre New keeps the same type and updates the saved location": {
+    "pass": true,
+    "detail": "/sofa?band=4&seed=511077147&from=commons&o=2&lvl=2"
+  },
+  "landscape: page errors": {
+    "pass": true,
+    "detail": ""
+  }
+}

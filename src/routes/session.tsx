@@ -3,13 +3,15 @@ import { SessionShell } from "@/host/SessionShell";
 import { publicGameById } from "@/host/public-games";
 import { parseRouteBand } from "@/lib/commons-launch";
 
-type Search = { band: number; mode: "single" | "all"; game?: string | undefined };
+type Search = { band: number; mode: "single" | "all"; game?: string | undefined; step?: "next" | "previous" | undefined };
 
 export const Route = createFileRoute("/session")({
   ssr: false,
   validateSearch: (s: Record<string, unknown>): Search => {
     const game = typeof s.game === "string" && publicGameById(s.game) ? s.game : undefined;
-    return { band: parseRouteBand(s.band), mode: s.mode === "all" || !game ? "all" : "single", game };
+    // step: a standalone host's top arrow (only with mode=all and a known public gameId).
+    const step = game && s.mode === "all" && (s.step === "next" || s.step === "previous") ? s.step : undefined;
+    return { band: parseRouteBand(s.band), mode: s.mode === "all" || !game ? "all" : "single", game, step };
   },
   head: () => ({
     meta: [
@@ -25,6 +27,7 @@ export const Route = createFileRoute("/session")({
 });
 
 function SessionRoute() {
-  const { band, mode, game } = Route.useSearch();
-  return <SessionShell key={`${band}-${mode}-${game ?? ""}`} band={band} mode={mode} gameId={game} />;
+  const { band, mode, game, step } = Route.useSearch();
+  // All-mode sessions key by band only, so cleaning a consumed step from the address bar never remounts.
+  return <SessionShell key={mode === "all" ? `${band}-all` : `${band}-single-${game ?? ""}`} band={band} mode={mode} gameId={mode === "single" ? game : undefined} step={step && game ? { gameId: game, step } : undefined} />;
 }

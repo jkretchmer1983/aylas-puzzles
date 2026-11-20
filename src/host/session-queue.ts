@@ -3,10 +3,14 @@ import { publicGameById } from "./public-games";
 
 /**
  * Hub session model (pure; storage lives in session-store.ts).
- *  - single: menu-card launch. Next = a FRESH instance of the same game.
- *  - all:    Play all. Next = a fresh instance of the next eligible game from a shuffled no-repeat cycle.
- * Exactly one next instance is reserved ahead of time; reserving never marks a game played — only
- * promotion does. Every instance gets a new instance ID and seed; a previous seed is never reused.
+ *  - single: menu-card launch. Starts with the chosen game.
+ *  - all:    Play all. Starts with a game from a shuffled no-repeat cycle.
+ * In BOTH modes the top Next/Previous change the PUZZLE TYPE (a different eligible game); a new puzzle of
+ * the same game is the child's own centre "New" control and never goes through the hub.
+ * Next: restore a forward entry (after Previous) or promote the one reserved next instance, drawn from the
+ * shuffled no-repeat cycle. Previous: restore the last different game from the persisted history (same
+ * instance, seed and reported location), else a fresh instance of the previous eligible type.
+ * Reserving never marks a game played — only promotion/restoration does. Fresh instances get new IDs/seeds.
  */
 export type SessionMode = "single" | "all";
 export type SessionInstance = { instanceId: string; gameId: string; seed: number; releaseId: string; href?: string };
@@ -15,12 +19,16 @@ export type HubSession = {
   id: string;
   band: number;
   mode: SessionMode;
-  /** single mode: the chosen game. */
+  /** single mode: the game the session started with. */
   gameId?: string;
   current: SessionInstance | null;
   reserved: SessionInstance | null;
-  /** all mode: games played in the current cycle (current included once promoted/started). */
+  /** Games played in the current cycle (current included once promoted/started). */
   seen: string[];
+  /** Earlier instances (oldest first) that Previous restores, with their work (href). */
+  history: SessionInstance[];
+  /** Instances left by Previous (most recent last) that Next restores before dealing a new game. */
+  forward: SessionInstance[];
   /**
    * The last instance (with its reported location) of each game this session moved away from. Only a
    * directional type step (supportsTypeNavigation games) returns to a seat; plain Next never uses it.
@@ -30,6 +38,9 @@ export type HubSession = {
 
 export type Eligible = { gameId: string; releaseId: string };
 type Rand = () => number;
+export type StepDirection = "next" | "previous";
+/** Persisted type history per direction is bounded. */
+export const HISTORY_LIMIT = 12;
 
 export const freshSeed = (rand: Rand = Math.random) => 1 + Math.floor(rand() * 2_000_000_000);
 
@@ -37,13 +48,21 @@ function instance(item: Eligible, rand: Rand): SessionInstance {
   return { instanceId: randomToken(12), gameId: item.gameId, seed: freshSeed(rand), releaseId: item.releaseId };
 }
 
-/** all mode: the next game, without mutating the cycle. Avoids an immediate repeat when another game exists. */
+const isEligible = (eligible: readonly Eligible[], gameId: string) => eligible.some((item) => item.gameId === gameId);
+const push = (list: readonly SessionInstance[], item: SessionInstance | null) => item ? [...list, item].slice(-HISTORY_LIMIT) : [...list];
+
+/** Next game for a type change: never the current game. Undefined when no OTHER game is eligible. */
 export function pickNextGame(eligible: readonly Eligible[], seen: readonly string[], currentId: string | undefined, rand: Rand = Math.random): Eligible | undefined {
-  if (!eligible.length) return undefined;
-  let pool = eligible.filter((item) => !seen.includes(item.gameId) && item.gameId !== currentId);
-  if (!pool.length) pool = eligible.filter((item) => item.gameId !== currentId);
-  if (!pool.length) pool = [...eligible];
+  const others = eligible.filter((item) => item.gameId !== currentId);
+  if (!others.length) return undefined;
+  const unseen = others.filter((item) => !seen.includes(item.gameId));
+  const pool = unseen.length ? unseen : others;
   return pool[Math.floor(rand() * pool.length)] ?? pool[0];
+}
+
+/** True when the only eligible game is the current one (a type change is impossible). */
+export function onlyCurrentEligible(session: HubSession, eligible: readonly Eligible[]) {
+  return !!session.current && eligible.length > 0 && eligible.every((item) => item.gameId === session.current?.gameId);
 }
 
 export function markSeen(seen: readonly string[], gameId: string, eligible: readonly Eligible[]) {
@@ -54,41 +73,101 @@ export function markSeen(seen: readonly string[], gameId: string, eligible: read
   return kept.includes(gameId) ? kept : [...kept, gameId];
 }
 
+function base(band: number, mode: SessionMode) {
+  return { v: 1 as const, id: randomToken(12), band, mode, reserved: null, seen: [] as string[], history: [] as SessionInstance[], forward: [] as SessionInstance[] };
+}
+
 export function startSession(band: number, mode: SessionMode, eligible: readonly Eligible[], gameId?: string, rand: Rand = Math.random): HubSession | null {
-  const base = { v: 1 as const, id: randomToken(12), band, mode, reserved: null, seen: [] as string[] };
   if (mode === "single") {
     const item = eligible.find((entry) => entry.gameId === gameId);
     if (!item) return null;
-    return { ...base, gameId: item.gameId, current: instance(item, rand), seen: [item.gameId] };
+    return { ...base(band, mode), gameId: item.gameId, current: instance(item, rand), seen: [item.gameId] };
   }
   const item = pickNextGame(eligible, [], undefined, rand);
   if (!item) return null;
-  return { ...base, current: instance(item, rand), seen: [item.gameId] };
-}
-
-/** Reserve exactly one next instance. Idempotent: an existing valid reservation is kept. */
-export function reserveNext(session: HubSession, eligible: readonly Eligible[], rand: Rand = Math.random): HubSession {
-  const reserved = session.reserved;
-  const valid = reserved && eligible.some((item) => item.gameId === reserved.gameId);
-  if (valid) return session;
-  let item: Eligible | undefined;
-  if (session.mode === "single") item = eligible.find((entry) => entry.gameId === session.gameId);
-  else item = pickNextGame(eligible, session.seen, session.current?.gameId, rand);
-  return { ...session, reserved: item ? instance(item, rand) : null };
+  return { ...base(band, mode), current: instance(item, rand), seen: [item.gameId] };
 }
 
 /**
- * Promote the reserved instance (reusing its ID and seed, so a hidden prepared iframe is reused rather
- * than regenerated). A reservation that is no longer eligible or whose release changed is replaced by a
- * fresh pick. Returns null when nothing is eligible any more (hub returns to the menu).
+ * A standalone game host's top arrow arrived (/session?mode=all&game=X&step=…): an all-mode session whose
+ * current is a not-yet-loaded fresh instance of X, so the step is relative to X.
+ */
+export function standaloneSession(band: number, eligible: readonly Eligible[], gameId: string, rand: Rand = Math.random): HubSession {
+  const item = eligible.find((entry) => entry.gameId === gameId) ?? { gameId, releaseId: "standalone" };
+  return { ...base(band, "all"), current: instance(item, rand), seen: isEligible(eligible, gameId) ? [gameId] : [] };
+}
+
+/** Reserve exactly one next instance of a DIFFERENT game. Idempotent: an existing valid reservation is kept. */
+export function reserveNext(session: HubSession, eligible: readonly Eligible[], rand: Rand = Math.random): HubSession {
+  const reserved = session.reserved;
+  const valid = reserved && reserved.gameId !== session.current?.gameId && isEligible(eligible, reserved.gameId);
+  if (valid) return session;
+  const item = pickNextGame(eligible, session.seen, session.current?.gameId, rand);
+  return { ...session, reserved: item ? instance(item, rand) : null };
+}
+
+/** Next step 1: restore the most recent forward entry of another eligible game (stale/withdrawn ones are skipped). */
+export function takeForward(session: HubSession, eligible: readonly Eligible[]): HubSession | null {
+  const forward = [...session.forward];
+  while (forward.length) {
+    const entry = forward.pop()!;
+    if (entry.gameId === session.current?.gameId || !isEligible(eligible, entry.gameId)) continue;
+    return {
+      ...session, current: entry, forward, history: push(session.history, session.current),
+      reserved: session.reserved?.gameId === entry.gameId ? null : session.reserved,
+      seen: markSeen(session.seen, entry.gameId, eligible),
+    };
+  }
+  return null;
+}
+
+/**
+ * Next step 2: promote the reserved instance (reusing its ID and seed, so a hidden prepared iframe is
+ * reused rather than regenerated). A reservation that is no longer eligible or is the same game is
+ * replaced by a fresh pick. Null when no other game is eligible.
  */
 export function promoteNext(session: HubSession, eligible: readonly Eligible[], rand: Rand = Math.random): HubSession | null {
   const checked = reserveNext(session, eligible, rand);
   const next = checked.reserved;
   if (!next) return null;
-  const seen = checked.mode === "all" ? markSeen(checked.seen, next.gameId, eligible) : checked.seen;
   const seats = withSeat(checked.seats, checked.current);
-  return { ...checked, current: next, reserved: null, seen, ...(seats ? { seats } : {}) };
+  return {
+    ...checked, current: next, reserved: null, seen: markSeen(checked.seen, next.gameId, eligible),
+    history: push(checked.history, checked.current), forward: [],
+    ...(seats ? { seats } : {}),
+  };
+}
+
+/** Pure Next: forward entry first, else the reserved/dealt next game. */
+export function stepNext(session: HubSession, eligible: readonly Eligible[], rand: Rand = Math.random): HubSession | null {
+  return takeForward(session, eligible) ?? promoteNext(session, eligible, rand);
+}
+
+/**
+ * Previous: the last earlier instance of another eligible game (its own seed and saved location), skipping
+ * hidden, withdrawn, wrong-age and same-game entries. Without history: a fresh instance of the previous
+ * eligible type in catalog order. Null when no other game is eligible.
+ */
+export function stepPrevious(session: HubSession, eligible: readonly Eligible[], rand: Rand = Math.random): HubSession | null {
+  const currentId = session.current?.gameId;
+  const history = [...session.history];
+  let target: SessionInstance | undefined;
+  while (history.length) {
+    const entry = history.pop()!;
+    if (entry.gameId !== currentId && isEligible(eligible, entry.gameId)) { target = entry; break; }
+  }
+  if (!target) {
+    const others = eligible.filter((item) => item.gameId !== currentId);
+    if (!others.length) return null;
+    const index = eligible.findIndex((item) => item.gameId === currentId);
+    const before = index < 0 ? others[others.length - 1]! : eligible[(index - 1 + eligible.length) % eligible.length]!;
+    target = instance(before, rand);
+  }
+  return {
+    ...session, current: target, history, forward: push(session.forward, session.current),
+    reserved: session.reserved?.gameId === target.gameId ? null : session.reserved,
+    seen: markSeen(session.seen, target.gameId, eligible),
+  };
 }
 
 /** Bounded per game; only an instance that reported its own exact location can be returned to. */
@@ -111,6 +190,8 @@ export type TypeStep = { session: HubSession; fromReserved: boolean };
  * document) when this session has one, reuses the prepared reservation when it is that type, else starts a
  * fresh instance. The leaving instance is seated so a later step back restores it. Null when there is no
  * other eligible type (the caller keeps the original behaviour).
+ * The session shell routes directional `next` (±1) through stepNext / stepPrevious like every other game's
+ * top arrows; this catalog-order step and its seats remain available for directional callers.
  */
 export function stepSessionType(session: HubSession, eligible: readonly Eligible[], direction: 1 | -1, rand: Rand = Math.random): TypeStep | null {
   const leaving = session.current;
@@ -136,9 +217,9 @@ export function stepSessionType(session: HubSession, eligible: readonly Eligible
 
 /** Revalidate after a registry/catalog/age change; drops a stale reservation, null if the current game is gone. */
 export function revalidateSession(session: HubSession, eligible: readonly Eligible[]): HubSession | null {
-  const ok = (item: SessionInstance | null) => !!item && eligible.some((entry) => entry.gameId === item.gameId);
+  const ok = (item: SessionInstance | null) => !!item && isEligible(eligible, item.gameId);
   if (!ok(session.current)) return null;
-  return ok(session.reserved) ? session : { ...session, reserved: null };
+  return ok(session.reserved) && session.reserved?.gameId !== session.current?.gameId ? session : { ...session, reserved: null };
 }
 
 export function withCurrentHref(session: HubSession, instanceId: string, href: string): HubSession {
@@ -147,32 +228,41 @@ export function withCurrentHref(session: HubSession, instanceId: string, href: s
   return session;
 }
 
+function parseInstance(v: unknown): SessionInstance | null | undefined {
+  if (v === null) return null;
+  if (!v || typeof v !== "object") return undefined;
+  const i = v as Record<string, unknown>;
+  if (typeof i.instanceId !== "string" || !/^[a-f0-9]{24}$/.test(i.instanceId) || typeof i.gameId !== "string" || typeof i.releaseId !== "string") return undefined;
+  if (!Number.isInteger(i.seed) || (i.href !== undefined && typeof i.href !== "string")) return undefined;
+  return { instanceId: i.instanceId, gameId: i.gameId, seed: Number(i.seed), releaseId: i.releaseId, ...(typeof i.href === "string" ? { href: i.href } : {}) };
+}
+
+function parseList(v: unknown): SessionInstance[] | undefined {
+  if (v === undefined) return []; // sessions stored before type history existed
+  if (!Array.isArray(v)) return undefined;
+  const items = v.map(parseInstance);
+  return items.every((item): item is SessionInstance => !!item) ? items.slice(-HISTORY_LIMIT) : undefined;
+}
+
 /** Strict restore of a stored session (anything malformed is discarded). */
 export function parseStoredSession(value: unknown): HubSession | null {
   if (!value || typeof value !== "object") return null;
   const s = value as Record<string, unknown>;
-  const inst = (v: unknown): SessionInstance | null | undefined => {
-    if (v === null) return null;
-    if (!v || typeof v !== "object") return undefined;
-    const i = v as Record<string, unknown>;
-    if (typeof i.instanceId !== "string" || !/^[a-f0-9]{24}$/.test(i.instanceId) || typeof i.gameId !== "string" || typeof i.releaseId !== "string") return undefined;
-    if (!Number.isInteger(i.seed) || (i.href !== undefined && typeof i.href !== "string")) return undefined;
-    return { instanceId: i.instanceId, gameId: i.gameId, seed: Number(i.seed), releaseId: i.releaseId, ...(typeof i.href === "string" ? { href: i.href } : {}) };
-  };
-  const current = inst(s.current), reserved = inst(s.reserved);
+  const current = parseInstance(s.current), reserved = parseInstance(s.reserved);
+  const history = parseList(s.history), forward = parseList(s.forward);
   if (s.v !== 1 || typeof s.id !== "string" || !Number.isInteger(s.band) || (s.mode !== "single" && s.mode !== "all")) return null;
-  if (current === undefined || reserved === undefined || !Array.isArray(s.seen)) return null;
+  if (current === undefined || reserved === undefined || !Array.isArray(s.seen) || !history || !forward) return null;
   // Seats are optional; a malformed seat is dropped on its own (it never invalidates the session).
   const seats: Record<string, SessionInstance> = {};
   if (s.seats && typeof s.seats === "object" && !Array.isArray(s.seats)) {
     for (const [key, value] of Object.entries(s.seats as Record<string, unknown>).slice(0, SEAT_LIMIT)) {
-      const seat = inst(value);
+      const seat = parseInstance(value);
       if (publicGameById(key) && seat && seat.gameId === key && seat.href) seats[key] = seat;
     }
   }
   return {
     v: 1, id: s.id, band: Number(s.band), mode: s.mode, ...(typeof s.gameId === "string" ? { gameId: s.gameId } : {}),
-    current, reserved, seen: s.seen.filter((id): id is string => typeof id === "string"),
+    current, reserved, seen: s.seen.filter((id): id is string => typeof id === "string"), history, forward,
     ...(Object.keys(seats).length ? { seats } : {}),
   };
 }

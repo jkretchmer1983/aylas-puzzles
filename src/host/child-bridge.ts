@@ -53,8 +53,12 @@ function post(type: ChildMessageType, extra: { href?: string; direction?: TypeDi
   return true;
 }
 
-/** Plain Next keeps each game's original behaviour; a type-navigation game may pass +1 / -1 to step puzzle type. */
+/**
+ * Top Next / Previous arrows: ask the hub for a DIFFERENT puzzle type. Centre "New" stays in the game.
+ * A directional game (supportsTypeNavigation) may instead pass +1 / -1 on `next`; the hub treats -1 as Previous.
+ */
 export function requestHostNext(direction?: TypeDirection) { return post("next", direction === 1 || direction === -1 ? { direction } : {}); }
+export function requestHostPrevious() { return post("previous"); }
 export function requestHostBack() { return post("back"); }
 
 /** Report the current same-game location so a hub refresh can restore this exact instance. */

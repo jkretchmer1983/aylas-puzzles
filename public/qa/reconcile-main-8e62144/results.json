@@ -1,0 +1,68 @@
+{
+ "what": "Reconcile main 8e6214483f9af58d0b3fd7fb4258c393e4968231 into private controls draft (previous tip 3b375a8)",
+ "method": "Main-only files (43) restored verbatim from 8e62144 and byte-compared; roadmap.md and src/routes/index.tsx three-way combined (diff3) - index.tsx equals main plus only this draft's Checking/Try again cards.",
+ "tests": {
+  "focused": "scene-parallax, scroll-ownership, host-session-shell, host-session, train-host-connection, host-protocol: 69 passed",
+  "full": "16 files, 141 passed"
+ },
+ "browser": {
+  "engine": "Chromium headless, local dev server, real homepage + real /session shell",
+  "checks": {
+   "phone393": {
+    "viewport": "393x852",
+    "earlyScrollAt300ms": 700,
+    "earlyScrollAfterSettle": 700,
+    "scrolledDown": 1600,
+    "sceneTransformDown": "matrix(1, 0, 0, 1, 0, -66.02)",
+    "scrolledTop": 0,
+    "sceneTransformTop": "matrix(1, 0, 0, 1, 0, 0)",
+    "beforeLaunch": 214,
+    "launched": "Play The Ticket Machine Is Being Difficult",
+    "sessionUrl": "/session?band=4&mode=single&game=ticket",
+    "afterAllGamesSamples": [
+     214,
+     214,
+     214,
+     214,
+     214,
+     214
+    ],
+    "returnPath": "/?band=4",
+    "readyCards": 10,
+    "horizontalOverflowPx": 0,
+    "freeScrollAfterReturn": 0,
+    "pageErrors": []
+   },
+   "ipadLand": {
+    "viewport": "1180x820",
+    "earlyScrollAt300ms": 700,
+    "earlyScrollAfterSettle": 700,
+    "scrolledDown": 1600,
+    "sceneTransformDown": "matrix(1, 0, 0, 1, 0, -17.34)",
+    "scrolledTop": 0,
+    "sceneTransformTop": "matrix(1, 0, 0, 1, 0, 0)",
+    "beforeLaunch": 403,
+    "launched": "Play The Ticket Machine Is Being Difficult",
+    "sessionUrl": "/session?band=4&mode=single&game=ticket",
+    "afterAllGamesSamples": [
+     403,
+     403,
+     403,
+     403,
+     403,
+     403
+    ],
+    "returnPath": "/?band=4",
+    "readyCards": 10,
+    "horizontalOverflowPx": 0,
+    "freeScrollAfterReturn": 3,
+    "pageErrors": []
+   }
+  }
+ },
+ "notUnverified": [
+  "Real private child frames through /review (signed-in frames refuse hub preview; not retried)",
+  "WebKit/physical iPad scroll",
+  "Child Next/Previous/New with real child previews"
+ ]
+}

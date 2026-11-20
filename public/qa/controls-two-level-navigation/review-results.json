@@ -1,0 +1,62 @@
+{
+  "portrait: review picker lists real eligible games for ages 7\u20138": {
+    "pass": true,
+    "detail": "10 open links"
+  },
+  "portrait: review session loads the child from its private preview origin with real identity": {
+    "pass": true,
+    "detail": "https://id-preview-3--4256ada6-8d33-41e7-9785-c8235aa42260.lovable.app/play"
+  },
+  "portrait: Next opens a different game even though the preview's version endpoint is auth-walled": {
+    "pass": true,
+    "detail": "sudoku -> ordering"
+  },
+  "portrait: Previous restores the first game with its seed, work and level": {
+    "pass": true,
+    "detail": "{\"gameId\": \"sudoku\", \"seed\": \"1494100211\", \"work\": \"1\", \"level\": \"2\", \"build\": \"private\"}"
+  },
+  "portrait: centre New keeps the same game": {
+    "pass": true,
+    "detail": "371708917"
+  },
+  "portrait: never more than two frames": {
+    "pass": true,
+    "detail": "2"
+  },
+  "portrait: page errors": {
+    "pass": true,
+    "detail": ""
+  },
+  "real private child without login: hub shows the honest slow screen, no fake ready": {
+    "pass": true,
+    "detail": "This adventure is taking a while to open.  Try again All games"
+  },
+  "landscape: review picker lists real eligible games for ages 7\u20138": {
+    "pass": true,
+    "detail": "10 open links"
+  },
+  "landscape: review session loads the child from its private preview origin with real identity": {
+    "pass": true,
+    "detail": "https://id-preview-3--4256ada6-8d33-41e7-9785-c8235aa42260.lovable.app/play"
+  },
+  "landscape: Next opens a different game even though the preview's version endpoint is auth-walled": {
+    "pass": true,
+    "detail": "sudoku -> trains"
+  },
+  "landscape: Previous restores the first game with its seed, work and level": {
+    "pass": true,
+    "detail": "{\"gameId\": \"sudoku\", \"seed\": \"235276456\", \"work\": \"1\", \"level\": \"2\", \"build\": \"private\"}"
+  },
+  "landscape: centre New keeps the same game": {
+    "pass": true,
+    "detail": "49140922"
+  },
+  "landscape: never more than two frames": {
+    "pass": true,
+    "detail": "2"
+  },
+  "landscape: page errors": {
+    "pass": true,
+    "detail": ""
+  }
+}

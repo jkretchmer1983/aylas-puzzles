@@ -5,7 +5,7 @@ import { adapterByLaunchId } from "@/lib/game-adapters";
 import { getCurrentCatalog, getCurrentRegistry, refreshCatalog, useCatalog, useManifestStatus, useRegistry } from "@/lib/catalog-store";
 import { CANONICAL_HUB_ORIGIN, HOST_ROLE } from "@/host/config";
 import { eligibleLaunchIds } from "@/host/eligibility";
-import { requestHostBack, requestHostNext, useHostEmbedded } from "@/host/child-bridge";
+import { requestHostBack, requestHostNext, requestHostPrevious, useHostEmbedded } from "@/host/child-bridge";
 import { dealPlayAllGame, resumePlayAllGame } from "@/lib/play-all";
 
 /** Search fields every menu-launched game carries so Next and the menu keep the selected band. */
@@ -61,6 +61,25 @@ export function launchCommonsGame(nav: Navigate, launchId: string, band: number,
   }
 }
 
+/**
+ * A STANDALONE game host's top Next/Previous arrow: hand the type change to the canonical hub, which
+ * consumes the step once and picks a different eligible game relative to this one.
+ */
+export function hubStepHref(band: number, gameId: string, step: "next" | "previous", hubOrigin: string = CANONICAL_HUB_ORIGIN) {
+  const params = new URLSearchParams({ band: String(parseRouteBand(band)), mode: "all", game: gameId, step });
+  return `${hubOrigin}/session?${params.toString()}`;
+}
+
+/** Same-origin review build: Previous opens the previous eligible type in catalog order (fresh). */
+function previousTypeGame(nav: Navigate, band: number, currentId: string) {
+  const allowed = eligibleLaunchIds(getCurrentCatalog(), getCurrentRegistry(), band);
+  const others = allowed.filter((id) => id !== currentId);
+  if (!others.length) return;
+  const index = allowed.indexOf(currentId);
+  const target = index < 0 ? others[others.length - 1]! : allowed[(index - 1 + allowed.length) % allowed.length]!;
+  launchCommonsGame(nav, target, band, { all: true });
+}
+
 /** Play All: deal the next game from the persisted no-repeat deck under the catalog as it is right now. */
 export function nextPlayAllGame(nav: Navigate, band: number, currentId: string) {
   const allowed = eligibleLaunchIds(getCurrentCatalog(), getCurrentRegistry(), band);
@@ -102,6 +121,17 @@ export function useCommonsGate(launchId: string, band: number, search: CommonsSe
     /** True when Next must be delegated: an embedded hub session (single or Play all) or same-origin Play all. */
     playAll,
     embedded,
-    nextAdventure: () => { if (embedded) requestHostNext(); else nextPlayAllGame(nav, band, launchId); },
+    /** Top Next: a different puzzle type (hub session, standalone host → hub step, or review deck). */
+    nextAdventure: () => {
+      if (embedded) requestHostNext();
+      else if (HOST_ROLE === "game") window.location.assign(hubStepHref(band, launchId, "next"));
+      else nextPlayAllGame(nav, band, launchId);
+    },
+    /** Top Previous: the previous different puzzle type. */
+    previousAdventure: () => {
+      if (embedded) requestHostPrevious();
+      else if (HOST_ROLE === "game") window.location.assign(hubStepHref(band, launchId, "previous"));
+      else previousTypeGame(nav, band, launchId);
+    },
   };
 }

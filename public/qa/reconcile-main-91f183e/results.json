@@ -1,0 +1,238 @@
+{
+ "scope": "PRIVATE hub draft thr_l5e7uei2mlen only. Not accepted, not published, no registry changes.",
+ "incorporatedMain": "91f183e46651f582e52e611033e81f5d2c1cac34",
+ "draftBaseBefore": "be140f2329a5bfe7c8cf010d387543db50b986e1",
+ "draftHeadBefore": "64e19c0eb21167e539a3ba24ce6d37e885aef0a5",
+ "combinedSourceCommit": "1ba629edb408a9568072edfc3e5ae85745ba7020",
+ "method": "Main-only files taken verbatim from 91f183e (151 files, incl. Stacked Worlds homepage art/CSS, parallax, Train+Till loader capability, Till compact slow recovery). Five files changed on both sides combined by hand: SessionShell.tsx, routes/index.tsx, host-session-shell.test.tsx, host/AGENTS.md, roadmap.md. Verified: combined tree differs from 91f183e only in this draft's own files.",
+ "kept": [
+  "Top Next/Previous change game type; Previous/forward restore saved work after release re-verification",
+  "Center New child-owned",
+  "Levels l/lv/lvl/level 1-2, legacy 3->2",
+  "Train href preferred + strict Train-only legacy location fallback",
+  "Retry keeps current puzzle on failed version checks",
+  "Opt-in /review on private QA origins only; production parent origins unchanged",
+  "Checking/Try again instead of Coming soon while the registry is unknown"
+ ],
+ "tests": {
+  "vitest": "15 files, 133 passed",
+  "build": "build-errors.log: build OK"
+ },
+ "testAdjustment": "Main's Till compact-slow test assumed the hub reserves the SAME game; in this draft single mode reserves a DIFFERENT game type, so the test now gives Till a second eligible game. Assertions unchanged.",
+ "browserLocalCombined": {
+  "engine": "Chromium headless, localhost dev server, live public manifest",
+  "landing": [
+   {
+    "h1": "Every puzzle\nhas a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-phone-tall.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "phone",
+    "w": 393,
+    "h": 852,
+    "errors": []
+   },
+   {
+    "h1": "Every puzzle\nhas a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-portrait.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "duo",
+    "w": 540,
+    "h": 720,
+    "errors": []
+   },
+   {
+    "h1": "Every puzzle has a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-landscape.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "phone-landscape",
+    "w": 852,
+    "h": 393,
+    "errors": []
+   },
+   {
+    "h1": "Every puzzle\nhas a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-portrait.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "ipad",
+    "w": 768,
+    "h": 1024,
+    "errors": []
+   },
+   {
+    "h1": "Every puzzle has a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-landscape.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "ipad-landscape",
+    "w": 1180,
+    "h": 820,
+    "errors": []
+   },
+   {
+    "h1": "Every puzzle has a story.",
+    "overflowX": 0,
+    "play": [
+     "Play The Ticket Machine Is Being Difficult",
+     "Play Forest Sudoku",
+     "Play Everybody Says They Won",
+     "Play The Radio Has Opinions \u00b7 Symbol Codes",
+     "Play The Till Is On Its Lunch Break",
+     "Play The Great Train Tangle",
+     "Play The Robot Took a Shortcut",
+     "Play The Curiosity Trail",
+     "Play The Sofa Has Had Enough",
+     "Play Who Goes Where?"
+    ],
+    "checking": 0,
+    "soon": 23,
+    "playAll": true,
+    "scene": "stacked-worlds-landscape.webp",
+    "result": "33 puzzle adventures for ages 7\u20138",
+    "brokenImgs": 0,
+    "size": "desktop",
+    "w": 1440,
+    "h": 1000,
+    "errors": []
+   }
+  ],
+  "session": {
+   "sessionUrl": "http://localhost:8080/session?band=4&mode=single&game=trains",
+   "frames": [
+    {
+     "src": "https://aylas-train-tangle.lovable.app/adventures?game=trains&band=4&seed=1420700276&from=commons&host_session=74e9efc692394cfb83423e44&host_nonce=52fe8b01c91371d5e86368b23cd2cc7b&host_game=trains&host_phase=active",
+     "title": "The Great Train Tangle",
+     "hidden": false,
+     "origin": "aylas-train-tangle.lovable.app",
+     "path": "/adventures",
+     "params": [
+      "band",
+      "from",
+      "game",
+      "host_game",
+      "host_nonce",
+      "host_phase",
+      "host_session",
+      "seed"
+     ]
+    }
+   ],
+   "startingVeilText": 0,
+   "slowText": 1,
+   "slowButtons": [
+    1,
+    1
+   ],
+   "afterAllGames": "http://localhost:8080/?band=4",
+   "ageShown": "33 puzzle adventures for ages 7\u20138",
+   "standin_failedRegistry": {
+    "tryAgain": 8,
+    "checking": 0,
+    "play": 0
+   }
+  }
+ },
+ "standIn": [
+  "standin-registry-failed.jpg: manifest request deliberately failed to show the Try again state; simulated network failure, not production."
+ ],
+ "notVerified": [
+  "Real integrated private hub -> private child frames: signed-in private frame refused; no retry or bypass attempted.",
+  "Live Train hello/ready from localhost: the real Train host only trusts exact hub parents, so the session reached the bounded 20 s slow state (expected); Next/New/Previous with a real child not exercised here.",
+  "Child preview ordinals after their refresh: current review map kept; awaiting user-confirmed map.",
+  "Physical iPad/iPhone Safari."
+ ],
+ "screenshots": [
+  "landing-desktop.jpg",
+  "landing-duo.jpg",
+  "landing-ipad-landscape.jpg",
+  "landing-ipad.jpg",
+  "landing-phone-landscape.jpg",
+  "landing-phone.jpg",
+  "session-train-slow.jpg",
+  "session-train-starting.jpg",
+  "standin-registry-failed.jpg"
+ ]
+}

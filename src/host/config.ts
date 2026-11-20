@@ -43,7 +43,8 @@ export const HOST_GAME: PublicGame | undefined = HOST_ROLE === "game" && HOST_CO
 /** Paths a game host serves; anything else redirects to its game. API routes are server-only and not affected. */
 export function hostAllowsPath(pathname: string): boolean {
   if (HOST_ROLE === "master") return true;
-  if (HOST_ROLE === "hub") return pathname === "/" || pathname === "/session";
+  // /review is the opt-in private review harness; it refuses to launch anything off private QA origins.
+  if (HOST_ROLE === "hub") return pathname === "/" || pathname === "/session" || pathname === "/review";
   return !!HOST_GAME && pathname === HOST_GAME.path;
 }
 

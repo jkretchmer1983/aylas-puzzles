@@ -15,6 +15,7 @@ import { Route as CuriosityRouteImport } from './routes/curiosity'
 import { Route as OrderingRouteImport } from './routes/ordering'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as RadioRouteImport } from './routes/radio'
+import { Route as ReviewRouteImport } from './routes/review'
 import { Route as RobotRouteImport } from './routes/robot'
 import { Route as SeasideScoopRouteImport } from './routes/seaside-scoop'
 import { Route as SeatingRouteImport } from './routes/seating'
@@ -53,6 +54,11 @@ const PlayRoute = PlayRouteImport.update({
 const RadioRoute = RadioRouteImport.update({
   id: '/radio',
   path: '/radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotRoute = RobotRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
   '/radio': typeof RadioRoute
+  '/review': typeof ReviewRoute
   '/robot': typeof RobotRoute
   '/seaside-scoop': typeof SeasideScoopRoute
   '/seating': typeof SeatingRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
   '/radio': typeof RadioRoute
+  '/review': typeof ReviewRoute
   '/robot': typeof RobotRoute
   '/seaside-scoop': typeof SeasideScoopRoute
   '/seating': typeof SeatingRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/ordering': typeof OrderingRoute
   '/play': typeof PlayRoute
   '/radio': typeof RadioRoute
+  '/review': typeof ReviewRoute
   '/robot': typeof RobotRoute
   '/seaside-scoop': typeof SeasideScoopRoute
   '/seating': typeof SeatingRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/ordering'
     | '/play'
     | '/radio'
+    | '/review'
     | '/robot'
     | '/seaside-scoop'
     | '/seating'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/ordering'
     | '/play'
     | '/radio'
+    | '/review'
     | '/robot'
     | '/seaside-scoop'
     | '/seating'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/ordering'
     | '/play'
     | '/radio'
+    | '/review'
     | '/robot'
     | '/seaside-scoop'
     | '/seating'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   OrderingRoute: typeof OrderingRoute
   PlayRoute: typeof PlayRoute
   RadioRoute: typeof RadioRoute
+  ReviewRoute: typeof ReviewRoute
   RobotRoute: typeof RobotRoute
   SeasideScoopRoute: typeof SeasideScoopRoute
   SeatingRoute: typeof SeatingRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/radio'
       fullPath: '/radio'
       preLoaderRoute: typeof RadioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robot': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderingRoute: OrderingRoute,
   PlayRoute: PlayRoute,
   RadioRoute: RadioRoute,
+  ReviewRoute: ReviewRoute,
   RobotRoute: RobotRoute,
   SeasideScoopRoute: SeasideScoopRoute,
   SeatingRoute: SeatingRoute,

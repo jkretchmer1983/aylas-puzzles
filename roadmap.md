@@ -4,6 +4,18 @@
 - [x] Add water allowlist entry, location fields (game/age/deal/level 1|2), own-loader capability and water-only directional type navigation with exact seats; focused tests.
 - [ ] Root: publish the water host, register it in the release service and accept/publish this draft (blocked on root deployment/registration).
 
+## Shared controls: type navigation + two levels (private hub draft, no accept/publish)
+- [x] Top Next/Previous change puzzle type in single and Play all sessions; Previous restores earlier work; standalone `/session?…&step=` consumed once; levels l/lv/lvl 1–2 (legacy 3 → 2); menu shows Checking/Try again instead of Coming soon while the registry is unknown.
+- [x] QA notes + screenshots in public/qa/controls-two-level-navigation/, commit (ec2877b).
+- [x] Private-QA review harness built at /review (private QA origins only; real SessionShell; simulated-origin browser checks pass).
+- [x] Airship review origin → preview-4 (reassigned during refresh); Previous/forward restores verify target origin+release before leaving the current puzzle.
+- [x] Accept exact single `level` key (Train reports level=1|2; legacy 3 → 2) alongside l/lv/lvl; Train /adventures location+resume test.
+- [x] Train-only legacy `location` payload (bridge 886b444): exact /adventures, validated keys, canonical game=trains from verified identity; href preferred when present.
+- [x] Reconcile main 91f183e (Stacked Worlds homepage, Train/Till loaders, Till compact slow recovery) into this draft; keep type navigation, levels, Train fixes, restore release checks and opt-in /review.
+- [x] Reconcile main 8e62144 (menu return consumed once, shared scroll-only parallax driver, scroll ownership, canopy/quick rail/card text) into this draft; main files verbatim, homepage keeps Checking/Try again cards.
+- [x] Reconcile main a97e934 (Cloud Hired a Plumber/water host: allowlist, location fields, own loader, directional `next`) into this draft; water's ±1 now drives the shared type Next/Previous with saved-work history.
+- [ ] Real child verification through /review: opt-in route on private QA hub origin only, mapping the 13 private child preview origins; reuse real SessionShell (identity, age, release, readiness, max 2 frames, suppression); test real child Next/Previous/New/levels; review link + portrait/landscape screenshots. Blocked: signed-in private child frames refuse the hub preview as parent; awaiting final all-host origin map after child refreshes.
+
 ## Train and Till loader release support
 - [x] Extend only published child-loader capability to trains and money-change; preserve prior ten and all other host behavior (109 tests; build OK).
 - [x] Publish original canonical hub (20261119102618-jd3ylf -> 20261119223351-ycy9mb) and verify 24 canonical cold/cached launches at six sizes: zero hub starting cover/opening text over child loaders; 12 Next promotions kept the prepared iframe and seed; Back keeps age. Results and 72 screenshot pointers at public/qa/train-till-hub/results.json.

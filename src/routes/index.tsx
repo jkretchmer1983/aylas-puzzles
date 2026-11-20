@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { ArrowRight, Check, Clock3, Play, X } from "lucide-react";
+import { ArrowRight, Check, Clock3, LoaderCircle, Play, RotateCcw, X } from "lucide-react";
 import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
 import { playAllNote } from "@/lib/play-all";
 import { roleAdapterResolver } from "@/host/eligibility";
@@ -14,7 +14,8 @@ import {
   playableGamesForBand,
   type CatalogGame,
 } from "@/lib/public-catalog";
-import { refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
+import { refreshCatalog, useCatalog, useManifestStatus, useRegistry } from "@/lib/catalog-store";
+import { HOST_ROLE } from "@/host/config";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import sceneLandscape from "@/assets/stacked/stacked-worlds-landscape.webp.asset.json";
 import scenePortrait from "@/assets/stacked/stacked-worlds-portrait.webp.asset.json";
@@ -64,8 +65,13 @@ function PuzzleCommons() {
   const previewTrigger = useRef<HTMLButtonElement | null>(null);
   const selectedBand = bandById(band);
   const games = useMemo(() => gamesForBand(catalog, band, resolveAdapter), [catalog, band, resolveAdapter]);
+  const manifestStatus = useManifestStatus();
+  // Hub: until this load's release registry is known (first visit, slow or failed fetch), published games are
+  // "checking", never mislabelled Coming soon; they only become playable from the real registry.
+  const registryUnknown = HOST_ROLE === "hub" && manifestStatus !== "fresh" && Object.keys(registry.games).length === 0;
   const ready = games.filter((game) => game.adapter);
-  const upcoming = games.filter((game) => !game.adapter);
+  const checking = registryUnknown ? games.filter((game) => !game.adapter && game.release === "available") : [];
+  const upcoming = games.filter((game) => !game.adapter && !checking.includes(game));
   const playable = useMemo(() => playableGamesForBand(catalog, band, resolveAdapter), [catalog, band, resolveAdapter]);
 
   useEffect(() => {
@@ -251,7 +257,12 @@ function PuzzleCommons() {
           </button>
           <p id="play-all-note" className={`commons-play-all-note${playable.length === 1 ? " is-single" : ""}`}>{playAllNote(playable, selectedBand)}</p>
         </div>}
-        {ready.length ? <div className="commons-grid" style={{ "--n": Math.min(ready.length, 5) } as CSSProperties}>{ready.map((game) => <GameCard key={game.id} game={game} onPlay={() => launch(game)} onPreview={openPreview} />)}</div> : <p className="commons-empty">These adventures are still being prepared. Try another age for a game ready now.</p>}
+        {ready.length ? <div className="commons-grid" style={{ "--n": Math.min(ready.length, 5) } as CSSProperties}>{ready.map((game) => <GameCard key={game.id} game={game} onPlay={() => launch(game)} onPreview={openPreview} />)}</div>
+          : checking.length ? <>
+            <p className="commons-empty" role="status">{manifestStatus === "failed" ? "We couldn’t check which adventures are ready. Check your connection and try again." : "Checking which adventures are ready…"}</p>
+            <div className="commons-grid" style={{ "--n": Math.min(checking.length, 5) } as CSSProperties}>{checking.map((game) => <GameCard key={game.id} game={game} checking={manifestStatus === "failed" ? "failed" : "pending"} onPlay={() => void refreshCatalog(true)} onPreview={openPreview} />)}</div>
+          </>
+          : <p className="commons-empty">These adventures are still being prepared. Try another age for a game ready now.</p>}
       </section>
       <section aria-labelledby="coming-heading" className="commons-section coming">
         <div className="commons-section-heading"><span aria-hidden="true" /><h2 id="coming-heading">Coming soon</h2><span aria-hidden="true" /></div>
@@ -286,7 +297,14 @@ function SceneArt({ priority = false }: { priority?: boolean }) {
   </picture>;
 }
 
-function GameCard({ game, onPlay, onPreview }: { game: CatalogGame; onPlay: () => void; onPreview: (game: CatalogGame, trigger: HTMLButtonElement) => void }) {
+function GameCard({ game, onPlay, onPreview, checking }: { game: CatalogGame; onPlay: () => void; onPreview: (game: CatalogGame, trigger: HTMLButtonElement) => void; checking?: "pending" | "failed" | undefined }) {
+  if (checking) return <article className="commons-card is-upcoming">
+    <div className="commons-card-copy"><p className="commons-card-age">Ages {game.minAge}–{game.maxAge}</p><h3>{game.name}</h3><p>{game.description}</p></div>
+    <div className="commons-thumbnail"><img src={game.thumbnailUrl} alt="" loading="lazy" decoding="async" draggable={false} /></div>
+    {checking === "failed"
+      ? <button type="button" className="commons-card-action soon" onClick={onPlay} aria-label={`Try again to check ${game.name}`}><RotateCcw aria-hidden="true" />Try again</button>
+      : <button type="button" className="commons-card-action soon" disabled aria-label={`Checking ${game.name}`}><LoaderCircle aria-hidden="true" className="animate-spin motion-reduce:animate-none" />Checking…</button>}
+  </article>;
   return <article className={`commons-card ${game.adapter ? "is-playable" : "is-upcoming"}`}>
     <div className="commons-card-copy"><p className="commons-card-age">Ages {game.minAge}–{game.maxAge}</p><h3>{game.name}</h3><p>{game.description}</p></div>
     {/* Real catalog thumbnail at its own ratio: no crop, no blurred fill. */}

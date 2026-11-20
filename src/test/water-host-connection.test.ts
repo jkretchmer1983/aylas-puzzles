@@ -61,14 +61,16 @@ describe("water host connection", () => {
     }
     expect(isGameRelativeHref(water, "//evil.app/adventures?game=water")).toBe(false);
     expect(isGameRelativeHref(water, "/water?game=water")).toBe(false);
-    // Other games are not loosened: level stays unknown for trains and robot.
+    // Other games are not loosened beyond the shared level keys (Train reports level=1|2; legacy 3 → 2).
     const trains = publicGameById("trains");
     const robot = publicGameById("robot");
     if (!trains || !robot) throw new Error("Missing games");
-    expect(isGameRelativeHref(trains, "/adventures?game=trains&level=1")).toBe(false);
+    expect(isGameRelativeHref(trains, "/adventures?game=trains&level=1")).toBe(true);
+    expect(isGameRelativeHref(water, "/adventures?game=water&level=3")).toBe(false);
     expect(isGameRelativeHref(trains, "/adventures?game=water")).toBe(false);
     expect(isGameRelativeHref(trains, "/adventures?game=trains&age=7&deal=1")).toBe(true);
-    for (const field of ["level=1", "game=water", "age=7"]) expect(isGameRelativeHref(robot, `/robot?${field}`)).toBe(false);
+    for (const field of ["game=water", "age=7", "level=4"]) expect(isGameRelativeHref(robot, `/robot?${field}`)).toBe(false);
+    expect(isGameRelativeHref(robot, "/robot?level=1")).toBe(true); // shared two-level key
   });
 
   it("validates directional next for water only and keeps the envelope checks", () => {
@@ -126,14 +128,14 @@ describe("water host connection", () => {
     expect(stepSessionType({ ...all, seats: { sofa: { instanceId: "a".repeat(24), gameId: "sofa", seed: 1, releaseId: "r", href: "/sofa?seed=1" } } }, eligible, 1)?.session.current?.gameId).toBe("trains");
   });
 
-  it("plain Next keeps its original behaviour and only records a seat", () => {
+  it("plain Next changes puzzle type, keeps the exact water instance in history and records a seat", () => {
     const eligible = E("water", "trains");
     const s = startSession(4, "single", eligible, "water")!;
     const seated = withCurrentHref(s, s.current!.instanceId, HREF);
     const next = promoteNext(reserveNext(seated, eligible), eligible)!;
-    expect(next.current?.gameId).toBe("water");
+    expect(next.current?.gameId).toBe("trains");
     expect(next.current?.href).toBeUndefined();
-    expect(next.current?.seed).not.toBe(s.current?.seed);
+    expect(next.history.at(-1)?.href).toBe(HREF);
     expect(next.seats?.water?.href).toBe(HREF);
     expect(promoteNext(reserveNext(s, eligible), eligible)?.seats).toBeUndefined();
   });

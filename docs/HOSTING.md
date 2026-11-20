@@ -98,7 +98,10 @@ Envelope on every message: `{ protocol: "ayla-host", v: 1, type, session, nonce,
 
 - Parent → child: `init`, `activate`, `pause`, `prepare`.
 - Child → parent: `hello`, `ready` (real content ready, bounded), `location` (`href` = same-game relative
-  path with known instance fields only), `next`, `back`.
+  path with known instance fields only; level keys `l`/`lv`/`lvl`/`level` 1–2 (Train uses `level`; Train alone may also send its legacy `location` field, used only when `href` is absent and canonicalized with `game=trains`), legacy 3 normalized to 2), `next` and
+  `previous` (TOP arrows: change puzzle type), `back` (Home). Centre New stays inside the game.
+- Standalone game hosts send their top arrows to
+  `https://aylas-puzzles.lovable.app/session?band=B&mode=all&game=<gameId>&step=next|previous` (`hubStepHref`).
 - The hub mints a fresh nonce per iframe; identity + start phase travel in the iframe URL
   (`host_session`, `host_nonce`, `host_game`, `host_phase`).
 - Both sides check `event.origin` AND `event.source`, post only to an exact origin (never `*`), and never
@@ -118,16 +121,14 @@ duplicates, other games' values and any URL-shaped value drop the whole message)
 | trains | `game=trains`, `age` 3–10, `deal` digits |
 | water | `game=water`, `age` 3–10, `deal` digits, `level` 1 or 2 |
 
-### Directional type navigation (water only)
+### Directional `next` (water)
 
 `next` may carry `direction: 1 | -1` ONLY from games listed in `supportsTypeNavigation` (currently `water`).
-Any other value from those games drops the message; from every other game the field is ignored and Next
-keeps its original behaviour. A valid step moves to the neighbouring eligible game in the live catalog
-order (wrapping), at that game's exact last instance when this session left one with a reported location
-(new document and nonce, same seed + href); otherwise the prepared reservation if it is that game
-(version-checked like Next), otherwise a fresh instance. The leaving instance is seated for a later step
-back. Single/Play all mode, band and readiness gating are unchanged; Play all marks the arrival as seen.
-With no other eligible game, Previous stays put and Next is an ordinary fresh instance.
+Any other value from those games drops the message; from every other game the field is ignored. The hub
+treats `direction: -1` exactly like `previous` and `+1` (or no direction) like `next`, on the same shared
+type navigation described under Session behaviour (history/forward with saved locations, version-checked
+restores and promotions, one-eligible-game notice). `stepSessionType` (catalog-order step with per-game
+seats) remains in session-queue.ts for directional callers but the session shell does not use it.
 
 ### Water child bridge requirements (Cloud Hired a Plumber host)
 
@@ -142,9 +143,11 @@ With no other eligible game, Previous stays put and Next is an ordinary fresh in
 
 ## Session behaviour (hub)
 
-- Card launch = single mode: Next game/puzzle loads a fresh instance of the same game.
-- Play all = age-eligible, release-available, registered games in a shuffled no-repeat cycle.
-- Exactly one hidden prepared iframe (same game in single mode, next game in Play all) once the current
+- Card launch = single mode (starts with that game); Play all starts from the shuffled no-repeat cycle.
+- In both, top Next = a DIFFERENT eligible game (forward entry first, else the prepared next game);
+  Previous = the last different game from persisted history with its saved location, skipping ineligible
+  entries, else the previous eligible type fresh. One eligible game → a notice, never a re-deal.
+- Exactly one hidden prepared iframe (always a different game from the current one) once the current
   one reports real `ready`; promotion reuses it only after a bounded CORS/no-store `/api/release` check.
   The public catalogId/gameId must match, and the public version must equal the version captured when
   that frame began loading. An independently republished host replaces only its RESERVED document,

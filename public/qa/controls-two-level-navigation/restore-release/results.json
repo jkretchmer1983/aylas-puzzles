@@ -1,0 +1,55 @@
+{
+  "scope": "private hub draft thr_l5e7uei2mlen only; not accepted/published",
+  "changes": [
+    "Airship review origin -> https://id-preview-4 (server reassigned same draft during refresh; supersedes preview-3)--3c32d766-44d1-4936-8f96-fe9d1bf7daff.lovable.app",
+    "Previous and forward restore verify the target's registered origin + public release before leaving the current puzzle; failure keeps it intact with Retry; success reloads the same instance/seed/location in a fresh document of the latest release",
+    "Hub accepts the single level key (Train) beside l/lv/lvl; legacy 3 -> 2",
+    "Train-only legacy `location` field (bridge 886b444): exact /adventures, fixed game=trains filled from the verified registered entry, same strict key/level checks; a present href is preferred and never falls back"
+  ],
+  "unit": {
+    "tests": 130,
+    "files": 15,
+    "typecheck": "pass",
+    "new": [
+      "Previous unreachable version",
+      "Previous mismatched version",
+      "forward restore failed version",
+      "Train level location/resume (protocol)",
+      "Train level location + Previous resume through real SessionShell",
+      "Real Train legacy location payload (accepted/rejected cases, Train-only)",
+      "Real legacy payload captured in history and resumed with exact seed/deal/level through SessionShell"
+    ]
+  },
+  "browser": {
+    "kind": "SIMULATED: local hub + isolated fixture children and fixture /api/release (503 for target)",
+    "checks": {
+      "portrait: Previous with unreachable target version keeps current puzzle + Retry": {
+        "pass": true,
+        "detail": "trains"
+      },
+      "portrait: Retry restores same seed/work/level in a fresh latest-build document": {
+        "pass": true,
+        "detail": "{\"gameId\": \"sofa\", \"seed\": \"32672347\", \"work\": \"1\", \"level\": \"2\", \"build\": \"build-2\"}"
+      },
+      "landscape: Previous with unreachable target version keeps current puzzle + Retry": {
+        "pass": true,
+        "detail": "ticket"
+      },
+      "landscape: Retry restores same seed/work/level in a fresh latest-build document": {
+        "pass": true,
+        "detail": "{\"gameId\": \"sofa\", \"seed\": \"446255523\", \"work\": \"1\", \"level\": \"2\", \"build\": \"build-2\"}"
+      }
+    },
+    "screenshots": [
+      "restore-release/portrait-previous-version-failure-safe.png",
+      "restore-release/portrait-previous-restored-latest.png",
+      "restore-release/landscape-previous-version-failure-safe.png",
+      "restore-release/landscape-previous-restored-latest.png"
+    ]
+  },
+  "not_verified": [
+    "real child previews (auth-walled) incl. Airship preview-3 and Train host",
+    "physical iPad",
+    "live Train child 886b444 sending location to this hub preview (auth-walled)"
+  ]
+}

@@ -4,7 +4,9 @@ import { publicGameById, type PublicGame } from "./public-games";
  * Hub ⇄ game-host postMessage protocol, version 1.
  *
  * Parent (hub) → child (game iframe):  init · activate · pause · prepare
- * Child → parent:                      hello · ready · location · next · back
+ * Child → parent:                      hello · ready · location · next · previous · back
+ *   next / previous = the TOP arrows: change PUZZLE TYPE (a different eligible game). back = Home (menu).
+ *   A new puzzle of the same game is the child's own centre "New" control; it only reports `location`.
  *
  * Every message carries { protocol: "ayla-host", v: 1, session, nonce, gameId }. The hub mints a fresh
  * random nonce per iframe instance and puts it, the session ID, the game ID and the starting phase in the
@@ -16,7 +18,7 @@ export const HOST_PROTOCOL_VERSION = 1 as const;
 
 export type HostPhase = "prepare" | "active";
 export type ParentMessageType = "init" | "activate" | "pause" | "prepare";
-export type ChildMessageType = "hello" | "ready" | "location" | "next" | "back";
+export type ChildMessageType = "hello" | "ready" | "location" | "next" | "previous" | "back";
 
 export type HostIdentity = { session: string; nonce: string; gameId: string };
 type Envelope = { protocol: typeof HOST_PROTOCOL; v: typeof HOST_PROTOCOL_VERSION } & HostIdentity;
@@ -28,9 +30,9 @@ export type ChildMessage = Envelope & { type: ChildMessageType; href?: string; d
 type MessageExtra = { href?: string; direction?: TypeDirection };
 
 /**
- * Games whose own Next/Previous step between puzzle TYPES (other eligible hub games) instead of dealing a
- * fresh instance of the same game. Only these may attach `direction` to `next`; every other game keeps the
- * original Next behaviour and any `direction` it sends is ignored.
+ * Games that send their type steps as `next` with `direction` (+1 / -1) instead of `next` / `previous`.
+ * Only these may attach `direction` to `next` (the hub treats -1 exactly like `previous`); from every other
+ * game the field is ignored.
  */
 const TYPE_NAV_GAMES: readonly string[] = ["water"];
 export function supportsTypeNavigation(gameId: string | undefined): boolean {
@@ -39,7 +41,7 @@ export function supportsTypeNavigation(gameId: string | undefined): boolean {
 
 const TOKEN = /^[A-Za-z0-9_-]{8,64}$/;
 const PARENT_TYPES: readonly string[] = ["init", "activate", "pause", "prepare"];
-const CHILD_TYPES: readonly string[] = ["hello", "ready", "location", "next", "back"];
+const CHILD_TYPES: readonly string[] = ["hello", "ready", "location", "next", "previous", "back"];
 
 export function isHostToken(value: unknown): value is string {
   return typeof value === "string" && TOKEN.test(value);
@@ -83,12 +85,37 @@ export function parseChildMessage(data: unknown, expected: HostIdentity): ChildM
   }
   if (type !== "location") return makeMessage(type, expected);
   const game = publicGameById(expected.gameId);
-  const href = (data as { href?: unknown }).href;
-  if (!game || typeof href !== "string" || !isGameRelativeHref(game, href)) return null;
-  return makeMessage(type, expected, { href });
+  if (!game) return null;
+  const fields = data as { href?: unknown; location?: unknown };
+  // A present href is always preferred and validated strictly; an invalid href never falls back to an alias.
+  const normalized = fields.href !== undefined
+    ? (typeof fields.href === "string" ? normalizeGameHref(game, fields.href) : null)
+    : legacyTrainLocation(game, fields.location);
+  if (!normalized) return null;
+  return makeMessage(type, expected, { href: normalized });
+}
+
+/**
+ * Train bridge (886b444) only: legacy `location` field holding `/adventures?band=…&seed=…&from=commons&level=…`
+ * without its fixed `game=trains`. The message envelope has already matched this iframe's verified identity,
+ * so the fixed fields are filled from the registered entry and the result passes the same strict href checks.
+ */
+function legacyTrainLocation(game: PublicGame, raw: unknown): string | null {
+  if (game.gameId !== "trains" || typeof raw !== "string") return null;
+  if (raw.length > 400 || !raw.startsWith("/") || raw.startsWith("//") || /[\\\s]/.test(raw)) return null;
+  let url: URL;
+  try { url = new URL(raw, "https://host.invalid"); } catch { return null; }
+  if (url.origin !== "https://host.invalid" || url.pathname !== game.path || url.hash) return null;
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(game.fixed)) if (!url.searchParams.has(key)) params.set(key, value);
+  for (const [key, value] of url.searchParams) params.append(key, value);
+  return normalizeGameHref(game, `${url.pathname}?${params.toString()}`);
 }
 
 const INSTANCE_PARAMS = ["band", "s", "seed", "t", "from", "all", "b", "o"];
+/** Child difficulty level keys (Train reports `level`). Levels are 1–2; a legacy 3 is accepted and normalized to 2. */
+const LEVEL_PARAMS = ["l", "lv", "lvl", "level"];
+export const MAX_GAME_LEVEL = 2;
 const AGE = /^(?:[3-9]|10)$/;
 const DEAL = /^\d{1,40}$/;
 /** Extra single-valued instance fields allowed only for the named /adventures games (game must equal the fixed value). */
@@ -111,15 +138,32 @@ export function isGameRelativeHref(game: PublicGame, href: string): boolean {
   if (url.origin !== "https://host.invalid" || url.pathname !== game.path || url.hash) return false;
   for (const [key, value] of url.searchParams) {
     const rule = gameFieldRule(game.gameId, key);
-    if (rule || key === "game" || key === "age" || key === "deal" || key === "level") {
+    // Game-specific fields (GAME_FIELDS) win; game/age/deal exist only for games that list them.
+    if (rule || key === "game" || key === "age" || key === "deal") {
       if (!rule || url.searchParams.getAll(key).length !== 1 || !rule.test(value)) return false;
       if (key === "game" && value !== game.fixed.game) return false;
+      continue;
+    }
+    if (LEVEL_PARAMS.includes(key)) {
+      if (url.searchParams.getAll(key).length !== 1 || !/^[1-3]$/.test(value)) return false;
       continue;
     }
     if (!INSTANCE_PARAMS.includes(key) || value.length > 40 || !/^[A-Za-z0-9_-]*$/.test(value)) return false;
   }
   for (const [key, value] of Object.entries(game.fixed)) if (url.searchParams.get(key) !== value) return false;
   return true;
+}
+
+/** Validated same-game href with any legacy level 3 rewritten to the current cap (2); null if unsafe. */
+export function normalizeGameHref(game: PublicGame, href: string): string | null {
+  if (!isGameRelativeHref(game, href)) return null;
+  const url = new URL(href, "https://host.invalid");
+  let changed = false;
+  for (const key of LEVEL_PARAMS) {
+    const value = url.searchParams.get(key);
+    if (value !== null && Number(value) > MAX_GAME_LEVEL) { url.searchParams.set(key, String(MAX_GAME_LEVEL)); changed = true; }
+  }
+  return changed ? `${url.pathname}${url.search}` : href;
 }
 
 export type LaunchSpec = {
@@ -137,10 +181,11 @@ export type LaunchSpec = {
 /** Builds the iframe URL from fixed registry/game data only. */
 export function buildLaunchUrl(spec: LaunchSpec): string {
   const { game } = spec;
-  const base = spec.resumeHref && isGameRelativeHref(game, spec.resumeHref) ? spec.resumeHref : game.path;
+  const resume = spec.resumeHref ? normalizeGameHref(game, spec.resumeHref) : null;
+  const base = resume ?? game.path;
   const url = new URL(base, spec.origin);
   if (url.origin !== spec.origin) throw new Error("Launch URL left the registered origin");
-  if (!spec.resumeHref) {
+  if (!resume) {
     for (const [key, value] of Object.entries(game.fixed)) url.searchParams.set(key, value);
     url.searchParams.set("band", String(spec.band));
     if (game.seedParam && spec.seed !== null) url.searchParams.set(game.seedParam, String(spec.seed));
