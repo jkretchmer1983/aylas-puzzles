@@ -28,9 +28,9 @@
      height (never extra zoom just to make room for motion). Parallax travel is whatever art is left below
      the viewport, capped, and is 0 when the art only just covers it. */
   --scene-cover: max(var(--scene-vh), calc(100vw / var(--scene-aspect)));
-  /* Where the art only just covers the viewport (no overscan, e.g. iPad portrait/landscape), a 3% floor
-     gives a small drift; it crops at most 1.5% per side, keeping the edge characters in view. */
-  --scene-size: max(var(--scene-cover), calc(var(--scene-vh) * 1.03));
+  /* Where the width-led art only just covers the large viewport (no overscan, e.g. iPad and some desktops),
+     reserve 32px of art below it so the drift never stops; phones that already have more keep their framing. */
+  --scene-size: max(var(--scene-cover), calc(var(--scene-vh) + 32px));
   --scene-travel: clamp(0px, calc(var(--scene-size) - var(--scene-vh)), 340px);
   --logo-bottom: calc(var(--scene-size) * var(--logo-f));
   --catalog-w: 980px;

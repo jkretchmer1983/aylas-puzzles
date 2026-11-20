@@ -1,0 +1,31 @@
+{
+  "check": "Draft 8 homepage parallax: one scroll-position driver replacing the CSS scroll timeline",
+  "browsers": "Playwright Chromium and Playwright WebKit (headless) against the draft dev server; not a physical iPhone/iPad Safari",
+  "causesFound": [
+    "Old drift = progress over the whole page height. The page grows for seconds after load (e.g. 4867 -> 7215px at 393x852) and changes with age choice, so the scene moved at an unchanged scroll position: at scrollY 700, 393x852 went -13.8 -> -17.4px and 440x760 -47.4 -> -64.1px on an age change (Chromium). Growth after load moves it back DOWN.",
+    "WebKit: the old CSS scroll timeline read 0px at scrollY 700 (393x852) and then jumped to -21.5px.",
+    "No motion at all where art had zero overscan: 768x1024, 1024x768, 1440x1000.",
+    "Slow near the top on long pages: 125px of travel spread over ~5900px at 393x852 (0.021px per px)."
+  ],
+  "fix": "shift = travel * (1 - e^(-scrollY / D)), D = max(2.5 * large-viewport height, travel / 0.12); inputs are scrollY plus two CSS probes (overscan, 100lvh) only; written from the scroll event; same driver boots inline before hydration and is adopted by the hook; minimum 32px overscan where width-led art has none.",
+  "afterResults": {
+    "flingFramesPerSize": 264,
+    "maxErrorVsFormulaPx": 0.005,
+    "framesSceneMovedWrongWay": 0,
+    "framesScrolled4pxButSceneStill": 0,
+    "sameScrollAfterAgeChange": "identical transform at scrollY 700 in all 6 sizes, both engines",
+    "beforeHydration": "Chromium: transform at scrollY 700 equal 300ms after load and after settling",
+    "first10px": "0 at top, then 0.06px/px (393x852) or 0.12px/px (440x760, 852x393)",
+    "topSpeedVsOld": { "393x852": "0.059 vs 0.021", "440x760": "0.12 vs 0.068", "852x393": "0.12 vs 0.058", "768x880": "0.065 vs 0.028" },
+    "deepReversal30px": { "393x852": "0.16-0.19px", "440x760": "~0.9px", "852x393": "~0.7px" },
+    "reducedMotion": "0px at every position",
+    "minOverscan32": { "1440x1000": "0 / -3.62 / -12.2 / -19.75px at 0/300/1200/2400, identical on the way back", "768x1024": "0 / -3.54 / -11.97 / -19.47px, identical on the way back; reduced motion 0" }
+  },
+  "files": ["before-trace-chromium.json", "before-trace-webkit.json", "after-trace-chromium.json", "after-trace-webkit.json", "min-overscan-check.json"],
+  "knownLimits": [
+    "after-trace-*.json at 768x1024, 1024x768 and 1440x1000 were recorded with an earlier 3% floor (23-31px); only 1440x1000 and 768x1024 were rechecked with the final 32px floor; 1024x768 not rechecked.",
+    "No screen recording saved; smoothness evidence is the per-frame numeric traces.",
+    "A scroll made before the page finishes loading is reset to the top by the app's page-navigation scroll restoration (both engines); unchanged, outside the scene driver.",
+    "Not tested on a physical iPhone/iPad or real Safari toolbar collapse."
+  ]
+}

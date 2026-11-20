@@ -36,3 +36,7 @@
 - [x] Approved scenes, ivory cards, headline/subhead, portrait dropdown / landscape age row, Play all under Ready to play, bounded parallax
 - [x] Six-size Chromium QA saved in public/qa/stacked-homepage
 - [ ] Physical iPad/iPhone Safari check (needs a device)
+
+## Homepage parallax fix (draft 8 only)
+- [x] One scroll-position-only scene driver (no CSS timeline), pre-hydration boot, 32px minimum overscan; traces in public/qa/parallax-fix
+- [ ] Physical iPad/iPhone Safari check (needs a device)
