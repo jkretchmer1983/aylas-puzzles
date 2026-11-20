@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ArrowRight, Check, Clock3, Play, X } from "lucide-react";
 import { playForestSound, setForestSoundEnabled } from "@/lib/forest-audio";
 import { playAllNote } from "@/lib/play-all";
 import { roleAdapterResolver } from "@/host/eligibility";
 import { publicGameById } from "@/host/public-games";
-import { readMenuReturn, readPreferredBand, saveMenuReturn, savePreferredBand } from "@/lib/menu-state";
+import { consumeMenuReturn, readPreferredBand, saveMenuReturn, savePreferredBand, type MenuReturnState } from "@/lib/menu-state";
+import { claimMenuScroll, isInitialPageRender } from "@/lib/scroll-ownership";
 import {
   PUBLIC_BANDS,
   bandById,
@@ -82,11 +83,31 @@ function PuzzleCommons() {
   // Offline and private-dashboard responses keep the last valid catalog.
   useEffect(() => { void refreshCatalog(true); }, []);
 
-  useEffect(() => {
-    const saved = readMenuReturn();
+  // Return from a game: restore the saved menu position exactly once, before paint, for the age it was saved
+  // with. A deliberate age choice or the visitor's own wheel/touch/key scrolling cancels a pending restore, and
+  // on a full page load a scroll already made before hydration wins.
+  const pendingReturn = useRef<MenuReturnState | undefined>(undefined);
+  useLayoutEffect(() => {
+    const saved = consumeMenuReturn();
+    if (!saved || (isInitialPageRender() && window.scrollY > 0)) return;
+    pendingReturn.current = saved;
+    claimMenuScroll();
+    const drop = () => { pendingReturn.current = undefined; };
+    const options = { passive: true, once: true } as const;
+    window.addEventListener("wheel", drop, options);
+    window.addEventListener("touchstart", drop, options);
+    window.addEventListener("keydown", drop, options);
+    return () => {
+      window.removeEventListener("wheel", drop);
+      window.removeEventListener("touchstart", drop);
+      window.removeEventListener("keydown", drop);
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const saved = pendingReturn.current;
     if (!saved || saved.band !== band) return;
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: saved.scrollY, behavior: "instant" })));
-    return () => cancelAnimationFrame(frame);
+    pendingReturn.current = undefined;
+    window.scrollTo({ top: saved.scrollY, behavior: "instant" });
   }, [band]);
 
   // Compact age bar appears once the in-flow dock has fully scrolled above the viewport. The dock itself
@@ -104,6 +125,7 @@ function PuzzleCommons() {
   }, []);
 
   const chooseBand = (next: number) => {
+    pendingReturn.current = undefined;
     setBand(next);
     savePreferredBand(next);
     void navigate({ to: "/", search: { band: next }, replace: true, resetScroll: false });

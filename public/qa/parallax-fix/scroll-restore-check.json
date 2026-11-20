@@ -1,0 +1,142 @@
+{
+ "earlyScroll": [
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  {
+   "y": 700,
+   "ty": -74.27,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  }
+ ],
+ "menuReturn": {
+  "beforeLaunch": {
+   "y": 1500,
+   "ty": -139.15,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  "afterBack": [
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   },
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   },
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   },
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   },
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   },
+   {
+    "y": 1500,
+    "ty": -139.15,
+    "drift": true,
+    "band": "3",
+    "path": "/"
+   }
+  ],
+  "afterUserWheelUp900": {
+   "y": 600,
+   "ty": -64.77,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  },
+  "afterAge4ThenAge3": {
+   "y": 600,
+   "ty": -64.77,
+   "drift": true,
+   "band": "3",
+   "path": "/"
+  }
+ },
+ "consoleErrors": []
+}

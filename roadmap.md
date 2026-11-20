@@ -35,6 +35,7 @@
 ## Stacked Worlds homepage (draft 7 only)
 - [x] Approved scenes, ivory cards, headline/subhead, portrait dropdown / landscape age row, Play all under Ready to play, bounded parallax
 - [x] Six-size Chromium QA saved in public/qa/stacked-homepage
+- [x] Startup page scroll reset after hydration fixed; menu return restored once (scroll-restore-check.json)
 - [ ] Physical iPad/iPhone Safari check (needs a device)
 
 ## Homepage parallax fix (draft 8 only)

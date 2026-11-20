@@ -37,3 +37,10 @@ export function readMenuReturn(): MenuReturnState | undefined {
     return undefined;
   }
 }
+
+/** Reads the return-from-game position and removes it, so it is restored at most once. */
+export function consumeMenuReturn(): MenuReturnState | undefined {
+  const state = readMenuReturn();
+  try { sessionStorage.removeItem(RETURN_KEY); } catch { /* Storage is optional. */ }
+  return state;
+}
