@@ -23,7 +23,7 @@ const HREF = "/adventures?game=water&band=4&age=7&seed=31&deal=2&level=2&from=co
 
 describe("water host connection", () => {
   it("has exactly one approved fixed entry point and its own loader", () => {
-    expect(water).toEqual({ catalogId: "v2-waterway", gameId: "water", title: "The Cloud Hired a Plumber", path: "/adventures", fixed: { game: "water" }, seedParam: "seed", minBand: 1, maxBand: 6 });
+    expect(water).toEqual({ catalogId: "v2-waterway", gameId: "water", title: "Cloud Hired a Plumber", path: "/adventures", fixed: { game: "water" }, seedParam: "seed", minBand: 1, maxBand: 6 });
     expect(publicGameByCatalogId("v2-waterway")).toBe(water);
     expect(PUBLIC_GAMES.filter((item) => item.gameId === "water")).toHaveLength(1);
     expect(hasPublishedChildLoader("water")).toBe(true);

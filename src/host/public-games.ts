@@ -36,7 +36,7 @@ export const PUBLIC_GAMES: readonly PublicGame[] = [
   { catalogId: "v1-change", gameId: "money-change", title: "The Till Is On Its Lunch Break", path: "/money-change", fixed: {}, seedParam: "s", minBand: 3, maxBand: 6 },
   { catalogId: "v2-trains", gameId: "trains", title: "The Great Train Tangle", path: "/adventures", fixed: { game: "trains" }, seedParam: "seed", minBand: 1, maxBand: 6 },
   // Same /adventures engine family as Train; the host maps band to age. Live dashboard ages govern eligibility.
-  { catalogId: "v2-waterway", gameId: "water", title: "The Cloud Hired a Plumber", path: "/adventures", fixed: { game: "water" }, seedParam: "seed", minBand: 1, maxBand: 6 },
+  { catalogId: "v2-waterway", gameId: "water", title: "Cloud Hired a Plumber", path: "/adventures", fixed: { game: "water" }, seedParam: "seed", minBand: 1, maxBand: 6 },
 ];
 
 export const PUBLIC_GAME_IDS = PUBLIC_GAMES.map((game) => game.gameId);
