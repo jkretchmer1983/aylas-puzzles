@@ -1,4 +1,5 @@
 import { randomToken } from "./protocol";
+import { publicGameById } from "./public-games";
 
 /**
  * Hub session model (pure; storage lives in session-store.ts).
@@ -20,6 +21,11 @@ export type HubSession = {
   reserved: SessionInstance | null;
   /** all mode: games played in the current cycle (current included once promoted/started). */
   seen: string[];
+  /**
+   * The last instance (with its reported location) of each game this session moved away from. Only a
+   * directional type step (supportsTypeNavigation games) returns to a seat; plain Next never uses it.
+   */
+  seats?: Record<string, SessionInstance>;
 };
 
 export type Eligible = { gameId: string; releaseId: string };
@@ -40,7 +46,7 @@ export function pickNextGame(eligible: readonly Eligible[], seen: readonly strin
   return pool[Math.floor(rand() * pool.length)] ?? pool[0];
 }
 
-function markSeen(seen: readonly string[], gameId: string, eligible: readonly Eligible[]) {
+export function markSeen(seen: readonly string[], gameId: string, eligible: readonly Eligible[]) {
   const ids = eligible.map((item) => item.gameId);
   const kept = seen.filter((id) => ids.includes(id));
   // Every eligible game has been played this cycle: a new cycle starts with the game now playing.
@@ -81,7 +87,51 @@ export function promoteNext(session: HubSession, eligible: readonly Eligible[], 
   const next = checked.reserved;
   if (!next) return null;
   const seen = checked.mode === "all" ? markSeen(checked.seen, next.gameId, eligible) : checked.seen;
-  return { ...checked, current: next, reserved: null, seen };
+  const seats = withSeat(checked.seats, checked.current);
+  return { ...checked, current: next, reserved: null, seen, ...(seats ? { seats } : {}) };
+}
+
+/** Bounded per game; only an instance that reported its own exact location can be returned to. */
+const SEAT_LIMIT = 16;
+function withSeat(seats: HubSession["seats"], leaving: SessionInstance | null): HubSession["seats"] {
+  if (!leaving?.href) return seats;
+  const next: Record<string, SessionInstance> = { ...(seats ?? {}) };
+  delete next[leaving.gameId];
+  next[leaving.gameId] = leaving;
+  const keys = Object.keys(next);
+  for (const key of keys.slice(0, Math.max(0, keys.length - SEAT_LIMIT))) delete next[key];
+  return next;
+}
+
+export type TypeStep = { session: HubSession; fromReserved: boolean };
+
+/**
+ * Directional type navigation (+1 next type, -1 previous type) through the eligible games in their stable
+ * catalog order, wrapping around. The arriving type returns to its seat (exact saved location, fresh
+ * document) when this session has one, reuses the prepared reservation when it is that type, else starts a
+ * fresh instance. The leaving instance is seated so a later step back restores it. Null when there is no
+ * other eligible type (the caller keeps the original behaviour).
+ */
+export function stepSessionType(session: HubSession, eligible: readonly Eligible[], direction: 1 | -1, rand: Rand = Math.random): TypeStep | null {
+  const leaving = session.current;
+  if (!leaving || (direction !== 1 && direction !== -1) || eligible.length < 2) return null;
+  const at = eligible.findIndex((item) => item.gameId === leaving.gameId);
+  if (at < 0) return null;
+  const target = eligible[(at + direction + eligible.length) % eligible.length];
+  if (!target || target.gameId === leaving.gameId) return null;
+  const seat = session.seats?.[target.gameId];
+  const reserved = session.reserved && eligible.some((item) => item.gameId === session.reserved?.gameId) ? session.reserved : null;
+  let arriving: SessionInstance;
+  let fromReserved = false;
+  if (seat?.href) arriving = { ...seat, instanceId: randomToken(12), releaseId: target.releaseId };
+  else if (reserved?.gameId === target.gameId) { arriving = reserved; fromReserved = true; }
+  else arriving = instance(target, rand);
+  const seats: Record<string, SessionInstance> = { ...(withSeat(session.seats, leaving) ?? {}) };
+  delete seats[target.gameId];
+  // A reservation of the type now playing would repeat it; it is dropped (and a fresh one reserved later).
+  const keptReserved = fromReserved || reserved?.gameId === target.gameId ? null : reserved;
+  const seen = session.mode === "all" ? markSeen(session.seen, target.gameId, eligible) : session.seen;
+  return { session: { ...session, current: arriving, reserved: keptReserved, seen, seats }, fromReserved };
 }
 
 /** Revalidate after a registry/catalog/age change; drops a stale reservation, null if the current game is gone. */
@@ -112,8 +162,17 @@ export function parseStoredSession(value: unknown): HubSession | null {
   const current = inst(s.current), reserved = inst(s.reserved);
   if (s.v !== 1 || typeof s.id !== "string" || !Number.isInteger(s.band) || (s.mode !== "single" && s.mode !== "all")) return null;
   if (current === undefined || reserved === undefined || !Array.isArray(s.seen)) return null;
+  // Seats are optional; a malformed seat is dropped on its own (it never invalidates the session).
+  const seats: Record<string, SessionInstance> = {};
+  if (s.seats && typeof s.seats === "object" && !Array.isArray(s.seats)) {
+    for (const [key, value] of Object.entries(s.seats as Record<string, unknown>).slice(0, SEAT_LIMIT)) {
+      const seat = inst(value);
+      if (publicGameById(key) && seat && seat.gameId === key && seat.href) seats[key] = seat;
+    }
+  }
   return {
     v: 1, id: s.id, band: Number(s.band), mode: s.mode, ...(typeof s.gameId === "string" ? { gameId: s.gameId } : {}),
     current, reserved, seen: s.seen.filter((id): id is string => typeof id === "string"),
+    ...(Object.keys(seats).length ? { seats } : {}),
   };
 }

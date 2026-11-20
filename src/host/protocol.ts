@@ -21,8 +21,21 @@ export type ChildMessageType = "hello" | "ready" | "location" | "next" | "back";
 export type HostIdentity = { session: string; nonce: string; gameId: string };
 type Envelope = { protocol: typeof HOST_PROTOCOL; v: typeof HOST_PROTOCOL_VERSION } & HostIdentity;
 export type ParentMessage = Envelope & { type: ParentMessageType };
+/** Type step for `next` from games with directional type navigation: +1 = next puzzle type, -1 = previous. */
+export type TypeDirection = 1 | -1;
 /** `location` reports the child's own path+search so a hub refresh restores the same instance. */
-export type ChildMessage = Envelope & { type: ChildMessageType; href?: string };
+export type ChildMessage = Envelope & { type: ChildMessageType; href?: string; direction?: TypeDirection };
+type MessageExtra = { href?: string; direction?: TypeDirection };
+
+/**
+ * Games whose own Next/Previous step between puzzle TYPES (other eligible hub games) instead of dealing a
+ * fresh instance of the same game. Only these may attach `direction` to `next`; every other game keeps the
+ * original Next behaviour and any `direction` it sends is ignored.
+ */
+const TYPE_NAV_GAMES: readonly string[] = ["water"];
+export function supportsTypeNavigation(gameId: string | undefined): boolean {
+  return gameId !== undefined && TYPE_NAV_GAMES.includes(gameId);
+}
 
 const TOKEN = /^[A-Za-z0-9_-]{8,64}$/;
 const PARENT_TYPES: readonly string[] = ["init", "activate", "pause", "prepare"];
@@ -45,7 +58,7 @@ function envelopeMatches(data: unknown, expected: HostIdentity): data is Envelop
     && m.session === expected.session && m.nonce === expected.nonce && m.gameId === expected.gameId;
 }
 
-export function makeMessage<T extends ParentMessageType | ChildMessageType>(type: T, identity: HostIdentity, extra: { href?: string } = {}) {
+export function makeMessage<T extends ParentMessageType | ChildMessageType>(type: T, identity: HostIdentity, extra: MessageExtra = {}) {
   return { protocol: HOST_PROTOCOL, v: HOST_PROTOCOL_VERSION, type, ...identity, ...extra };
 }
 
@@ -62,6 +75,12 @@ export function parseParentMessage(data: unknown, expected: HostIdentity): Paren
 export function parseChildMessage(data: unknown, expected: HostIdentity): ChildMessage | null {
   if (!envelopeMatches(data, expected) || !CHILD_TYPES.includes(data.type)) return null;
   const type = data.type as ChildMessageType;
+  if (type === "next" && supportsTypeNavigation(expected.gameId) && Object.prototype.hasOwnProperty.call(data, "direction")) {
+    const direction = (data as { direction?: unknown }).direction;
+    // Exactly +1 or -1; anything else (0, 2, "1", null…) is dropped rather than guessed.
+    if (direction !== 1 && direction !== -1) return null;
+    return makeMessage(type, expected, { direction });
+  }
   if (type !== "location") return makeMessage(type, expected);
   const game = publicGameById(expected.gameId);
   const href = (data as { href?: unknown }).href;
@@ -70,6 +89,19 @@ export function parseChildMessage(data: unknown, expected: HostIdentity): ChildM
 }
 
 const INSTANCE_PARAMS = ["band", "s", "seed", "t", "from", "all", "b", "o"];
+const AGE = /^(?:[3-9]|10)$/;
+const DEAL = /^\d{1,40}$/;
+/** Extra single-valued instance fields allowed only for the named /adventures games (game must equal the fixed value). */
+const GAME_FIELDS: Readonly<Record<string, Readonly<Record<string, RegExp>>>> = {
+  trains: { game: /^trains$/, age: AGE, deal: DEAL },
+  water: { game: /^water$/, age: AGE, deal: DEAL, level: /^[12]$/ },
+};
+
+function gameFieldRule(gameId: string, key: string): RegExp | undefined {
+  const own = (o: object, k: string) => Object.prototype.hasOwnProperty.call(o, k);
+  const fields = own(GAME_FIELDS, gameId) ? GAME_FIELDS[gameId] : undefined;
+  return fields && own(fields, key) ? fields[key] : undefined;
+}
 
 /** A relative href on the game's fixed path whose query only has known instance fields. */
 export function isGameRelativeHref(game: PublicGame, href: string): boolean {
@@ -78,11 +110,10 @@ export function isGameRelativeHref(game: PublicGame, href: string): boolean {
   try { url = new URL(href, "https://host.invalid"); } catch { return false; }
   if (url.origin !== "https://host.invalid" || url.pathname !== game.path || url.hash) return false;
   for (const [key, value] of url.searchParams) {
-    if (key === "game" || key === "age" || key === "deal") {
-      if (game.gameId !== "trains" || url.searchParams.getAll(key).length !== 1) return false;
+    const rule = gameFieldRule(game.gameId, key);
+    if (rule || key === "game" || key === "age" || key === "deal" || key === "level") {
+      if (!rule || url.searchParams.getAll(key).length !== 1 || !rule.test(value)) return false;
       if (key === "game" && value !== game.fixed.game) return false;
-      if (key === "age" && !/^(?:[3-9]|10)$/.test(value)) return false;
-      if (key === "deal" && !/^\d{1,40}$/.test(value)) return false;
       continue;
     }
     if (!INSTANCE_PARAMS.includes(key) || value.length > 40 || !/^[A-Za-z0-9_-]*$/.test(value)) return false;

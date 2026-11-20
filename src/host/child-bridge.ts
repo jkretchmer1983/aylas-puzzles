@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { allowedParentOrigins } from "./origins";
 import { HOST_GAME, HOST_ROLE } from "./config";
-import { HOST_LAUNCH_PARAMS, makeMessage, parseParentMessage, readLaunchIdentity, type ChildMessageType, type HostIdentity } from "./protocol";
+import { HOST_LAUNCH_PARAMS, makeMessage, parseParentMessage, readLaunchIdentity, type ChildMessageType, type HostIdentity, type TypeDirection } from "./protocol";
 
 /**
  * Child (game iframe) side of the hub protocol. Inert unless this window was launched by a hub with a
@@ -47,13 +47,14 @@ function setPhase(phase: State["phase"]) {
   emit();
 }
 
-function post(type: ChildMessageType, extra: { href?: string } = {}) {
+function post(type: ChildMessageType, extra: { href?: string; direction?: TypeDirection } = {}) {
   if (!state.identity || !state.parentOrigin) return false;
   window.parent.postMessage(makeMessage(type, state.identity, extra), state.parentOrigin);
   return true;
 }
 
-export function requestHostNext() { return post("next"); }
+/** Plain Next keeps each game's original behaviour; a type-navigation game may pass +1 / -1 to step puzzle type. */
+export function requestHostNext(direction?: TypeDirection) { return post("next", direction === 1 || direction === -1 ? { direction } : {}); }
 export function requestHostBack() { return post("back"); }
 
 /** Report the current same-game location so a hub refresh can restore this exact instance. */

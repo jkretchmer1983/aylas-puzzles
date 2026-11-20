@@ -63,7 +63,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('published child loader ownership', () => {
-  it.each(['airship', 'radio', 'curiosity', 'ticket', 'take', 'seating', 'sofa', 'ordering', 'robot', 'seaside', 'trains'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
+  it.each(['airship', 'radio', 'curiosity', 'ticket', 'take', 'seating', 'sofa', 'ordering', 'robot', 'seaside', 'trains', 'water'])('%s stays unready without a duplicate starting cover, then times out and retries', async (gameId) => {
     mocks.targets = [{ gameId, releaseId: 'registry-1', origin: `https://${gameId}-host.lovable.app` }];
     vi.useFakeTimers();
     render(<SessionShell band={4} mode="single" gameId={gameId} />);
@@ -233,3 +233,106 @@ describe('one-tap session handover', () => {
     expect(mocks.navigate).toHaveBeenCalledWith({ to: '/', search: { band: 4 } });
   });
 });
+describe('water directional type navigation', () => {
+  const water = { gameId: 'water', releaseId: 'registry-1', origin: 'https://water-host.lovable.app' };
+  const sofa = { gameId: 'sofa', releaseId: 'registry-1', origin: 'https://sofa-host.lovable.app' };
+  const trains = { gameId: 'trains', releaseId: 'registry-1', origin: 'https://trains-host.lovable.app' };
+  function send(frame: HTMLIFrameElement, type: ChildMessageType, extra: Record<string, unknown> = {}) {
+    const url = new URL(frame.src);
+    const identity = readLaunchIdentity(url.search);
+    if (!identity) throw new Error('Missing identity');
+    act(() => window.dispatchEvent(new MessageEvent('message', { data: { ...makeMessage(type, identity), ...extra }, origin: url.origin, source: frame.contentWindow })));
+  }
+  async function startWater() {
+    render(<SessionShell band={4} mode="single" gameId="water" />);
+    await waitFor(() => expect(frames()).toHaveLength(1));
+    const current = visible();
+    send(current, 'hello');
+    send(current, 'location', { href: '/adventures?game=water&band=4&age=7&seed=31&deal=2&level=2&from=commons' });
+    send(current, 'ready');
+    await waitFor(() => expect(frames()).toHaveLength(2));
+    return current;
+  }
+
+  it('Next (+1) moves to the next eligible TYPE in catalog order and seats the exact water instance', async () => {
+    mocks.targets = [sofa, water, trains];
+    const current = await startWater();
+    send(current, 'next', { direction: 1 });
+    await waitFor(() => expect(latestSession().current?.gameId).toBe('trains'));
+    const s = latestSession();
+    expect(new URL(visible().src).origin).toBe(trains.origin);
+    expect(new URL(visible().src).pathname).toBe('/adventures');
+    expect(new URL(visible().src).searchParams.get('game')).toBe('trains');
+    expect(s.seats?.water?.href).toBe('/adventures?game=water&band=4&age=7&seed=31&deal=2&level=2&from=commons');
+    expect(s.mode).toBe('single');
+    expect(current.isConnected).toBe(false);
+    expect(frames().length).toBeLessThanOrEqual(2);
+  });
+
+  it('Previous (-1) wraps to the previous eligible type', async () => {
+    mocks.targets = [water, trains, sofa];
+    const current = await startWater();
+    send(current, 'next', { direction: -1 });
+    await waitFor(() => expect(latestSession().current?.gameId).toBe('sofa'));
+  });
+
+  it('returns to the exact seated instance of the arriving type and drops a duplicate preload', async () => {
+    mocks.targets = [sofa, water];
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+    try {
+      render(<SessionShell band={4} mode="all" />);
+      await waitFor(() => expect(frames()).toHaveLength(1));
+      const first = visible();
+      expect(new URL(first.src).origin).toBe(sofa.origin);
+      send(first, 'hello');
+      send(first, 'location', { href: '/sofa?band=4&seed=777&from=commons' });
+      send(first, 'ready');
+      await waitFor(() => expect(frames()).toHaveLength(2));
+      send(first, 'next');
+      await waitFor(() => expect(latestSession().current?.gameId).toBe('water'));
+      const w = visible();
+      send(w, 'hello');
+      send(w, 'ready');
+      await waitFor(() => expect(latestSession().reserved?.gameId).toBe('sofa'));
+      send(w, 'next', { direction: -1 });
+      await waitFor(() => expect(latestSession().current?.gameId).toBe('sofa'));
+      const back = new URL(visible().src);
+      expect(back.pathname).toBe('/sofa');
+      expect(back.searchParams.get('seed')).toBe('777');
+      expect(readLaunchIdentity(back.search)?.nonce).not.toBe(readLaunchIdentity(new URL(first.src).search)?.nonce);
+      expect(latestSession().reserved).toBeNull();
+      expect(latestSession().seats?.sofa).toBeUndefined();
+      expect(latestSession().seats?.water).toBeUndefined(); // water never reported a location here
+      expect(frames()).toHaveLength(1);
+    } finally { random.mockRestore(); }
+  });
+
+  it('drops malformed directions from water and ignores direction from other games', async () => {
+    mocks.targets = [sofa, water, trains];
+    const current = await startWater();
+    for (const direction of [0, 2, '1', null, -2]) send(current, 'next', { direction });
+    await act(async () => { await Promise.resolve(); });
+    expect(visible()).toBe(current);
+    expect(latestSession().current?.gameId).toBe('water');
+    cleanup();
+    mocks.targets = [sofa, robotTarget()];
+    const { current: s, preload } = await prepare();
+    send(s, 'next', { direction: 1 });
+    await waitFor(() => expect(visible()).toBe(preload));
+    expect(latestSession().current?.gameId).toBe('sofa');
+  });
+
+  it('with no other eligible type: Previous stays put, Next keeps the fresh-instance behaviour', async () => {
+    mocks.targets = [water];
+    const current = await startWater();
+    const preload = hidden();
+    send(current, 'next', { direction: -1 });
+    await act(async () => { await Promise.resolve(); });
+    expect(visible()).toBe(current);
+    send(current, 'next', { direction: 1 });
+    await waitFor(() => expect(visible()).toBe(preload));
+    expect(latestSession().current?.gameId).toBe('water');
+  });
+});
+
+function robotTarget() { return { gameId: 'robot', releaseId: 'registry-1', origin: 'https://robot-host.lovable.app' }; }

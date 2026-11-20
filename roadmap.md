@@ -1,5 +1,9 @@
 # Hub installation
 
+## Water (Cloud Hired a Plumber) hub connection — draft only
+- [x] Add water allowlist entry, location fields (game/age/deal/level 1|2), own-loader capability and water-only directional type navigation with exact seats; focused tests.
+- [ ] Root: publish the water host, register it in the release service and accept/publish this draft (blocked on root deployment/registration).
+
 ## Train and Till loader release support
 - [x] Extend only published child-loader capability to trains and money-change; preserve prior ten and all other host behavior (109 tests; build OK).
 - [x] Publish original canonical hub (20261119102618-jd3ylf -> 20261119223351-ycy9mb) and verify 24 canonical cold/cached launches at six sizes: zero hub starting cover/opening text over child loaders; 12 Next promotions kept the prepared iframe and seed; Back keeps age. Results and 72 screenshot pointers at public/qa/train-till-hub/results.json.

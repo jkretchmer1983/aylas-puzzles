@@ -23,7 +23,7 @@ describe("train host connection", () => {
     expect(train).toEqual({ catalogId: "v2-trains", gameId: "trains", title: "The Great Train Tangle", path: "/adventures", fixed: { game: "trains" }, seedParam: "seed", minBand: 1, maxBand: 6 });
     expect(publicGameByCatalogId("v2-trains")).toBe(train);
     expect(PUBLIC_GAMES.filter((item) => item.gameId === "trains")).toHaveLength(1);
-    expect(new Set(PUBLIC_GAMES.map((item) => item.gameId)).size).toBe(13);
+    expect(new Set(PUBLIC_GAMES.map((item) => item.gameId)).size).toBe(14);
   });
 
   it("uses live title, artwork and age eligibility for the age-seven card and session targets", () => {

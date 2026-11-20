@@ -3,9 +3,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { getCurrentCatalog, getCurrentRegistry, getManifestStatus, refreshCatalog, useCatalog, useRegistry } from "@/lib/catalog-store";
 import { sessionTargets, type SessionTarget } from "./eligibility";
-import { buildLaunchUrl, makeMessage, parseChildMessage, randomToken, type HostIdentity, type ParentMessageType } from "./protocol";
+import { buildLaunchUrl, makeMessage, parseChildMessage, randomToken, supportsTypeNavigation, type HostIdentity, type ParentMessageType, type TypeDirection } from "./protocol";
 import { publicGameById } from "./public-games";
-import { promoteNext, reserveNext, revalidateSession, startSession, withCurrentHref, type HubSession, type SessionInstance, type SessionMode } from "./session-queue";
+import { promoteNext, reserveNext, revalidateSession, startSession, stepSessionType, withCurrentHref, type HubSession, type SessionInstance, type SessionMode } from "./session-queue";
 import { readHubSession, saveHubSession } from "./session-store";
 import { fetchHostRelease, refreshReservedInstance } from './release-check';
 import { hasCompactSlowRecovery, hasPublishedChildLoader } from './loader-capabilities';
@@ -95,10 +95,44 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
     win.postMessage(makeMessage(type, frame.identity), frame.origin);
   }, []);
 
-  const goNext = useCallback(async () => {
+  /**
+   * A prepared (reserved) document is promoted only after its public version still equals the version
+   * captured when it began loading; otherwise that reserved document alone is replaced (same game and seed).
+   * Returns null when the session changed meanwhile.
+   */
+  const verifyPrepared = useCallback(async (owner: HubSession, reserved: SessionInstance, target: SessionTarget): Promise<SessionInstance | null> => {
+    const frame = frames.current.get(reserved.instanceId);
+    const captured = frame ? await frame.version : '';
+    const latest = await fetchHostRelease(target.origin, reserved.gameId);
+    if (sessionRef.current !== owner) return null;
+    if (frame && (!captured || captured !== latest || frame.origin !== target.origin)) {
+      send(reserved.instanceId, 'pause');
+      frames.current.delete(reserved.instanceId);
+      iframes.current.delete(reserved.instanceId);
+      // Force a new document even if the registry already carries the latest ID.
+      return refreshReservedInstance({ ...reserved, releaseId: captured }, latest, () => randomToken(12));
+    }
+    return { ...reserved, releaseId: latest };
+  }, [send]);
+
+  /** Show the promoted session: the leaving document is paused and dropped; any document no longer referenced too. */
+  const enter = useCallback((leaving: string | undefined, next: HubSession) => {
+    const keep = new Set([next.current?.instanceId, next.reserved?.instanceId]);
+    for (const id of [leaving, ...frames.current.keys()]) {
+      if (!id || keep.has(id)) continue;
+      send(id, "pause"); frames.current.delete(id); iframes.current.delete(id);
+    }
+    setStatus(next.current && frames.current.get(next.current.instanceId)?.ready ? "playing" : "starting");
+    setNextError(undefined);
+    setSession(next);
+  }, [send, setSession]);
+
+  const lastDirection = useRef<TypeDirection | undefined>(undefined);
+  const goNext = useCallback(async (direction?: TypeDirection) => {
     const current = sessionRef.current;
     if (!current || busy.current || !current.current || !frames.current.get(current.current.instanceId)?.ready) return;
     busy.current = true;
+    lastDirection.current = direction;
     try {
       // Revalidate registry, release and age at the moment of launch.
       const verified = await withTimeout(refreshCatalog(true), REVALIDATE_TIMEOUT_MS);
@@ -106,38 +140,43 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
       if (sessionRef.current !== current) return;
       const eligible = targetsNow();
       if (!eligible.some((item) => item.gameId === current.current?.gameId)) { backToMenu(); return; }
+      // Directional type navigation (only games that support it; parseChildMessage strips it for the rest).
+      if (direction !== undefined && supportsTypeNavigation(current.current.gameId)) {
+        const step = stepSessionType(current, eligible, direction);
+        // No other eligible type: Previous stays put; Next keeps the original fresh-instance behaviour.
+        if (!step && direction === -1) return;
+        if (step) {
+          let next = step.session;
+          const arriving = next.current;
+          if (!arriving) { backToMenu(); return; }
+          if (step.fromReserved) {
+            const target = eligible.find((item) => item.gameId === arriving.gameId);
+            if (!target) { backToMenu(); return; }
+            const checked = await verifyPrepared(current, arriving, target);
+            if (!checked) return;
+            next = { ...next, current: checked };
+          }
+          enter(current.current.instanceId, next);
+          return;
+        }
+      }
       let checked = reserveNext(current, eligible);
       const reserved = checked.reserved;
       if (!reserved) { backToMenu(); return; }
       const target = eligible.find((item) => item.gameId === reserved.gameId);
       if (!target) { backToMenu(); return; }
-      const frame = frames.current.get(reserved.instanceId);
-      const captured = frame ? await frame.version : '';
-      const latest = await fetchHostRelease(target.origin, reserved.gameId);
-      if (sessionRef.current !== current) return;
-      if (frame && (!captured || captured !== latest || frame.origin !== target.origin)) {
-        send(reserved.instanceId, 'pause');
-        frames.current.delete(reserved.instanceId);
-        iframes.current.delete(reserved.instanceId);
-        // Force a new document even if the registry already carries the latest ID.
-        const fresh = refreshReservedInstance({ ...reserved, releaseId: captured }, latest, () => randomToken(12));
-        checked = { ...checked, reserved: fresh };
-      } else {
-        checked = { ...checked, reserved: { ...reserved, releaseId: latest } };
-      }
+      const verifiedReserved = await verifyPrepared(current, reserved, target);
+      if (!verifiedReserved) return;
+      checked = { ...checked, reserved: verifiedReserved };
       const promoted = promoteNext(checked, eligible);
       if (!promoted) { backToMenu(); return; }
-      const leaving = current.current?.instanceId;
-      if (leaving) { send(leaving, "pause"); frames.current.delete(leaving); iframes.current.delete(leaving); }
-      setStatus(promoted.current && frames.current.get(promoted.current.instanceId)?.ready ? "playing" : "starting");
-      setNextError(undefined);
-      setSession(promoted);
+      enter(current.current.instanceId, promoted);
     } catch {
       if (sessionRef.current === current) setNextError('Could not verify the next adventure’s availability or version. Your current puzzle is safe. Tap Retry to try again.');
     } finally {
       busy.current = false;
     }
-  }, [backToMenu, send, setSession, targetsNow]);
+  }, [backToMenu, enter, targetsNow, verifyPrepared]);
 
   // Child → parent messages: exact iframe window AND exact registered origin AND exact identity.
   useEffect(() => {
@@ -151,7 +190,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
         if (message.type === "hello") { frame.hello = true; send(instanceId, isCurrent ? "activate" : "prepare"); }
         else if (message.type === "ready") { frame.ready = true; setReadyTick((n) => n + 1); }
         else if (message.type === "location" && message.href && s) setSession(withCurrentHref(s, instanceId, message.href));
-        else if (message.type === "next" && isCurrent) void goNext();
+        else if (message.type === "next" && isCurrent) void goNext(message.direction);
         else if (message.type === "back" && isCurrent) backToMenu();
         return;
       }
@@ -224,7 +263,7 @@ export function SessionShell({ band, mode, gameId }: { band: number; mode: Sessi
     })}
     {nextError && <div className="absolute bottom-4 inset-x-4 z-20 bg-background p-3 text-foreground" role="alert">
       <p>{nextError}</p>
-      <button type="button" onClick={() => void goNext()} className="min-h-12 px-4 font-semibold">Retry</button>
+      <button type="button" onClick={() => void goNext(lastDirection.current)} className="min-h-12 px-4 font-semibold">Retry</button>
       <button type="button" onClick={() => setNextError(undefined)} className="min-h-12 px-4">Keep playing</button>
     </div>}
     {compactSlow && <div className="absolute z-10 flex w-max max-w-[calc(100%-1rem)] flex-wrap items-center justify-center gap-2 rounded-2xl border border-input bg-background p-2 text-foreground shadow-lg portrait:bottom-[max(0.5rem,env(safe-area-inset-bottom))] portrait:left-1/2 portrait:-translate-x-1/2 landscape:right-[max(0.5rem,env(safe-area-inset-right))] landscape:top-[max(0.5rem,env(safe-area-inset-top))] landscape:w-36 landscape:flex-col landscape:items-stretch" role="status" aria-live="polite" data-slow-recovery="compact">

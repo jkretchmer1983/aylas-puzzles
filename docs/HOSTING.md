@@ -38,6 +38,9 @@ The master review project uses `{ "role": "master" }` (every route, same-origin 
 | sofa | v2-sofa | /sofa | 1–6 | seed |
 | seating | v2-seating | /seating | 3–6 | seed |
 | ticket | **v1-riddle** | /ticket-machine | 4–6 | s |
+| money-change | v1-change | /money-change | 3–6 | s |
+| trains | v2-trains | /adventures (fixed `game=trains`) | 1–6 | seed |
+| water | **v2-waterway** | /adventures (fixed `game=water`) | 1–6 | seed |
 
 The table is generated documentation — `src/host/public-games.ts` is authoritative. Menu bands are the
 global IDs 1–6 (ages 3–4 … 9–10, overlapping). A band is parsed unchanged and THEN gated by the catalog
@@ -104,6 +107,38 @@ Envelope on every message: `{ protocol: "ayla-host", v: 1, type, session, nonce,
   previews in `QA_PARENT_ORIGINS` (`src/host/origins.ts`: hub QA `id-preview-4--0a7ba2f9-…` and Scene review
   `id-preview-11--f6472ef2-…`), plus exact HTTPS origins in the build-time `VITE_AYLA_DEV_PARENT_ORIGINS`
   (review builds only). No wildcards. Registry host URLs remain production-only.
+
+### Game-specific location fields
+
+`location` hrefs accept only the shared instance fields plus these single-valued extras (everything else,
+duplicates, other games' values and any URL-shaped value drop the whole message):
+
+| game | extra fields |
+|---|---|
+| trains | `game=trains`, `age` 3–10, `deal` digits |
+| water | `game=water`, `age` 3–10, `deal` digits, `level` 1 or 2 |
+
+### Directional type navigation (water only)
+
+`next` may carry `direction: 1 | -1` ONLY from games listed in `supportsTypeNavigation` (currently `water`).
+Any other value from those games drops the message; from every other game the field is ignored and Next
+keeps its original behaviour. A valid step moves to the neighbouring eligible game in the live catalog
+order (wrapping), at that game's exact last instance when this session left one with a reported location
+(new document and nonce, same seed + href); otherwise the prepared reservation if it is that game
+(version-checked like Next), otherwise a fresh instance. The leaving instance is seated for a later step
+back. Single/Play all mode, band and readiness gating are unchanged; Play all marks the arrival as seen.
+With no other eligible game, Previous stays put and Next is an ordinary fresh instance.
+
+### Water child bridge requirements (Cloud Hired a Plumber host)
+
+- `host.config.json`: `role: "game"`, `catalogId: "v2-waterway"`; `/api/release` reports `gameId: "water"`, `path: "/adventures"`.
+- Serve only `/adventures?game=water`; map hub `band` (1–6) to the engine age itself.
+- Use the shared `child-bridge.ts`: answer `init` with `hello`, report real `ready` (bounded), obey
+  `activate` / `pause` / `prepare` (silent and inert while hidden), `back` for All games.
+- Report `location` hrefs containing only `game=water`, `band`, `age`, `seed`, `deal`, `level` (1|2), `from`
+  (never `prepared`, host_* or other keys), so a hub refresh or a step back restores the exact instance.
+- Its header Previous / Next call `requestHostNext(-1)` / `requestHostNext(1)` when embedded (never
+  navigate to another type itself); New stays inside the game. Standalone behaviour is unchanged.
 
 ## Session behaviour (hub)
 
