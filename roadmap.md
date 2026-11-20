@@ -40,4 +40,6 @@
 ## Homepage parallax fix (draft 8 only)
 - [x] One scroll-position-only scene driver (no CSS timeline), pre-hydration boot, 32px minimum overscan; traces in public/qa/parallax-fix
 - [x] Startup page scroll reset after hydration fixed; menu return restored once (scroll-restore-check.json)
+- [x] Sign canopy (same art, same driver) + compact age bar below the sign; Coming soon card text fits (public/qa/canopy-fix)
+- [ ] Choosing an age from the compact bar deep in the cards can jump the page (browser scroll anchoring; pre-existing, awaiting go-ahead)
 - [ ] Physical iPad/iPhone Safari check (needs a device)

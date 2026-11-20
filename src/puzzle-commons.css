@@ -33,6 +33,9 @@
   --scene-size: max(var(--scene-cover), calc(var(--scene-vh) + 32px));
   --scene-travel: clamp(0px, calc(var(--scene-size) - var(--scene-vh)), 340px);
   --logo-bottom: calc(var(--scene-size) * var(--logo-f));
+  /* Soft edge below the protected sign; it grows with how far content has moved toward the sign (--scene-lift),
+     so the resting headline just below the sign is never veiled. */
+  --canopy-fade: clamp(28px, calc(var(--scene-vh) * .07), 60px);
   --catalog-w: 980px;
   --card-min: 250px;
   --card-max: 300px;
@@ -56,7 +59,14 @@
    scroll timeline or transition competing with it. Reduced motion keeps it still. */
 .commons-scene { position: fixed; left: 0; right: 0; top: 0; z-index: -1; height: var(--scene-size); overflow: hidden; pointer-events: none; will-change: transform; transform: translate3d(0, 0, 0); backface-visibility: hidden; }
 .commons-scene picture { position: absolute; inset: 0; display: block; }
-.commons-scene img { position: absolute; top: 0; left: 50%; display: block; width: calc(var(--scene-size) * var(--scene-aspect)); height: var(--scene-size); max-width: none; translate: -50% 0; }
+/* Top canopy (see index.tsx): same art at the same scale/position, moved by the same driver via --scene-shift. */
+.commons-canopy { position: fixed; left: 0; right: 0; top: 0; z-index: 25; height: calc(var(--logo-bottom) + var(--canopy-fade) + 2px); overflow: hidden; pointer-events: none;
+  transform: translate3d(0, calc(var(--scene-shift, 0px) * -1), 0); backface-visibility: hidden;
+  --canopy-edge: min(var(--canopy-fade), var(--scene-lift, 0px));
+  -webkit-mask-image: linear-gradient(to bottom, #000 var(--logo-bottom), transparent calc(var(--logo-bottom) + var(--canopy-edge)));
+  mask-image: linear-gradient(to bottom, #000 var(--logo-bottom), transparent calc(var(--logo-bottom) + var(--canopy-edge))); }
+.commons-canopy picture { position: absolute; left: 0; right: 0; top: 0; display: block; height: var(--scene-size); }
+.commons-scene img, .commons-canopy img { position: absolute; top: 0; left: 50%; display: block; width: calc(var(--scene-size) * var(--scene-aspect)); height: var(--scene-size); max-width: none; translate: -50% 0; }
 .commons-scene-travel { position: absolute; left: 0; top: 0; width: 1px; height: var(--scene-travel); visibility: hidden; }
 .commons-scene-vh { position: absolute; right: 0; top: 0; width: 1px; height: var(--scene-vh); visibility: hidden; }
 
@@ -166,12 +176,13 @@
 .commons-card-action:active { transform: translateY(3px); }
 /* Coming soon: compact plaque; a readable cream "Coming soon" pill rides the bottom edge of the picture. */
 .is-upcoming { padding: 20px 14px 14px; }
-.is-upcoming h3 { font-size: 18px; }
-.is-upcoming h3::before, .is-upcoming h3::after { display: none; }
-.is-upcoming .commons-card-copy > p:last-child { display: -webkit-box; margin-top: 4px; overflow: hidden; font-size: 13.5px; line-height: 1.25; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+/* Scoped by .commons-card.is-upcoming so later per-screen .commons-card rules never enlarge these. */
+.commons-card.is-upcoming h3 { display: block; font-size: 16px; line-height: 1.12; overflow-wrap: break-word; hyphens: auto; }
+.commons-card.is-upcoming h3::before, .commons-card.is-upcoming h3::after { display: none; }
+.commons-card.is-upcoming .commons-card-copy > p:last-child { margin-top: 4px; font-size: 13px; line-height: 1.3; overflow-wrap: break-word; hyphens: auto; }
 .is-upcoming .commons-thumbnail { margin-top: 8px; }
 .is-upcoming .commons-thumbnail img { max-height: var(--soon-thumb-h); }
-.commons-card-action.soon { position: relative; z-index: 1; width: auto; max-width: 100%; min-height: 44px; margin-top: -24px; padding: 2px 18px; white-space: nowrap; color: var(--commons-navy); font-size: 16px;
+.commons-card-action.soon { position: relative; z-index: 1; width: auto; min-width: 0; max-width: 100%; min-height: 44px; margin-top: -24px; padding: 2px 18px; white-space: nowrap; color: var(--commons-navy); font-size: 16px;
   border-image: url("/__l5e/assets-v1/4faff8d2-674e-40f7-acaf-9f9d83c524b8/pill-age.png") 70 70 fill / 22px 22px stretch; filter: drop-shadow(0 3px 3px rgb(30 40 90 / .3)); }
 .commons-empty { margin: 0 auto; max-width: 520px; padding: 22px 26px; text-align: center; font-weight: 800; color: var(--commons-ink);
   border-image: url("/__l5e/assets-v1/663ef6b1-6681-4ae0-b916-43e3ba608708/ivory-card-surface.webp") 130 fill / 30px stretch; filter: drop-shadow(0 8px 12px rgb(46 28 12 / .3)); }
@@ -195,10 +206,13 @@
 @keyframes commons-arrive { from { opacity: 0; transform: translateY(-14px) scale(.98); } to { opacity: 1; transform: none; } }
 
 /* ---------- Compact age bar: a fixed overlay shown once the dock has scrolled away ----------
-   Out of flow, so showing it never changes page height or scroll range. Same controls as the dock by orientation. */
-.commons-age-quick { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 0; right: 0; margin-inline: auto; z-index: 30; width: min(1100px, calc(100% - 16px)); container: commons-quick / inline-size;
+   Out of flow, so showing it never changes page height or scroll range. Same controls as the dock by orientation.
+   Its rail rides just below the protected sign (following the scene drift), above the canopy; dialogs stay above both. */
+.commons-age-quick-rail { position: fixed; top: 0; left: 0; right: 0; z-index: 30; height: 0; pointer-events: none;
+  transform: translate3d(0, max(calc(env(safe-area-inset-top) + 8px), calc(var(--logo-bottom) - var(--scene-shift, 0px) + 6px)), 0); }
+.commons-age-quick { position: absolute; top: 0; left: 0; right: 0; margin-inline: auto; pointer-events: auto; width: min(1100px, calc(100% - 16px)); container: commons-quick / inline-size;
   border-image: url("/__l5e/assets-v1/9593220d-1dcb-4c4f-a642-11342ae7e593/rail.png") 76 80 fill / 30px 32px stretch; filter: drop-shadow(0 10px 14px rgb(70 46 26 / .25));
-  transform: translateY(calc(-100% - 24px)); opacity: 0; visibility: hidden; transition: transform .26s cubic-bezier(.2,.8,.2,1), opacity .2s, visibility 0s linear .26s; }
+  transform: translateY(-12px); opacity: 0; visibility: hidden; transition: transform .26s cubic-bezier(.2,.8,.2,1), opacity .2s, visibility 0s linear .26s; }
 .commons-age-quick.is-shown { transform: none; opacity: 1; visibility: visible; transition: transform .26s cubic-bezier(.2,.8,.2,1), opacity .2s, visibility 0s; }
 .commons-age-quick-inner { display: flex; align-items: center; justify-content: center; padding: 10px 12px; }
 .commons-age-quick-tabs { display: grid; flex: 1 1 auto; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; min-width: 0; }
@@ -224,6 +238,10 @@
   .commons-card { padding: 22px 16px 16px; }
   .commons-card h3 { font-size: 20px; }
   .commons-card-copy > p:last-child { font-size: 14px; }
+  .commons-card.is-upcoming h3 { font-size: 15px; }
+  .commons-card.is-upcoming .commons-card-copy > p:last-child { font-size: 12.5px; }
+  .commons-card-action.soon { gap: 5px; padding: 2px 12px; font-size: 14.5px; }
+  .commons-card-action.soon svg { width: 15px; height: 15px; }
 }
 /* Portrait, whatever the width (phones, Duo, tablets): headline on two lines, one compact age dropdown. */
 @media (orientation: portrait) {
@@ -253,7 +271,8 @@
   .commons-card h3::before, .commons-card h3::after { width: 14px; }
   .commons-card-copy > p:last-child { font-size: 13.5px; }
   .commons-card-action { min-height: 44px; font-size: 17px; }
-  .is-upcoming h3 { font-size: 16px; }
+  .commons-card.is-upcoming h3 { font-size: 15px; }
+  .commons-card.is-upcoming .commons-card-copy > p:last-child { font-size: 12.5px; }
   .commons-card-action.soon { gap: 5px; padding: 2px 12px; font-size: 14.5px; }
   .commons-card-action.soon svg { width: 15px; height: 15px; }
   .commons-play-all-note { font-size: 15.5px; }
@@ -275,7 +294,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .commons-hero-copy, .commons-age-dock, .commons-catalog { animation: none; }
-  .commons-scene { transform: none !important; }
+  .commons-scene, .commons-canopy { transform: none !important; }
   .commons-age-quick, .commons-age-quick.is-shown { transition: none; }
   .commons-card, .commons-age-tab, .commons-play-all, .commons-card-action, .commons-age-select-field, .commons-age-select-chevron, .commons-age-option { transition: none; }
   .commons-age-select-list { animation: none; }

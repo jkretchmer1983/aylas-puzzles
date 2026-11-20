@@ -58,6 +58,7 @@ function PuzzleCommons() {
   const [preview, setPreview] = useState<CatalogGame>();
   const [quickBar, setQuickBar] = useState(false);
   const dockRef = useRef<HTMLElement>(null);
+  const quickRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   useSceneParallax(sceneRef);
   const previewTrigger = useRef<HTMLButtonElement | null>(null);
@@ -110,13 +111,19 @@ function PuzzleCommons() {
     window.scrollTo({ top: saved.scrollY, behavior: "instant" });
   }, [band]);
 
-  // Compact age bar appears once the in-flow dock has fully scrolled above the viewport. The dock itself
-  // never changes layout, so toggling this cannot change page height or bounce across the threshold.
+  // Compact age bar appears once the in-flow dock has slid up behind the place the bar occupies (just under the
+  // protected sign, where the canopy hides the dock). Both bar and dock are out of/fixed in layout and move
+  // monotonically with scroll, so toggling this cannot change page height or bounce across the threshold.
   useEffect(() => {
     const dock = dockRef.current;
-    if (!dock) return;
+    const quick = quickRef.current;
+    if (!dock || !quick) return;
     let frame = 0;
-    const check = () => { frame = 0; setQuickBar(dock.getBoundingClientRect().bottom <= 0); };
+    const check = () => {
+      frame = 0;
+      const railTop = quick.parentElement?.getBoundingClientRect().top ?? 0;
+      setQuickBar(dock.getBoundingClientRect().bottom <= railTop + quick.offsetHeight);
+    };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(check); };
     check();
     window.addEventListener("scroll", schedule, { passive: true });
@@ -174,14 +181,12 @@ function PuzzleCommons() {
   };
 
   return <main className="puzzle-commons">
+    {/* Top canopy: the exact top slice of the same scene (same art, scale and drift) laid over the scrolling
+        content, opaque through the hanging sign and softly fading below it, so content melts into the scene
+        before it reaches the sign. Placed before the scene so the server-booted driver already finds it. */}
+    <div className="commons-canopy" data-scene-follow aria-hidden="true" suppressHydrationWarning><SceneArt /></div>
     <div ref={sceneRef} className="commons-scene" aria-hidden="true" suppressHydrationWarning>
-      {/* The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens, tall scene for narrow phones. */}
-      <picture>
-        {/* Must match the narrow-phone media query in puzzle-commons.css. */}
-        <source media="(orientation: portrait) and (max-aspect-ratio: 2/3)" srcSet={scenePhoneTall.url} width={772} height={1920} />
-        <source media="(orientation: portrait)" srcSet={scenePortrait.url} width={1086} height={1448} />
-        <img src={sceneLandscape.url} width={1536} height={1024} alt="" fetchPriority="high" decoding="async" />
-      </picture>
+      <SceneArt priority />
       <span className="commons-scene-travel" />
       <span className="commons-scene-vh" />
       {/* Runs during HTML parse so the drift is right even if the visitor scrolls before hydration; the hook adopts it. */}
@@ -218,7 +223,9 @@ function PuzzleCommons() {
       </div>
     </section>
 
-    <div className={`commons-age-quick${quickBar ? " is-shown" : ""}`} inert={!quickBar} aria-hidden={!quickBar}>
+    {/* The rail rides just below the protected sign (it follows the scene drift); the bar itself only shows/hides. */}
+    <div className="commons-age-quick-rail" data-scene-follow suppressHydrationWarning>
+    <div ref={quickRef} className={`commons-age-quick${quickBar ? " is-shown" : ""}`} inert={!quickBar} aria-hidden={!quickBar}>
       <div className="commons-age-quick-inner">
         <div className="commons-age-quick-tabs" role="group" aria-label="Quick age choice">
           {PUBLIC_BANDS.map((item) => <button
@@ -231,6 +238,7 @@ function PuzzleCommons() {
         </div>
         <AgeDropdown idPrefix="age-quick" band={band} onChoose={chooseBand} label="Choose your age" closed={!quickBar} />
       </div>
+    </div>
     </div>
 
     <div id="commons-catalog" role="tabpanel" aria-labelledby={`age-tab-${band}`} className="commons-catalog">
@@ -266,6 +274,16 @@ function PuzzleCommons() {
       </DialogContent>
     </Dialog>
   </main>;
+}
+
+/** The approved Stacked Worlds scene, logo included; portrait recompose for portrait screens, tall scene for narrow phones. */
+function SceneArt({ priority = false }: { priority?: boolean }) {
+  return <picture>
+    {/* Must match the narrow-phone media query in puzzle-commons.css. */}
+    <source media="(orientation: portrait) and (max-aspect-ratio: 2/3)" srcSet={scenePhoneTall.url} width={772} height={1920} />
+    <source media="(orientation: portrait)" srcSet={scenePortrait.url} width={1086} height={1448} />
+    <img src={sceneLandscape.url} width={1536} height={1024} alt="" fetchPriority={priority ? "high" : "auto"} decoding="async" />
+  </picture>;
 }
 
 function GameCard({ game, onPlay, onPreview }: { game: CatalogGame; onPlay: () => void; onPreview: (game: CatalogGame, trigger: HTMLButtonElement) => void }) {

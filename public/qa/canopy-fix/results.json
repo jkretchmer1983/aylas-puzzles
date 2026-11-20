@@ -1,0 +1,292 @@
+{
+ "draft": "thr_dq1phnlcplau",
+ "engine": "headless Chromium (Playwright), dpr 2 for phones; no WebKit, no physical device",
+ "changes": [
+  "Top canopy: fixed copy of the same scene <picture> over content, moved by the single scene driver (--scene-shift), opaque through the sign, soft fade below that grows with --scene-lift (0 at rest).",
+  "Compact age bar rides just below the sign (rail follows the drift); shows once the dock slides behind it.",
+  "Coming soon: .commons-card.is-upcoming scoped type (16/13px, 15/12.5px on narrow 2-col and phone landscape), full wrap instead of 2-line clamp; compact Coming soon pill in phone landscape."
+ ],
+ "viewports": {
+  "phone393": {
+   "size": "393x852 portrait",
+   "restCanopyVsScene": {
+    "canopyH": 109,
+    "diffPx>8": 0,
+    "maxDiff": 3
+   },
+   "signCrossing": [
+    {
+     "scrollY": 147,
+     "sceneY": -8.34,
+     "canopyY": -8.34,
+     "signBottom": 40.66,
+     "railTop": 46.5284423828125,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 4
+    },
+    {
+     "scrollY": 285,
+     "sceneY": -15.65,
+     "canopyY": -15.65,
+     "signBottom": 33.35,
+     "railTop": 39.218441009521484,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 0
+    }
+   ],
+   "comingSoon": {
+    "cardsChecked": 111,
+    "titleDescPx": [
+     [
+      "15px",
+      "12.5px"
+     ]
+    ],
+    "overflowOrOverlap": 0,
+    "before": {
+     "titleDescPx": [
+      [
+       "23px",
+       "13.5px"
+      ]
+     ],
+     "overflowOrTruncated": 29
+    },
+    "longest": "Extremely Thirsty Rooftop"
+   },
+   "screenshots": {
+    "after-phone393-top.jpg": "/__l5e/assets-v1/d7b55e0b-ee44-44d4-b416-52bd16cfe8bc/after-phone393-top.jpg",
+    "after-phone393-cross1.jpg": "/__l5e/assets-v1/b5be04d1-907f-4838-9d75-8d1ca0bcc2b2/after-phone393-cross1.jpg",
+    "after-phone393-cross2.jpg": "/__l5e/assets-v1/e6fed014-488b-4cd0-9203-7e8c6dc7dc27/after-phone393-cross2.jpg",
+    "after-phone393-longest-card.jpg": "/__l5e/assets-v1/0a33b0e7-283c-400e-8e4e-40c4de3194b1/after-phone393-longest-card.jpg",
+    "before-phone393-cross1.jpg": "/__l5e/assets-v1/9e0a962c-cb55-40b4-a63e-c9cd13358512/before-phone393-cross1.jpg",
+    "before-phone393-longest-card.jpg": "/__l5e/assets-v1/0213e789-5837-4b0f-a4b8-78ab42c490b8/before-phone393-longest-card.jpg",
+    "after-phone393-quick-dropdown.jpg": "/__l5e/assets-v1/9f0e6e18-a854-474d-b4ec-20aa06525404/after-phone393-quick-dropdown.jpg"
+   }
+  },
+  "portrait440": {
+   "size": "440x760 portrait",
+   "restCanopyVsScene": {
+    "canopyH": 108,
+    "diffPx>8": 0,
+    "maxDiff": 7
+   },
+   "signCrossing": [
+    {
+     "scrollY": 154,
+     "sceneY": -17.98,
+     "canopyY": -17.98,
+     "signBottom": 37.019999999999996,
+     "railTop": 42.732757568359375,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 7
+    },
+    {
+     "scrollY": 297,
+     "sceneY": -33.8,
+     "canopyY": -33.8,
+     "signBottom": 21.200000000000003,
+     "railTop": 26.912757873535156,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 6
+    }
+   ],
+   "comingSoon": {
+    "cardsChecked": 111,
+    "titleDescPx": [
+     [
+      "15px",
+      "12.5px"
+     ]
+    ],
+    "overflowOrOverlap": 0,
+    "before": {
+     "titleDescPx": [
+      [
+       "16px",
+       "13.5px"
+      ]
+     ],
+     "overflowOrTruncated": 9
+    },
+    "longest": "Extremely Thirsty Rooftop"
+   },
+   "screenshots": {
+    "after-portrait440-top.jpg": "/__l5e/assets-v1/f42e345c-23fc-4554-97d8-80e3b4afadbf/after-portrait440-top.jpg",
+    "after-portrait440-cross1.jpg": "/__l5e/assets-v1/06f62280-2517-401b-a6a9-aae86a539e3c/after-portrait440-cross1.jpg",
+    "after-portrait440-cross2.jpg": "/__l5e/assets-v1/4a8ebdc1-1ff8-41a4-b8bd-ae25becd7b0e/after-portrait440-cross2.jpg",
+    "after-portrait440-longest-card.jpg": "/__l5e/assets-v1/bc418ede-f48c-477c-9ead-59ab3c2be4cf/after-portrait440-longest-card.jpg",
+    "before-portrait440-cross1.jpg": "/__l5e/assets-v1/4e9506b3-5723-4308-9e14-5ae8c98a3431/before-portrait440-cross1.jpg",
+    "before-portrait440-longest-card.jpg": "/__l5e/assets-v1/41b3a69f-2e20-4379-a4d5-8ea3e6ba1be9/before-portrait440-longest-card.jpg"
+   }
+  },
+  "phoneLand": {
+   "size": "852x393 phone landscape",
+   "restCanopyVsScene": {
+    "canopyH": 112,
+    "diffPx>8": 0,
+    "maxDiff": 8
+   },
+   "signCrossing": [
+    {
+     "scrollY": 149,
+     "sceneY": -17,
+     "canopyY": -17,
+     "signBottom": 67,
+     "railTop": 73.06400299072266,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 8
+    },
+    {
+     "scrollY": 289,
+     "sceneY": -31.46,
+     "canopyY": -31.46,
+     "signBottom": 52.54,
+     "railTop": 58.604000091552734,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 7
+    }
+   ],
+   "comingSoon": {
+    "cardsChecked": 111,
+    "titleDescPx": [
+     [
+      "15px",
+      "12.5px"
+     ]
+    ],
+    "overflowOrOverlap": 0,
+    "before": {
+     "titleDescPx": [
+      [
+       "20px",
+       "13.5px"
+      ]
+     ],
+     "overflowOrTruncated": 111
+    },
+    "longest": "Extremely Thirsty Rooftop"
+   },
+   "screenshots": {
+    "after-phoneLand-top.jpg": "/__l5e/assets-v1/5891f9d3-0ff3-4e40-bcf8-fe7660549fb0/after-phoneLand-top.jpg",
+    "after-phoneLand-cross1.jpg": "/__l5e/assets-v1/d8f9dd0b-5eb5-4dcc-bfe6-2f7b8ee90667/after-phoneLand-cross1.jpg",
+    "after-phoneLand-cross2.jpg": "/__l5e/assets-v1/110132ec-63e2-4cef-954c-325148935eb0/after-phoneLand-cross2.jpg",
+    "after-phoneLand-longest-card.jpg": "/__l5e/assets-v1/ea4afb8f-6ed9-4b43-be04-8251d29ddafa/after-phoneLand-longest-card.jpg",
+    "before-phoneLand-cross1.jpg": "/__l5e/assets-v1/a1d1221e-bca9-4fe5-8e7a-0f10dfd90728/before-phoneLand-cross1.jpg",
+    "before-phoneLand-longest-card.jpg": "/__l5e/assets-v1/b7d6ba09-ffa6-491b-a13d-cd6607e9a4f4/before-phoneLand-longest-card.jpg",
+    "after-phoneLand-reduced-motion.jpg": "/__l5e/assets-v1/329bd252-1f86-4b2c-b4b8-acf499f871e6/after-phoneLand-reduced-motion.jpg"
+   }
+  },
+  "ipadLand": {
+   "size": "1180x820 iPad landscape",
+   "restCanopyVsScene": {
+    "canopyH": 183,
+    "diffPx>8": 0,
+    "maxDiff": 0
+   },
+   "signCrossing": [
+    {
+     "scrollY": 220,
+     "sceneY": -3.26,
+     "canopyY": -3.26,
+     "signBottom": 122.74,
+     "railTop": 128.83599853515625,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 0
+    },
+    {
+     "scrollY": 407,
+     "sceneY": -5.76,
+     "canopyY": -5.76,
+     "signBottom": 120.24,
+     "railTop": 126.33599853515625,
+     "quickShown": true,
+     "signRegionDiffPx": 0,
+     "signRegionMaxDiff": 0
+    }
+   ],
+   "comingSoon": {
+    "cardsChecked": 111,
+    "titleDescPx": [
+     [
+      "16px",
+      "13px"
+     ]
+    ],
+    "overflowOrOverlap": 0,
+    "before": {
+     "titleDescPx": [
+      [
+       "18px",
+       "13.5px"
+      ]
+     ],
+     "overflowOrTruncated": 0
+    },
+    "longest": "Extremely Thirsty Rooftop"
+   },
+   "screenshots": {
+    "after-ipadLand-top.jpg": "/__l5e/assets-v1/982c4d97-62d2-4a54-b889-56019cde525d/after-ipadLand-top.jpg",
+    "after-ipadLand-cross1.jpg": "/__l5e/assets-v1/42b3492d-10ee-4c57-ab55-61dd71de2b75/after-ipadLand-cross1.jpg",
+    "after-ipadLand-cross2.jpg": "/__l5e/assets-v1/e6a75896-9fb8-4fa5-bb24-5cd5bb3e3bb7/after-ipadLand-cross2.jpg",
+    "after-ipadLand-longest-card.jpg": "/__l5e/assets-v1/547ed8a2-bcd9-4ee4-b3e1-733fffe95fd4/after-ipadLand-longest-card.jpg",
+    "before-ipadLand-cross1.jpg": "/__l5e/assets-v1/5d763602-0ac8-4c73-aa72-8b0a83c7ea1f/before-ipadLand-cross1.jpg",
+    "before-ipadLand-longest-card.jpg": "/__l5e/assets-v1/b2baade2-72a9-41ac-a287-3599340bbcb7/before-ipadLand-longest-card.jpg",
+    "after-ipadLand-dialog.jpg": "/__l5e/assets-v1/cefb80d4-b3bd-4bf4-b23c-f1614b16b815/after-ipadLand-dialog.jpg"
+   }
+  }
+ },
+ "interactions": {
+  "phone_earlyScroll": {
+   "beforeHydration": {
+    "y": 500,
+    "scene": "translate3d(0px, -26.15px, 0px)",
+    "canopy": "26.15px"
+   },
+   "afterHydration": {
+    "y": 502,
+    "scene": "translate3d(0px, -26.25px, 0px)",
+    "canopy": "26.25px",
+    "rail": "26.25px",
+    "shown": true
+   }
+  },
+  "phone_quickChoose": {
+   "url": "http://localhost:8080/?band=4",
+   "y": 980
+  },
+  "ipad_dialog": {
+   "dialogTop": 96.859375,
+   "hit": true
+  },
+  "ipad_quickKeyboard": {
+   "url": "http://localhost:8080/?band=4",
+   "shown": true
+  },
+  "reduced": {
+   "scene": "none",
+   "canopy": "none",
+   "lift": "160px"
+  }
+ },
+ "extraScreenshots": {
+  "after-phone393-quick-dropdown.jpg": "/__l5e/assets-v1/9f0e6e18-a854-474d-b4ec-20aa06525404/after-phone393-quick-dropdown.jpg",
+  "after-ipadLand-dialog.jpg": "/__l5e/assets-v1/cefb80d4-b3bd-4bf4-b23c-f1614b16b815/after-ipadLand-dialog.jpg",
+  "after-phoneLand-reduced-motion.jpg": "/__l5e/assets-v1/329bd252-1f86-4b2c-b4b8-acf499f871e6/after-phoneLand-reduced-motion.jpg"
+ },
+ "notes": [
+  "signRegionDiffPx = pixels (diff>24) in the sign band between the live page and the bare scene with all content hidden: 0 means nothing drew over the sign.",
+  "restCanopyVsScene compares the band with and without the canopy at scroll 0: max channel difference 0-8 (image resampling), no visible seam.",
+  "Pre-existing, not changed: choosing an age from the compact bar while scrolled into the cards can jump the page (393 portrait: 600 -> 1078) because the browser's scroll anchoring follows a card that moves in the new list; with overflow-anchor disabled it stays at 600. Same result on the previous build.",
+  "Early scroll to 500 before hydration: scene and canopy moved together (-26.15px) pre-hydration; after hydration scrollY read 502 (2px, not investigated).",
+  "Headline gap below sign is unchanged; the fade only appears once content has moved toward the sign. During the 0.6s arrival animation the headline starts 14px higher and its top few px may briefly sit under the sign edge (not measured).",
+  "Not checked: WebKit/Safari, physical iPhone/iPad, 1024x768, return-from-game restore with the canopy (driver math and restore code unchanged)."
+ ]
+}
